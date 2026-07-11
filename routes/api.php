@@ -23,6 +23,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChefController;
+use App\Http\Controllers\ShiftController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -151,6 +152,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Settings
     Route::get('/settings', [SettingController::class, 'index']);
     Route::post('/settings/password', [SettingController::class, 'changePassword']);
+    Route::post('/shift/close', [ShiftController::class, 'closeShift']);
     Route::middleware('permission:manage settings')->group(function () {
         Route::post('/settings', [SettingController::class, 'update']);
         Route::post('/settings/clear-cache', [SettingController::class, 'clearCache']);

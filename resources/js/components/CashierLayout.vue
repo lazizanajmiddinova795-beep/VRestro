@@ -287,7 +287,34 @@ const handleLogout = () => {
   router.push('/login');
 };
 
-const handleCloseShift = () => {
+const handleCloseShift = async () => {
+  const list = cashierTablesStore.tables || [];
+  const activeTablesCount = list.filter(t => t.status !== 'empty').length;
+
+  if (activeTablesCount > 0) {
+    alert("❌ DIQQAT! XATOLIK!\n\nSmenani yopib bo'lmaydi! Tizimda hali to'lovi qilinmagan faol stollar mavjud. Iltimos, barcha faol va band stollarni yopib, keyin smenani yakunlang.");
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem('vrestro_token');
+    const response = await fetch('/api/shift/close', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      alert("❌ " + (result.message || "Smenani yopishda xatolik yuz berdi. Hali yopilmagan stollar bor."));
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+
   cashierStore.closeShift();
   showShiftModal.value = false;
   handleLogout();

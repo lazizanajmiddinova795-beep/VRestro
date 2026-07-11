@@ -181,8 +181,27 @@ class OrderService
      * @param int $orderId
      * @return Order
      */
-    public function cancelOrder(int $orderId): Order
+    public function cancelOrder(int $orderId, ?string $reason = null): Order
     {
+        $order = $this->orderRepository->getOrderById($orderId);
+        if (!$order) {
+            throw ValidationException::withMessages([
+                'order' => ["Buyurtma topilmadi."],
+            ]);
+        }
+
+        // If order has any item status that is cooking or ready, enforce reason logging
+        $hasCookingOrReady = $order->items()->whereIn('status', ['cooking', 'ready'])->exists();
+        if ($hasCookingOrReady && (empty($reason) || strlen($reason) < 5)) {
+            throw ValidationException::withMessages([
+                'cancellation_reason' => ["Tayyorlanayotgan yoki tayyor bo'lgan buyurtmani bekor qilish uchun sabab ko'rsatilishi shart (kamida 5 ta belgi)."],
+            ]);
+        }
+
+        $order->update([
+            'cancellation_reason' => $reason
+        ]);
+
         return $this->updateStatus($orderId, 'cancelled');
     }
 

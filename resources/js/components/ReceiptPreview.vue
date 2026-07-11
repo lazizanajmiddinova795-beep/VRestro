@@ -784,10 +784,10 @@ const voidForm = ref({
 });
 
 const isVoidReasonProvided = computed(() => {
-  if (voidForm.value.reasonSelect === 'custom') {
-    return voidForm.value.reasonText.trim().length > 3;
-  }
-  return voidForm.value.reasonSelect !== '';
+  const finalReason = voidForm.value.reasonSelect === 'custom' 
+    ? voidForm.value.reasonText.trim()
+    : voidForm.value.reasonSelect + (voidForm.value.reasonText.trim() ? ': ' + voidForm.value.reasonText.trim() : '');
+  return finalReason.trim().length >= 5;
 });
 
 const triggerVoidFlow = (orderId) => {

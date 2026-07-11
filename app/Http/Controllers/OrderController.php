@@ -108,9 +108,13 @@ class OrderController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function cancel(int $id): JsonResponse
+    public function cancel(Request $request, int $id): JsonResponse
     {
-        $order = $this->orderService->cancelOrder($id);
+        $data = $request->validate([
+            'cancellation_reason' => ['required', 'string', 'min:5'],
+        ]);
+
+        $order = $this->orderService->cancelOrder($id, $data['cancellation_reason']);
 
         return response()->json([
             'message' => 'Buyurtma bekor qilindi.',
