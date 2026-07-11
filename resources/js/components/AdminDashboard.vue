@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-radial from-slate-900 via-slate-950 to-black text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+  <div class="min-h-screen bg-transparent text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
     <!-- Header -->
     <header class="sticky top-0 z-50 backdrop-blur-md border-b border-white/5 bg-slate-950/40 px-6 py-4">
       <div class="max-w-7xl mx-auto flex items-center justify-between">

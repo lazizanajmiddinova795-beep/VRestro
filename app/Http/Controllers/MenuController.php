@@ -52,6 +52,7 @@ class MenuController extends Controller
             'description' => ['nullable', 'string'],
             'is_available' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'], // Max 2MB
+            'sizes' => ['nullable'],
         ]);
 
         $imageFile = $request->file('image');
@@ -60,6 +61,12 @@ class MenuController extends Controller
         $itemData = collect($data)->except('image')->toArray();
         if ($request->has('is_available')) {
             $itemData['is_available'] = filter_var($data['is_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if ($request->has('sizes')) {
+            $itemData['sizes'] = is_string($request->input('sizes')) 
+                ? json_decode($request->input('sizes'), true) 
+                : $request->input('sizes');
         }
 
         $food = $this->menuService->createFood($itemData, $imageFile);
@@ -104,6 +111,7 @@ class MenuController extends Controller
             'description' => ['nullable', 'string'],
             'is_available' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'sizes' => ['nullable'],
         ]);
 
         $imageFile = $request->file('image');
@@ -111,6 +119,12 @@ class MenuController extends Controller
         $itemData = collect($data)->except('image')->toArray();
         if ($request->has('is_available')) {
             $itemData['is_available'] = filter_var($data['is_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if ($request->has('sizes')) {
+            $itemData['sizes'] = is_string($request->input('sizes')) 
+                ? json_decode($request->input('sizes'), true) 
+                : $request->input('sizes');
         }
 
         $food = $this->menuService->updateFood($id, $itemData, $imageFile);

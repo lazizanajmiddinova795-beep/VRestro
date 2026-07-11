@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-radial from-slate-900 via-slate-950 to-black text-slate-100 flex items-center justify-center p-6 relative font-sans">
+  <div class="min-h-screen bg-transparent text-slate-100 flex items-center justify-center p-6 relative font-sans">
     <!-- Background glow decoration -->
     <div class="absolute w-96 h-96 rounded-full bg-violet-600/10 blur-[100px] -top-12 -left-12 pointer-events-none"></div>
     <div class="absolute w-96 h-96 rounded-full bg-indigo-600/10 blur-[100px] -bottom-12 -right-12 pointer-events-none"></div>
@@ -91,30 +91,27 @@
           </div>
         </div>
 
-        <!-- STEP 2: Biometric / Face ID Simulation -->
+        <!-- STEP 2: Telegram OTP Verification -->
         <div v-else-if="authStore.loginStep === 'biometrics'" class="space-y-6 flex flex-col items-center">
           <div class="text-center space-y-1 w-full">
-            <h2 class="text-xl font-bold text-white">Face ID Tekshiruvi</h2>
-            <p class="text-xs text-slate-400">Identifikatsiyani yakunlash uchun biometrik tekshiruvdan o'ting</p>
+            <h2 class="text-xl font-bold text-white">Telegram orqali tasdiqlash</h2>
+            <p class="text-xs text-slate-400">Telegram kanalga yuborilgan 8 xonali kodni kiriting</p>
           </div>
 
-          <!-- Face Scanner Box -->
-          <div class="relative w-48 h-48 rounded-3xl border-2 border-dashed border-indigo-500/30 bg-slate-950/60 flex items-center justify-center overflow-hidden my-4">
-            <!-- Scan grid overlay -->
-            <div class="absolute inset-0 bg-radial from-indigo-500/5 to-transparent pointer-events-none"></div>
-
-            <!-- Scanner Face Silhouette -->
-            <ScanFace class="w-24 h-24 text-indigo-500/20 transition-all duration-300" :class="{'text-indigo-400 animate-pulseScale': scanning}" />
-
-            <!-- Scanner Laser Animation -->
-            <div 
-              v-if="scanning" 
-              class="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_2px_rgba(34,211,238,0.5)] animate-scanLine"
-            ></div>
-
-            <div v-if="success" class="absolute inset-0 bg-slate-900/90 flex flex-col items-center justify-center text-emerald-400 animate-fadeIn">
-              <CheckCircle class="w-16 h-16 animate-bounce" />
-              <span class="text-sm font-bold mt-2">Tasdiqlandi!</span>
+          <!-- OTP Input Field -->
+          <div class="w-full space-y-2 py-4">
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+                <KeyRound class="w-5 h-5" />
+              </span>
+              <input 
+                type="text" 
+                v-model="otpCode"
+                maxlength="8"
+                required
+                placeholder="Tasdiqlash kodi" 
+                class="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-center tracking-widest font-black text-lg text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 transition duration-200"
+              />
             </div>
           </div>
 
@@ -131,21 +128,21 @@
           <!-- Actions -->
           <div class="w-full space-y-3">
             <button 
-              @click="handleFaceScan" 
-              :disabled="scanning || success"
+              @click="handleOtpSubmit" 
+              :disabled="submittingOtp || success || otpCode.length !== 8"
               class="w-full py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white text-sm shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span v-if="scanning">Biometriya tekshirilmoqda...</span>
+              <span v-if="submittingOtp">Kod tekshirilmoqda...</span>
               <span v-else-if="success">Muvaffaqiyatli!</span>
               <span v-else class="flex items-center space-x-2">
-                <Scan class="w-4 h-4" />
-                <span>Face ID simulyatsiyasini boshlash</span>
+                <CheckCircle class="w-4 h-4" />
+                <span>Kodni tasdiqlash</span>
               </span>
             </button>
 
             <button 
               @click="handleBackToCredentials" 
-              :disabled="scanning || success"
+              :disabled="submittingOtp || success"
               class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:bg-white/10 transition duration-200 disabled:opacity-50"
             >
               Orqaga
@@ -173,7 +170,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ChefHat, User, Lock, ArrowRight, ScanFace, Scan, CheckCircle } from 'lucide-vue-next';
+import { ChefHat, User, Lock, ArrowRight, KeyRound, CheckCircle } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
@@ -184,8 +181,9 @@ const login = ref('');
 const password = ref('');
 const error = ref('');
 const loading = ref(false);
-const scanning = ref(false);
+const submittingOtp = ref(false);
 const success = ref(false);
+const otpCode = ref('');
 
 const handleCredentialsSubmit = async () => {
   error.value = '';
@@ -210,12 +208,8 @@ const handleCredentialsSubmit = async () => {
     }
 
     // Step 1 success: Set temporary user data
+    otpCode.value = '';
     authStore.setTempUser(data.user);
-    
-    // Automatically trigger face scan simulation to bypass manual action
-    setTimeout(() => {
-      handleFaceScan();
-    }, 400);
   } catch (err) {
     error.value = err.message;
   } finally {
@@ -223,52 +217,55 @@ const handleCredentialsSubmit = async () => {
   }
 };
 
-const handleFaceScan = async () => {
+const handleOtpSubmit = async () => {
   error.value = '';
-  scanning.value = true;
+  submittingOtp.value = true;
 
-  // Simulate scanning duration (1.5 seconds)
-  setTimeout(async () => {
-    try {
-      const response = await fetch('/api/auth/verify-face', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: authStore.tempUser.id,
-          face_verified: true
-        }),
-      });
+  try {
+    const response = await fetch('/api/auth/verify-face', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: authStore.tempUser.id,
+        otp: otpCode.value
+      }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Face ID tekshiruvi bajarilmadi.');
-      }
-
-      // Success
-      scanning.value = false;
-      success.value = true;
-
-      // Complete login in Pinia
-      authStore.setAuth(data.user, data.token);
-
-      // Redirect to dashboard (Admin) or orders (Staff) directly
-      setTimeout(() => {
-        if (data.user?.roles?.includes('Admin')) {
-          router.push('/admin/dashboard');
-        } else {
-          router.push('/orders');
-        }
-      }, 1000);
-
-    } catch (err) {
-      scanning.value = false;
-      error.value = err.message;
+    if (!response.ok) {
+      throw new Error(data.message || 'Tasdiqlash kodi noto\'g\'ri.');
     }
-  }, 1800);
+
+    // Success
+    submittingOtp.value = false;
+    success.value = true;
+
+    // Complete login in Pinia
+    authStore.setAuth(data.user, data.token);
+
+    // Redirect to dashboard (Admin), cashier panel (Cashier) or orders (Staff) directly
+    setTimeout(() => {
+      if (data.user?.roles?.includes('Admin')) {
+        router.push('/admin/dashboard');
+      } else if (data.user?.roles?.includes('Cashier')) {
+        router.push('/cashier/tables');
+      } else if (data.user?.roles?.includes('Chef')) {
+        router.push('/kitchen');
+      } else if (data.user?.roles?.includes('Waiter')) {
+        router.push('/waiter/tables');
+      } else {
+        router.push('/orders');
+      }
+    }, 1000);
+
+  } catch (err) {
+    submittingOtp.value = false;
+    error.value = err.message;
+  }
 };
 
 const handleBackToCredentials = () => {

@@ -9,18 +9,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
+use App\Services\NotificationService;
 
 class WarehouseService
 {
     protected WarehouseRepositoryInterface $warehouseRepository;
     protected IngredientRepositoryInterface $ingredientRepository;
+    protected NotificationService $notificationService;
 
     public function __construct(
         WarehouseRepositoryInterface $warehouseRepository,
-        IngredientRepositoryInterface $ingredientRepository
+        IngredientRepositoryInterface $ingredientRepository,
+        NotificationService $notificationService
     ) {
         $this->warehouseRepository = $warehouseRepository;
         $this->ingredientRepository = $ingredientRepository;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -132,6 +136,15 @@ class WarehouseService
                     'old_quantity' => $oldQty,
                     'new_quantity' => $newQty,
                 ]);
+                // Reconcile and check low stock threshold
+                if ($newQty <= (float) $ingredient->low_stock_threshold) {
+                    $this->notificationService->sendNotification(
+                        'low_stock',
+                        "Ombor qoldig'i kamaydi!",
+                        "Masalliq: {$ingredient->name} qoldig'i belgilangan me'yordan kamaydi. Qoldiq: {$newQty} {$ingredient->unit} (Me'yor: {$ingredient->low_stock_threshold} {$ingredient->unit})",
+                        ['ingredient_id' => $ingredient->id, 'current_stock' => $newQty]
+                    );
+                }
             }
 
             Cache::forget('admin_dashboard_analytics');
@@ -180,6 +193,15 @@ class WarehouseService
                     'old_quantity' => $oldQty,
                     'new_quantity' => $auditedQty,
                 ]);
+                // Reconcile and check low stock threshold
+                if ($auditedQty <= (float) $ingredient->low_stock_threshold) {
+                    $this->notificationService->sendNotification(
+                        'low_stock',
+                        "Ombor qoldig'i kamaydi!",
+                        "Masalliq: {$ingredient->name} qoldig'i belgilangan me'yordan kamaydi. Qoldiq: {$auditedQty} {$ingredient->unit} (Me'yor: {$ingredient->low_stock_threshold} {$ingredient->unit})",
+                        ['ingredient_id' => $ingredient->id, 'current_stock' => $auditedQty]
+                    );
+                }
             }
 
             Cache::forget('admin_dashboard_analytics');

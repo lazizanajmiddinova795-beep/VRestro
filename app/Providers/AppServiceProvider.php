@@ -24,6 +24,14 @@ use App\Repositories\Contracts\CustomerRepositoryInterface;
 use App\Repositories\CustomerRepository;
 use App\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Repositories\PaymentRepository;
+use App\Repositories\Contracts\DiscountRepositoryInterface;
+use App\Repositories\DiscountRepository;
+use App\Repositories\Contracts\ReportRepositoryInterface;
+use App\Repositories\ReportRepository;
+use App\Repositories\Contracts\NotificationRepositoryInterface;
+use App\Repositories\NotificationRepository;
+use App\Repositories\Contracts\SettingRepositoryInterface;
+use App\Repositories\SettingRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,6 +50,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TableRepositoryInterface::class, TableRepository::class);
         $this->app->bind(CustomerRepositoryInterface::class, CustomerRepository::class);
         $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
+        $this->app->bind(DiscountRepositoryInterface::class, DiscountRepository::class);
+        $this->app->bind(ReportRepositoryInterface::class, ReportRepository::class);
+        $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
+        $this->app->bind(SettingRepositoryInterface::class, SettingRepository::class);
     }
 
     /**

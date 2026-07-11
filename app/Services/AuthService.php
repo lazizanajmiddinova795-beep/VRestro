@@ -34,32 +34,50 @@ class AuthService
             ]);
         }
 
+        // Generate 8-digit OTP
+        $otp = sprintf("%08d", mt_rand(10000000, 99999999));
+        $user->telegram_otp = $otp;
+        $user->telegram_otp_expires_at = now()->addMinutes(10);
+        $user->save();
+
+        // Send OTP to Telegram Channel using TelegramService
+        try {
+            $telegramService = app(\App\Services\TelegramService::class);
+            $message = "🔐 <b>VRestro Autentifikatsiya Kod</b>\n\n";
+            $message .= "Xodim: <b>{$user->name}</b> ({$user->login})\n";
+            $message .= "Kirish uchun 8 xonali tasdiqlash kodi: <code>{$otp}</code>\n\n";
+            $message .= "⚠️ Ushbu kod 10 daqiqa davomida faol bo'ladi.";
+            $telegramService->sendMessage($message);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Failed to send OTP to Telegram: " . $e->getMessage());
+        }
+
         return $user;
     }
 
     /**
-     * Complete authentication by verifying Face ID (simulated) and issuing token.
-     *
-     * @param int $userId
-     * @param bool $faceVerified
-     * @return array
-     * @throws ValidationException
+     * Verify 8-digit Telegram OTP code and issue bearer token.
      */
-    public function verifyBiometricsAndIssueToken(int $userId, bool $faceVerified): array
+    public function verifyOtpAndIssueToken(int $userId, string $otp): array
     {
         $user = $this->userRepository->findById($userId);
 
         if (!$user) {
             throw ValidationException::withMessages([
-                'biometrics' => ['Foydalanuvchi topilmadi.'],
+                'otp' => ['Foydalanuvchi topilmadi.'],
             ]);
         }
 
-        if (!$faceVerified) {
+        if (!$user->telegram_otp || $user->telegram_otp !== $otp || now()->greaterThan($user->telegram_otp_expires_at)) {
             throw ValidationException::withMessages([
-                'biometrics' => ['Face ID tekshiruvidan o\'tilmadi.'],
+                'otp' => ['Tasdiqlash kodi noto\'g\'ri yoki eskirgan.'],
             ]);
         }
+
+        // Clear OTP on success
+        $user->telegram_otp = null;
+        $user->telegram_otp_expires_at = null;
+        $user->save();
 
         // Revoke existing tokens if any
         $user->tokens()->delete();

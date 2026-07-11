@@ -117,4 +117,33 @@ class TableController extends Controller
             'message' => 'Stol muvaffaqiyatli o\'chirildi.'
         ]);
     }
+
+    /**
+     * Display a listing of restaurant tables for the cashier dashboard.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function cashierTables(Request $request): JsonResponse
+    {
+        $tables = \App\Models\Table::orderBy('table_number')->get()->map(function ($table) {
+            $orderId = null;
+            if ($table->status === 'occupied') {
+                $order = $table->orders()
+                    ->whereIn('status', ['new', 'cooking', 'ready', 'delivered'])
+                    ->latest()
+                    ->first();
+                $orderId = $order ? $order->id : null;
+            }
+            return [
+                'id' => $table->id,
+                'table_number' => $table->table_number,
+                'capacity' => $table->capacity,
+                'status' => $table->status,
+                'order_id' => $orderId,
+            ];
+        });
+
+        return response()->json($tables);
+    }
 }

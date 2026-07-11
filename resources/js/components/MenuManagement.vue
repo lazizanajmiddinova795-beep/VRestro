@@ -319,6 +319,67 @@
             ></textarea>
           </div>
 
+          <!-- Sizes configuration -->
+          <div class="space-y-3 sm:col-span-2 border-t border-white/5 pt-4">
+            <div class="flex items-center justify-between">
+              <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Taom o'lchamlari / porsiyalari (Ixtiyoriy)</label>
+              <button 
+                type="button"
+                @click="addSizeRow"
+                class="px-2.5 py-1 text-3xs font-bold uppercase tracking-wider rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-600 hover:text-white transition"
+              >
+                + O'lcham qo'shish
+              </button>
+            </div>
+            
+            <div v-if="foodForm.sizes && foodForm.sizes.length > 0" class="space-y-2">
+              <div 
+                v-for="(size, idx) in foodForm.sizes" 
+                :key="idx" 
+                class="flex gap-2 items-center bg-slate-950/20 border border-white/5 rounded-xl p-2.5 relative"
+              >
+                <div class="flex-grow grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <div class="space-y-1">
+                    <span class="text-4xs text-slate-500 font-bold uppercase">Nomi (Masalan: Yarim)</span>
+                    <input 
+                      v-model="size.name" 
+                      type="text" 
+                      placeholder="Nomi..." 
+                      class="w-full px-2 py-1.5 rounded-lg bg-slate-950/60 border border-white/5 focus:border-indigo-500 text-xs text-white focus:outline-none transition"
+                    />
+                  </div>
+                  <div class="space-y-1">
+                    <span class="text-4xs text-slate-500 font-bold uppercase">Narxi (UZS)</span>
+                    <input 
+                      v-model.number="size.price" 
+                      type="number" 
+                      placeholder="Narxi..." 
+                      class="w-full px-2 py-1.5 rounded-lg bg-slate-950/60 border border-white/5 focus:border-indigo-500 text-xs text-white focus:outline-none transition"
+                    />
+                  </div>
+                  <div class="space-y-1">
+                    <span class="text-4xs text-slate-500 font-bold uppercase">Masalliq koeffitsiyenti (0.5 = yarim)</span>
+                    <input 
+                      v-model.number="size.recipe_multiplier" 
+                      type="number" 
+                      step="0.1" 
+                      placeholder="Koeffitsiyent..." 
+                      class="w-full px-2 py-1.5 rounded-lg bg-slate-950/60 border border-white/5 focus:border-indigo-500 text-xs text-white focus:outline-none transition"
+                    />
+                  </div>
+                </div>
+                <button 
+                  type="button" 
+                  @click="removeSizeRow(idx)"
+                  class="p-1 rounded bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition shrink-0 self-end mb-1"
+                >
+                  <Trash2 class="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+            <p v-else class="text-xxs text-slate-500 italic">O'lchamlar kiritilmagan. Standart narx va retsept miqdori amalda bo'ladi.</p>
+          </div>
+
           <!-- Drag and drop image selector -->
           <div class="space-y-1.5 sm:col-span-2">
             <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Taom rasmi</label>
@@ -386,7 +447,8 @@ const foodForm = ref({
   price: 0,
   category_id: '',
   description: '',
-  is_available: true
+  is_available: true,
+  sizes: []
 });
 const imageFile = ref(null);
 const imagePreview = ref(null);
@@ -456,16 +518,33 @@ const openFoodModal = (food = null) => {
     price: parseFloat(food.price),
     category_id: food.category_id,
     description: food.description || '',
-    is_available: food.is_available
+    is_available: food.is_available,
+    sizes: food.sizes ? JSON.parse(JSON.stringify(food.sizes)) : []
   } : {
     name: '',
     price: '',
     category_id: menuStore.selectedCategoryId || '',
     description: '',
-    is_available: true
+    is_available: true,
+    sizes: []
   };
   
   showFoodModal.value = true;
+};
+
+const addSizeRow = () => {
+  if (!foodForm.value.sizes) {
+    foodForm.value.sizes = [];
+  }
+  foodForm.value.sizes.push({
+    name: '',
+    price: '',
+    recipe_multiplier: 1.0
+  });
+};
+
+const removeSizeRow = (idx) => {
+  foodForm.value.sizes.splice(idx, 1);
 };
 
 const handleFileChange = (e) => {
@@ -492,6 +571,10 @@ const submitFoodForm = async () => {
   if (imageFile.value) {
     formData.append('image', imageFile.value);
   }
+
+  // Clean sizes from empty inputs
+  const cleanedSizes = (foodForm.value.sizes || []).filter(s => s.name && s.price);
+  formData.append('sizes', JSON.stringify(cleanedSizes));
 
   try {
     if (editingFood.value) {

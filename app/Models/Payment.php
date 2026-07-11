@@ -17,6 +17,8 @@ class Payment extends Model
         'qr_amount',
         'bonus_used',
         'status',
+        'is_printed',
+        'printed_at',
     ];
 
     protected $casts = [
@@ -27,6 +29,8 @@ class Payment extends Model
         'bonus_used' => 'decimal:2',
         'order_id' => 'integer',
         'customer_id' => 'integer',
+        'is_printed' => 'boolean',
+        'printed_at' => 'datetime',
     ];
 
     /**

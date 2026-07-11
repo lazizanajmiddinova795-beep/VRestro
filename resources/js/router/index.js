@@ -24,6 +24,113 @@ const routes = [
         }
     },
     {
+        path: '/kitchen',
+        name: 'kitchen',
+        component: () => import('@/components/KitchenMonitor.vue'),
+        beforeEnter: (to, from, next) => {
+            const authStore = useAuthStore();
+            if (!authStore.isAuthenticated()) {
+                next({ name: 'login' });
+            } else {
+                next();
+            }
+        }
+    },
+    {
+        path: '/kitchen/stop-list',
+        name: 'kitchen-stop-list',
+        component: () => import('@/components/KitchenStopList.vue'),
+        beforeEnter: (to, from, next) => {
+            const authStore = useAuthStore();
+            if (!authStore.isAuthenticated()) {
+                next({ name: 'login' });
+            } else {
+                next();
+            }
+        }
+    },
+    {
+        path: '/kitchen/settings',
+        name: 'kitchen-settings',
+        component: () => import('@/components/KitchenSettings.vue'),
+        beforeEnter: (to, from, next) => {
+            const authStore = useAuthStore();
+            if (!authStore.isAuthenticated()) {
+                next({ name: 'login' });
+            } else {
+                next();
+            }
+        }
+    },
+    {
+        path: '/cashier',
+        component: () => import('@/components/CashierLayout.vue'),
+        beforeEnter: (to, from, next) => {
+            const authStore = useAuthStore();
+            if (!authStore.isAuthenticated()) {
+                next({ name: 'login' });
+            } else {
+                next();
+            }
+        },
+        children: [
+            {
+                path: 'tables',
+                name: 'cashier-tables',
+                component: () => import('@/components/CashierTables.vue')
+            },
+            {
+                path: 'receipts',
+                name: 'cashier-receipts',
+                component: () => import('@/components/ReceiptPreview.vue')
+            },
+            {
+                path: 'order',
+                name: 'cashier-order',
+                component: () => import('@/components/CashierOrder.vue')
+            },
+            {
+                path: 'settings',
+                name: 'cashier-settings',
+                component: () => import('@/components/CashierSettings.vue')
+            }
+        ]
+    },
+    {
+        path: '/waiter',
+        component: () => import('@/components/WaiterLayout.vue'),
+        beforeEnter: (to, from, next) => {
+            const authStore = useAuthStore();
+            if (!authStore.isAuthenticated()) {
+                next({ name: 'login' });
+            } else {
+                next();
+            }
+        },
+        children: [
+            {
+                path: 'tables',
+                name: 'waiter-tables',
+                component: () => import('@/components/WaiterTables.vue')
+            },
+            {
+                path: 'order',
+                name: 'waiter-order',
+                component: () => import('@/components/WaiterOrder.vue')
+            },
+            {
+                path: 'status',
+                name: 'waiter-status',
+                component: () => import('@/components/WaiterOrderStatus.vue')
+            },
+            {
+                path: 'profile',
+                name: 'waiter-profile',
+                component: () => import('@/components/WaiterProfile.vue')
+            }
+        ]
+    },
+    {
         path: '/',
         component: SidebarLayout,
         beforeEnter: (to, from, next) => {
@@ -39,6 +146,11 @@ const routes = [
                 path: 'admin/dashboard',
                 name: 'admin-dashboard',
                 component: () => import('@/components/AdminDashboard.vue')
+            },
+            {
+                path: 'analytics',
+                name: 'analytics',
+                component: () => import('@/components/AnalyticsDashboard.vue')
             },
             {
                 path: 'orders',
@@ -84,6 +196,21 @@ const routes = [
                 path: 'payments',
                 name: 'payments',
                 component: () => import('@/components/PaymentsManagement.vue')
+            },
+            {
+                path: 'discounts',
+                name: 'discounts',
+                component: () => import('@/components/DiscountsManagement.vue')
+            },
+            {
+                path: 'notifications',
+                name: 'notifications',
+                component: () => import('@/components/NotificationsManagement.vue')
+            },
+            {
+                path: 'settings',
+                name: 'settings',
+                component: () => import('@/components/SettingsManagement.vue')
             }
         ]
     }

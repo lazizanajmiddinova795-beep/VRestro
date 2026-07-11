@@ -94,7 +94,12 @@
           <!-- Content: Brief Items List -->
           <div class="border-t border-b border-white/5 py-3 mb-4 flex-grow space-y-1.5 text-xs text-slate-300">
             <div v-for="item in order.items.slice(0, 3)" :key="item.id" class="flex justify-between">
-              <span>{{ item.food?.name }}</span>
+              <span>
+                {{ item.food?.name }}
+                <span v-if="item.size_name" class="text-4xs text-indigo-400 bg-indigo-500/5 px-1 py-0.5 rounded ml-1">
+                  {{ item.size_name }}
+                </span>
+              </span>
               <span class="text-slate-400 font-medium">x{{ item.quantity }}</span>
             </div>
             <div v-if="order.items.length > 3" class="text-slate-500 text-xxs italic">
@@ -195,7 +200,12 @@
           <div class="max-h-48 overflow-y-auto divide-y divide-white/5 pr-1">
             <div v-for="item in selectedOrder.items" :key="item.id" class="py-3 flex flex-col space-y-1">
               <div class="flex justify-between text-sm">
-                <span class="text-white font-medium">{{ item.food?.name }}</span>
+                <span class="text-white font-medium">
+                  {{ item.food?.name }}
+                  <span v-if="item.size_name" class="text-3xs text-indigo-400 font-bold bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.5 rounded-md ml-1">
+                    {{ item.size_name }}
+                  </span>
+                </span>
                 <span class="text-slate-400 font-medium">x{{ item.quantity }}</span>
               </div>
               <div class="flex justify-between text-xs text-slate-500">

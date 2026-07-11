@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-radial from-slate-900 via-slate-950 to-black text-slate-100 flex flex-col font-sans overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+  <div class="min-h-screen bg-transparent text-slate-100 flex flex-col font-sans overflow-x-hidden selection:bg-indigo-500 selection:text-white">
     <!-- Header -->
     <header class="sticky top-0 z-50 backdrop-blur-md border-b border-white/5 bg-slate-950/40 px-6 py-4 transition-all duration-300">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -21,6 +21,12 @@
             </div>
             <router-link v-if="authStore.user?.roles?.includes('Admin')" to="/admin/dashboard" class="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 mr-2 transition duration-300">
               Boshqaruv paneli
+            </router-link>
+            <router-link v-else-if="authStore.user?.roles?.includes('Cashier')" to="/cashier/tables" class="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 mr-2 transition duration-300">
+              Kassa paneli
+            </router-link>
+            <router-link v-else-if="authStore.user?.roles?.includes('Chef')" to="/kitchen" class="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 mr-2 transition duration-300">
+              Oshpaz paneli
             </router-link>
             <router-link v-else to="/orders" class="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 mr-2 transition duration-300">
               Buyurtmalar
@@ -73,6 +79,12 @@
           <div v-else class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
             <router-link v-if="authStore.user?.roles?.includes('Admin')" to="/admin/dashboard" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white shadow-lg shadow-indigo-600/40 hover:shadow-indigo-600/60 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 w-full sm:w-auto">
               Boshqaruv paneliga o'tish
+            </router-link>
+            <router-link v-else-if="authStore.user?.roles?.includes('Cashier')" to="/cashier/tables" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white shadow-lg shadow-indigo-600/40 hover:shadow-indigo-600/60 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 w-full sm:w-auto">
+              Kassa paneliga o'tish
+            </router-link>
+            <router-link v-else-if="authStore.user?.roles?.includes('Chef')" to="/kitchen" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white shadow-lg shadow-indigo-600/40 hover:shadow-indigo-600/60 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 w-full sm:w-auto">
+              Oshpaz paneliga o'tish
             </router-link>
             <router-link v-else to="/orders" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white shadow-lg shadow-indigo-600/40 hover:shadow-indigo-600/60 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 w-full sm:w-auto">
               Tizimga o'tish

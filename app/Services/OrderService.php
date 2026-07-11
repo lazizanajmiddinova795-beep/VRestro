@@ -10,16 +10,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
+use App\Services\NotificationService;
 
 class OrderService
 {
     protected OrderRepositoryInterface $orderRepository;
     protected RecipeService $recipeService;
+    protected NotificationService $notificationService;
 
-    public function __construct(OrderRepositoryInterface $orderRepository, RecipeService $recipeService)
-    {
+    public function __construct(
+        OrderRepositoryInterface $orderRepository,
+        RecipeService $recipeService,
+        NotificationService $notificationService
+    ) {
         $this->orderRepository = $orderRepository;
         $this->recipeService = $recipeService;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -59,21 +65,45 @@ class OrderService
                 }
 
                 $quantity = (int) $item['quantity'];
-                $priceSnapshot = $food->price; // Price snapshot at the time of order
-                
+                $sizeName = $item['size_name'] ?? null;
+                $priceSnapshot = (float) $food->price;
+
+                if ($sizeName && !empty($food->sizes)) {
+                    $matchedSize = collect($food->sizes)->firstWhere('name', $sizeName);
+                    if ($matchedSize) {
+                        $priceSnapshot = (float) $matchedSize['price'];
+                    }
+                }
+
                 OrderItem::create([
                     'order_id' => $order->id,
                     'food_id' => $food->id,
                     'quantity' => $quantity,
                     'price' => $priceSnapshot,
                     'notes' => $item['notes'] ?? null,
+                    'size_name' => $sizeName,
                 ]);
 
                 $totalAmount += $quantity * $priceSnapshot;
             }
 
+            // Calculate and apply service charge rate from settings
+            $serviceChargeRate = (float) app(\App\Repositories\Contracts\SettingRepositoryInterface::class)->getByKey('service_charge_rate');
+            if ($serviceChargeRate > 0) {
+                $serviceFee = $totalAmount * ($serviceChargeRate / 100);
+                $totalAmount += $serviceFee;
+            }
+
             // 4. Update Order Total
             $order->update(['total_amount' => $totalAmount]);
+
+            // Dispatch alert
+            $this->notificationService->sendNotification(
+                'new_order',
+                "Yangi buyurtma keldi!",
+                "Buyurtma #{$order->order_number} yaratildi. Stol: " . ($order->table?->table_number ?? 'Olib ketish') . ", Jami: " . number_format($totalAmount, 0, '.', ' ') . " UZS",
+                ['order_id' => $order->id]
+            );
 
             // 5. Fire real-time events / log hooks
             $this->triggerOrderDispatchedHook($order);
@@ -123,6 +153,15 @@ class OrderService
             }
 
             $order->update(['status' => $newStatus]);
+
+            if ($newStatus === 'cancelled') {
+                $this->notificationService->sendNotification(
+                    'order_cancelled',
+                    "Buyurtma bekor qilindi!",
+                    "Buyurtma #{$order->order_number} bekor qilindi.",
+                    ['order_id' => $order->id]
+                );
+            }
 
             // Clear dashboard caching
             Cache::forget('admin_dashboard_analytics');

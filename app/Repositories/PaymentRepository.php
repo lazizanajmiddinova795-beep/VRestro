@@ -16,7 +16,7 @@ class PaymentRepository implements PaymentRepositoryInterface
      */
     public function getAllPayments(array $filters): Collection
     {
-        $query = Payment::with(['order', 'customer']);
+        $query = Payment::with(['order.table', 'order.waiter', 'order.items.food', 'customer']);
 
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
@@ -41,7 +41,7 @@ class PaymentRepository implements PaymentRepositoryInterface
      */
     public function getPaymentById(int $id): ?Payment
     {
-        return Payment::with(['order', 'customer'])->find($id);
+        return Payment::with(['order.table', 'order.waiter', 'order.items.food', 'customer'])->find($id);
     }
 
     /**

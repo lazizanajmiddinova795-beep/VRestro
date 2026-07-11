@@ -47,22 +47,18 @@ class AuthController extends Controller
     }
 
     /**
-     * Step 2: Verify simulated Face ID and issue token.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws ValidationException
+     * Step 2: Verify 8-digit Telegram OTP code and issue token.
      */
     public function verifyFace(Request $request): JsonResponse
     {
         $data = $request->validate([
             'user_id' => ['required', 'integer'],
-            'face_verified' => ['required', 'boolean'],
+            'otp' => ['required', 'string', 'size:8'],
         ]);
 
-        $authData = $this->authService->verifyBiometricsAndIssueToken(
+        $authData = $this->authService->verifyOtpAndIssueToken(
             $data['user_id'],
-            $data['face_verified']
+            $data['otp']
         );
 
         return response()->json([

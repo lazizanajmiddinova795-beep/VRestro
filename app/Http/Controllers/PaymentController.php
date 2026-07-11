@@ -83,4 +83,20 @@ class PaymentController extends Controller
             'payment' => $payment
         ]);
     }
+
+    /**
+     * Update print status for a specific payment.
+     */
+    public function updatePrintStatus(int $id): JsonResponse
+    {
+        $payment = \App\Models\Payment::findOrFail($id);
+        $payment->update([
+            'is_printed' => true,
+            'printed_at' => now(),
+        ]);
+        return response()->json([
+            'message' => 'To\'lov cheki chop etilganligi belgilandi.',
+            'payment' => $payment
+        ]);
+    }
 }

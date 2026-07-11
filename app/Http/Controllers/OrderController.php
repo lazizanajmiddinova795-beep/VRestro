@@ -53,6 +53,7 @@ class OrderController extends Controller
             'items.*.food_id' => ['required', 'exists:foods,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.notes' => ['nullable', 'string', 'max:255'],
+            'items.*.size_name' => ['nullable', 'string', 'max:255'],
         ]);
 
         $order = $this->orderService->createOrder($data);
@@ -115,5 +116,30 @@ class OrderController extends Controller
             'message' => 'Buyurtma bekor qilindi.',
             'order' => $order
         ]);
+    }
+
+    /**
+     * Update print status for a specific order.
+     */
+    public function updatePrintStatus(int $id): JsonResponse
+    {
+        $order = \App\Models\Order::findOrFail($id);
+        $order->update([
+            'is_printed' => true,
+            'printed_at' => now(),
+        ]);
+        return response()->json([
+            'message' => 'Buyurtma chop etilganligi belgilandi.',
+            'order' => $order
+        ]);
+    }
+
+    /**
+     * Get print structured data for pre-check.
+     */
+    public function getPrintData(int $id): JsonResponse
+    {
+        $order = \App\Models\Order::with(['table', 'waiter', 'items.food'])->findOrFail($id);
+        return response()->json($order);
     }
 }

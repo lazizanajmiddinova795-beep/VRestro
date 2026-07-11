@@ -23,15 +23,36 @@ class DatabaseSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Create Roles
-        $adminRole = Role::create(['name' => 'Admin']);
-        $chefRole = Role::create(['name' => 'Chef']);
-        $waiterRole = Role::create(['name' => 'Waiter']);
-        $cashierRole = Role::create(['name' => 'Cashier']);
+        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        $chefRole = Role::firstOrCreate(['name' => 'Chef']);
+        $waiterRole = Role::firstOrCreate(['name' => 'Waiter']);
+        $cashierRole = Role::firstOrCreate(['name' => 'Cashier']);
 
         // Create Permissions
-        $managePayments = Permission::create(['name' => 'manage payments']);
+        $managePayments = Permission::firstOrCreate(['name' => 'manage payments']);
+        $manageDiscounts = Permission::firstOrCreate(['name' => 'manage discounts']);
+        $viewReports = Permission::firstOrCreate(['name' => 'view reports']);
+        $manageSettings = Permission::firstOrCreate(['name' => 'manage settings']);
+        $viewCashierDashboard = Permission::firstOrCreate(['name' => 'view cashier dashboard']);
+        $viewKitchenPanel = Permission::firstOrCreate(['name' => 'view kitchen panel']);
+        $viewWaiterPanel = Permission::firstOrCreate(['name' => 'view waiter panel']);
+        
         $adminRole->givePermissionTo($managePayments);
+        $adminRole->givePermissionTo($manageDiscounts);
+        $adminRole->givePermissionTo($viewReports);
+        $adminRole->givePermissionTo($manageSettings);
+        $adminRole->givePermissionTo($viewCashierDashboard);
+        $adminRole->givePermissionTo($viewKitchenPanel);
+        $adminRole->givePermissionTo($viewWaiterPanel);
+        
+        $chefRole->givePermissionTo($viewKitchenPanel);
+
+        $waiterRole->givePermissionTo($viewWaiterPanel);
+
         $cashierRole->givePermissionTo($managePayments);
+        $cashierRole->givePermissionTo($manageDiscounts);
+        $cashierRole->givePermissionTo($viewReports);
+        $cashierRole->givePermissionTo($viewCashierDashboard);
 
         // Create Admin User
         $adminUser = User::create([
@@ -136,15 +157,87 @@ class DatabaseSeeder extends Seeder
 
         // Create Foods
         $foods = [
-            ['name' => 'Palov (Osh)', 'price' => 45000, 'category_id' => $categories[0]->id],
-            ['name' => 'Lag\'mon', 'price' => 35000, 'category_id' => $categories[0]->id],
-            ['name' => 'Mol go\'shtidan Shashlik', 'price' => 25000, 'category_id' => $categories[0]->id],
-            ['name' => 'Sezar Salati', 'price' => 30000, 'category_id' => $categories[2]->id],
-            ['name' => 'Achchiq-chuchuk', 'price' => 15000, 'category_id' => $categories[2]->id],
-            ['name' => 'Coca-Cola 1.5L', 'price' => 12000, 'category_id' => $categories[1]->id],
-            ['name' => 'Limonli Ko\'k Choy', 'price' => 15000, 'category_id' => $categories[1]->id],
-            ['name' => 'Paxlava', 'price' => 25000, 'category_id' => $categories[3]->id],
-            ['name' => 'Muzqaymoq', 'price' => 18000, 'category_id' => $categories[3]->id],
+            [
+                'name' => 'Palov (Osh)', 
+                'price' => 45000, 
+                'category_id' => $categories[0]->id,
+                'sizes' => json_encode([
+                    ['name' => 'Yarim porsiya (0.5)', 'price' => 25000],
+                    ['name' => '1 porsiya (1.0)', 'price' => 45000],
+                    ['name' => 'Katta porsiya (1.5)', 'price' => 65000]
+                ])
+            ],
+            [
+                'name' => 'Lag\'mon', 
+                'price' => 35000, 
+                'category_id' => $categories[0]->id,
+                'sizes' => json_encode([
+                    ['name' => 'Yarim porsiya (0.5)', 'price' => 20000],
+                    ['name' => '1 porsiya (1.0)', 'price' => 35000],
+                    ['name' => 'Katta porsiya (1.5)', 'price' => 50000]
+                ])
+            ],
+            [
+                'name' => 'Mol go\'shtidan Shashlik', 
+                'price' => 25000, 
+                'category_id' => $categories[0]->id,
+                'sizes' => json_encode([
+                    ['name' => '1.0 (Standart)', 'price' => 25000]
+                ])
+            ],
+            [
+                'name' => 'Sezar Salati', 
+                'price' => 30000, 
+                'category_id' => $categories[2]->id,
+                'sizes' => json_encode([
+                    ['name' => '1.0 (Standart)', 'price' => 30000]
+                ])
+            ],
+            [
+                'name' => 'Achchiq-chuchuk', 
+                'price' => 15000, 
+                'category_id' => $categories[2]->id,
+                'sizes' => json_encode([
+                    ['name' => 'Yarim porsiya (0.5)', 'price' => 8000],
+                    ['name' => '1 porsiya (1.0)', 'price' => 15000]
+                ])
+            ],
+            [
+                'name' => 'Coca-Cola 1.5L', 
+                'price' => 12000, 
+                'category_id' => $categories[1]->id,
+                'sizes' => json_encode([
+                    ['name' => '0.5L', 'price' => 6000],
+                    ['name' => '1.0L', 'price' => 10000],
+                    ['name' => '1.5L', 'price' => 12000]
+                ])
+            ],
+            [
+                'name' => 'Limonli Ko\'k Choy', 
+                'price' => 15000, 
+                'category_id' => $categories[1]->id,
+                'sizes' => json_encode([
+                    ['name' => '1.0 (Standart)', 'price' => 15000]
+                ])
+            ],
+            [
+                'name' => 'Paxlava', 
+                'price' => 25000, 
+                'category_id' => $categories[3]->id,
+                'sizes' => json_encode([
+                    ['name' => 'Kichik (2 dona)', 'price' => 15000],
+                    ['name' => 'O\'rtacha (4 dona)', 'price' => 25000],
+                    ['name' => 'Katta (6 dona)', 'price' => 35000]
+                ])
+            ],
+            [
+                'name' => 'Muzqaymoq', 
+                'price' => 18000, 
+                'category_id' => $categories[3]->id,
+                'sizes' => json_encode([
+                    ['name' => '1.0 (Standart)', 'price' => 18000]
+                ])
+            ],
         ];
         $foodModels = [];
         foreach ($foods as $food) {
@@ -299,5 +392,55 @@ class DatabaseSeeder extends Seeder
             \App\Models\Recipe::create(['food_id' => $lagman->id, 'ingredient_id' => $onion->id, 'quantity_required' => 0.030]);
             \App\Models\Recipe::create(['food_id' => $lagman->id, 'ingredient_id' => $carrot->id, 'quantity_required' => 0.050]);
         }
+
+        // Seed discounts / promocodes
+        \App\Models\Discount::create([
+            'name' => 'Yangi yil chegirmasi',
+            'type' => 'percentage',
+            'value' => 15.00,
+            'code' => 'YANGIYIL2026',
+            'min_order_amount' => 100000.00,
+            'starts_at' => now()->subDays(5),
+            'expires_at' => now()->addDays(20),
+            'is_active' => true,
+        ]);
+
+        \App\Models\Discount::create([
+            'name' => 'Kofe chegirmasi',
+            'type' => 'fixed',
+            'value' => 15000.00,
+            'code' => 'COFFEE26',
+            'min_order_amount' => 50000.00,
+            'starts_at' => now()->subDays(2),
+            'expires_at' => now()->addDays(10),
+            'is_active' => true,
+        ]);
+
+        \App\Models\Discount::create([
+            'name' => 'Kompaniya yubileyi',
+            'type' => 'percentage',
+            'value' => 20.00,
+            'code' => 'VRESTRO2026',
+            'min_order_amount' => 0.00,
+            'starts_at' => now()->subDays(10),
+            'expires_at' => now()->addDays(30),
+            'is_active' => true,
+        ]);
+
+        // Seed settings
+        \App\Models\Setting::create(['key' => 'restaurant_name', 'value' => 'VRestro Restaurant', 'type' => 'string']);
+        \App\Models\Setting::create(['key' => 'restaurant_address', 'value' => 'Toshkent, O\'zbekiston', 'type' => 'string']);
+        \App\Models\Setting::create(['key' => 'restaurant_phone', 'value' => '+998901234567', 'type' => 'string']);
+        \App\Models\Setting::create(['key' => 'restaurant_hours', 'value' => '09:00 - 23:00', 'type' => 'string']);
+        \App\Models\Setting::create(['key' => 'restaurant_logo', 'value' => null, 'type' => 'file']);
+        \App\Models\Setting::create(['key' => 'tax_rate', 'value' => '12', 'type' => 'number']);
+        \App\Models\Setting::create(['key' => 'currency', 'value' => 'UZS', 'type' => 'string']);
+        \App\Models\Setting::create(['key' => 'language', 'value' => 'uz', 'type' => 'string']);
+        \App\Models\Setting::create(['key' => 'telegram_bot_token', 'value' => '8846820582:AAEYcOljJoCbDBfGNkuG-dntVw1dFfWdDWw', 'type' => 'string']);
+        \App\Models\Setting::create(['key' => 'telegram_chat_id', 'value' => '@VRestro_uz', 'type' => 'string']);
+        \App\Models\Setting::create(['key' => 'telegram_notifications_enabled', 'value' => 'true', 'type' => 'boolean']);
+        \App\Models\Setting::create(['key' => 'service_charge_rate', 'value' => '10', 'type' => 'number']);
+        \App\Models\Setting::create(['key' => 'receipt_header', 'value' => 'VRestro - Xizmatimizdan mamnunmisiz?', 'type' => 'string']);
+        \App\Models\Setting::create(['key' => 'receipt_footer', 'value' => 'Xaridingiz uchun rahmat! Yana keling!', 'type' => 'string']);
     }
 }

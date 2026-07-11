@@ -20,12 +20,14 @@ class Food extends Model
         'image_path',
         'category_id',
         'is_available',
+        'sizes',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'is_available' => 'boolean',
         'category_id' => 'integer',
+        'sizes' => 'array',
     ];
 
     protected $appends = [
