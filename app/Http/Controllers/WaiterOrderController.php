@@ -132,7 +132,7 @@ class WaiterOrderController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Faqat kutilayotgan (pending) taomlarni bekor qilish mumkin.'
-                ], 422);
+                ], 403);
             }
 
             $item->update(['status' => 'cancelled']);
