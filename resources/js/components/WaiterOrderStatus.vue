@@ -2,26 +2,26 @@
   <div class="space-y-6 pb-28">
     <!-- Header summary pills -->
     <div class="grid grid-cols-4 gap-2">
-      <div class="backdrop-blur-md bg-white/5 border border-white/5 p-2 rounded-xl text-center">
-        <span class="text-[9px] text-slate-400 font-bold block">{{ t('total') }}</span>
-        <span class="text-sm font-bold text-white mt-1 block">{{ totalItems }}</span>
+      <div class="bg-white border-2 border-slate-300 p-2 rounded-xl text-center shadow-sm">
+        <span class="text-xs text-slate-600 font-extrabold block">{{ t('total') }}</span>
+        <span class="text-base font-black text-slate-900 mt-1 block">{{ totalItems }}</span>
       </div>
-      <div class="backdrop-blur-md bg-white/5 border border-white/5 p-2 rounded-xl text-center">
-        <span class="text-[9px] text-slate-400 font-bold block text-slate-400">{{ t('pending') }}</span>
-        <span class="text-sm font-bold text-slate-300 mt-1 block">{{ pendingCount }}</span>
+      <div class="bg-white border-2 border-slate-300 p-2 rounded-xl text-center shadow-sm">
+        <span class="text-xs text-slate-650 font-extrabold block">{{ t('pending') }}</span>
+        <span class="text-base font-black text-slate-800 mt-1 block">{{ pendingCount }}</span>
       </div>
-      <div class="backdrop-blur-md bg-white/5 border border-white/5 p-2 rounded-xl text-center border-cyan-500/25">
-        <span class="text-[9px] text-cyan-400 font-bold block">{{ t('cooking') }}</span>
-        <span class="text-sm font-bold text-cyan-400 mt-1 block">{{ cookingCount }}</span>
+      <div class="bg-cyan-50 border-2 border-cyan-300 p-2 rounded-xl text-center shadow-sm">
+        <span class="text-xs text-cyan-850 font-extrabold block">{{ t('cooking') }}</span>
+        <span class="text-base font-black text-cyan-900 mt-1 block">{{ cookingCount }}</span>
       </div>
-      <div class="backdrop-blur-md bg-white/5 border border-white/5 p-2 rounded-xl text-center border-emerald-500/25">
-        <span class="text-[9px] text-emerald-400 font-bold block">{{ t('ready') }}</span>
-        <span class="text-sm font-bold text-emerald-400 mt-1 block">{{ readyCount }}</span>
+      <div class="bg-emerald-50 border-2 border-emerald-300 p-2 rounded-xl text-center shadow-sm">
+        <span class="text-xs text-emerald-850 font-extrabold block">{{ t('ready') }}</span>
+        <span class="text-base font-black text-emerald-950 mt-1 block">{{ readyCount }}</span>
       </div>
     </div>
 
     <!-- Active grouped order cards -->
-    <div v-if="waiterStore.activeOrders.length === 0" class="text-center py-20 text-slate-500 text-xs">
+    <div v-if="waiterStore.activeOrders.length === 0" class="text-center py-20 text-slate-700 font-bold text-sm">
       {{ t('no_orders') }}
     </div>
 
@@ -29,17 +29,17 @@
       <div 
         v-for="order in waiterStore.activeOrders" 
         :key="order.id"
-        class="backdrop-blur-xl bg-slate-900/50 border border-white/5 rounded-2xl p-4 space-y-3"
+        class="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-sm mb-4 space-y-3"
       >
         <!-- Table ID & elapsed time metrics header -->
-        <div class="flex justify-between items-center border-b border-white/5 pb-2.5">
+        <div class="flex justify-between items-center border-b border-slate-200 pb-2.5">
           <div class="flex items-center space-x-2">
-            <span class="text-sm font-bold text-white">{{ order.table?.table_number || t('table') }}</span>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400">
+            <span class="text-base font-black text-slate-900">{{ order.table?.table_number || t('table') }}</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-800 font-bold">
               {{ order.order_number }}
             </span>
           </div>
-          <span class="text-[10px] text-slate-500 font-semibold">{{ formatTime(order.created_at) }} {{ t('dispatched') }}</span>
+          <span class="text-xs text-slate-700 font-black">{{ formatTime(order.created_at) }} {{ t('dispatched') }}</span>
         </div>
 
         <!-- Grouped items listing -->
@@ -47,16 +47,16 @@
           <div 
             v-for="item in order.items" 
             :key="item.id"
-            class="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0"
+            class="flex justify-between items-center py-1.5 border-b border-slate-200 last:border-0"
           >
             <div class="min-w-0 pr-2">
-              <h5 class="text-xs font-bold text-white truncate">{{ item.food?.name }}</h5>
+              <h5 class="text-base font-black text-slate-900 truncate">{{ item.food?.name }}</h5>
               <div class="flex items-center space-x-2 mt-0.5">
-                <span class="text-3xs text-slate-400">{{ item.quantity }} {{ t('qty_unit') }}</span>
-                <span v-if="item.size_name" class="text-3xs px-1 rounded bg-violet-600/10 border border-violet-500/20 text-violet-400">
+                <span class="text-xs text-slate-700 font-bold">{{ item.quantity }} {{ t('qty_unit') }}</span>
+                <span v-if="item.size_name" class="text-xxs px-1 rounded bg-violet-100 border border-violet-300 text-violet-800 font-black">
                   {{ item.size_name }}
                 </span>
-                <span v-if="item.notes" class="text-3xs text-orange-400/90 italic truncate max-w-40" :title="translateNotes(item.notes)">
+                <span v-if="item.notes" class="text-sm text-amber-650 font-black bg-amber-50 px-2 py-0.5 rounded truncate max-w-40" :title="translateNotes(item.notes)">
                   * {{ translateNotes(item.notes) }}
                 </span>
               </div>
@@ -66,30 +66,30 @@
             <div class="flex items-center space-x-2 shrink-0">
               <span 
                 v-if="item.status === 'pending'"
-                class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-slate-800 border border-white/5 text-3xs font-bold text-slate-400"
+                class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-300 text-xxs font-black text-slate-700"
               >
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse mr-1"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse mr-1"></span>
                 {{ t('pending') }}
               </span>
               
               <span 
                 v-else-if="item.status === 'cooking'"
-                class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-cyan-950/20 border border-cyan-500/40 text-3xs font-bold text-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.1)]"
+                class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-cyan-50 border border-cyan-300 text-xxs font-black text-cyan-800 shadow-[0_0_10px_rgba(6,182,212,0.1)]"
               >
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping mr-1"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-ping mr-1"></span>
                 {{ t('cooking') }}
               </span>
 
               <span 
                 v-else-if="item.status === 'ready'"
-                class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-emerald-950/30 border border-emerald-500/50 text-3xs font-bold text-emerald-400 animate-bounceGlow"
+                class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-emerald-100 border border-emerald-350 text-xxs font-black text-emerald-800 animate-bounceGlow"
               >
                 ✓ {{ t('ready') }}
               </span>
 
               <span 
                 v-else
-                class="px-2.5 py-1 rounded-xl bg-white/5 border border-white/10 text-3xs font-bold text-slate-500"
+                class="px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-xxs font-black text-slate-650"
               >
                 {{ t('delivered') }}
               </span>
@@ -98,14 +98,14 @@
               <button 
                 v-if="item.status === 'pending'"
                 @click="cancelItem(item)"
-                class="p-1 rounded-lg bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white transition duration-150"
+                class="p-1 rounded-lg bg-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white transition duration-150"
                 :title="t('cancel_tooltip')"
               >
                 <Trash2 class="w-3.5 h-3.5" />
               </button>
               <span 
                 v-else-if="['cooking', 'ready'].includes(item.status)"
-                class="p-1 text-slate-600 cursor-not-allowed"
+                class="p-1 text-slate-400 cursor-not-allowed"
                 :title="t('lock_tooltip')"
               >
                 <Lock class="w-3.5 h-3.5" />

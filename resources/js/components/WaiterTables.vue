@@ -2,29 +2,29 @@
   <div class="space-y-6">
     <!-- Quick Status Stats -->
     <div class="grid grid-cols-3 gap-3">
-      <div class="backdrop-blur-md bg-white/5 border border-white/5 p-3 rounded-2xl text-center">
-        <span class="text-[10px] text-slate-400 font-bold block">{{ t('total_tables') }}</span>
-        <span class="text-lg font-bold text-white mt-1 block">{{ waiterStore.tables.length }}</span>
+      <div class="bg-white border-2 border-slate-300 p-3 rounded-2xl text-center shadow-sm">
+        <span class="text-xs text-slate-600 font-extrabold block">{{ t('total_tables') }}</span>
+        <span class="text-xl font-black text-slate-900 mt-1 block">{{ waiterStore.tables.length }}</span>
       </div>
-      <div class="backdrop-blur-md bg-white/5 border border-white/5 p-3 rounded-2xl text-center">
-        <span class="text-[10px] text-slate-400 font-bold block">{{ t('my_tables') }}</span>
-        <span class="text-lg font-bold text-violet-400 mt-1 block">{{ myTablesCount }}</span>
+      <div class="bg-white border-2 border-slate-300 p-3 rounded-2xl text-center shadow-sm">
+        <span class="text-xs text-indigo-700 font-extrabold block">{{ t('my_tables') }}</span>
+        <span class="text-xl font-black text-indigo-700 mt-1 block">{{ myTablesCount }}</span>
       </div>
-      <div class="backdrop-blur-md bg-white/5 border border-white/5 p-3 rounded-2xl text-center">
-        <span class="text-[10px] text-slate-400 font-bold block">{{ t('empty_tables') }}</span>
-        <span class="text-lg font-bold text-emerald-400 mt-1 block">{{ emptyTablesCount }}</span>
+      <div class="bg-white border-2 border-slate-300 p-3 rounded-2xl text-center shadow-sm">
+        <span class="text-xs text-emerald-700 font-extrabold block">{{ t('empty_tables') }}</span>
+        <span class="text-xl font-black text-emerald-700 mt-1 block">{{ emptyTablesCount }}</span>
       </div>
     </div>
 
     <!-- Table Grid Loader / Skeleton -->
     <div v-if="waiterStore.loading" class="grid grid-cols-2 gap-3">
-      <div v-for="n in 6" :key="n" class="h-28 bg-white/5 animate-pulse rounded-2xl border border-white/5"></div>
+      <div v-for="n in 6" :key="n" class="h-28 bg-white animate-pulse rounded-2xl border-2 border-slate-200"></div>
     </div>
 
     <!-- Error state -->
-    <div v-else-if="waiterStore.error" class="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-center text-xs text-red-400 font-medium">
+    <div v-else-if="waiterStore.error" class="p-4 rounded-2xl bg-red-50 border-2 border-red-300 text-center text-xs text-red-800 font-bold shadow-sm">
       {{ waiterStore.error }}
-      <button @click="waiterStore.fetchTables" class="mt-2 block w-full py-2 bg-red-500/20 hover:bg-red-500/30 text-red-100 rounded-xl transition duration-200">
+      <button @click="waiterStore.fetchTables" class="mt-2 block w-full py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded-xl transition duration-200 border border-red-300">
         {{ t('try_again') }}
       </button>
     </div>
@@ -35,21 +35,18 @@
         v-for="table in waiterStore.tables" 
         :key="table.id"
         @click="handleTableClick(table)"
-        class="relative overflow-hidden backdrop-blur-xl rounded-2xl p-4 flex flex-col justify-between h-28 border transition-all duration-300 cursor-pointer"
+        class="relative overflow-hidden rounded-2xl p-5 flex flex-col justify-between h-28 border transition-all duration-300 cursor-pointer text-center"
         :class="tableCardClasses(table)"
       >
-        <!-- Card background glow -->
-        <div class="absolute -right-6 -bottom-6 w-20 h-20 rounded-full blur-[25px] opacity-25 pointer-events-none" :class="glowBgClasses(table)"></div>
-
-        <div class="relative z-10 flex items-start justify-between">
-          <span class="text-sm font-bold text-white">{{ table.table_number }}</span>
-          <span class="text-[10px] px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300">
+        <div class="relative z-10 flex items-start justify-between w-full">
+          <span class="text-base font-black text-slate-900" :class="[table.status === 'occupied_by_me' ? 'text-indigo-950' : '']">{{ table.table_number }}</span>
+          <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 border border-slate-300 text-slate-800 font-black">
             {{ table.capacity }} {{ t('persons') }}
           </span>
         </div>
 
-        <div class="relative z-10">
-          <span class="text-[10px] font-bold tracking-wider uppercase" :class="statusTextClasses(table)">
+        <div class="relative z-10 w-full mt-2">
+          <span class="text-xs font-black tracking-wider uppercase" :class="statusTextClasses(table)">
             {{ statusLabel(table) }}
           </span>
         </div>
@@ -59,16 +56,16 @@
     <!-- Bottom drawer touch modal for new order -->
     <div 
       v-if="showDrawer" 
-      class="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm"
+      class="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm"
       @click.self="closeDrawer"
     >
-      <div class="w-full max-w-md bg-slate-900 border-t border-white/10 rounded-t-3xl p-6 space-y-6 shadow-2xl animate-slideUp">
-        <div class="flex items-center justify-between">
+      <div class="w-full max-w-md bg-white border-t-2 border-slate-300 rounded-t-3xl p-6 space-y-6 shadow-2xl animate-slideUp text-slate-900">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
           <div>
-            <h3 class="text-lg font-bold text-white">{{ selectedTable?.table_number }}</h3>
-            <p class="text-xs text-slate-400">{{ t('capacity') }}: {{ selectedTable?.capacity }} {{ t('persons') }}</p>
+            <h3 class="text-lg font-black text-slate-900">{{ selectedTable?.table_number }}</h3>
+            <p class="text-xs text-slate-650 font-bold">{{ t('capacity') }}: {{ selectedTable?.capacity }} {{ t('persons') }}</p>
           </div>
-          <button @click="closeDrawer" class="p-2 rounded-xl bg-white/5 text-slate-400 hover:text-white">
+          <button @click="closeDrawer" class="p-2 rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900 transition">
             <X class="w-5 h-5" />
           </button>
         </div>
@@ -76,7 +73,7 @@
         <div class="space-y-3">
           <button 
             @click="createNewOrder" 
-            class="w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white text-sm shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 active:scale-95 transition-all duration-200 flex items-center justify-center space-x-2"
+            class="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 font-black text-white text-sm shadow-md hover:from-indigo-700 hover:to-violet-700 transition duration-200 flex items-center justify-center space-x-2"
           >
             <PlusCircle class="w-5 h-5" />
             <span>{{ t('open_order') }}</span>
@@ -84,7 +81,7 @@
           
           <button 
             @click="closeDrawer" 
-            class="w-full py-3.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:bg-white/10 transition duration-200"
+            class="w-full py-3.5 rounded-xl bg-slate-100 border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-200 transition duration-200"
           >
             {{ t('cancel') }}
           </button>
@@ -152,25 +149,19 @@ const emptyTablesCount = computed(() => {
 
 const tableCardClasses = (table) => {
   if (table.status === 'empty') {
-    return 'bg-slate-900/50 border-white/10 hover:border-slate-700 hover:bg-slate-900/70 shadow-sm';
+    return 'bg-white border-2 border-emerald-500 rounded-2xl p-5 text-slate-900 font-black shadow-sm text-center';
   } else if (table.status === 'occupied_by_me') {
-    return 'bg-violet-950/20 border-violet-500/40 shadow-[0_0_15px_rgba(139,92,246,0.15)] animate-pulseGlow';
+    return 'bg-indigo-50 border-2 border-indigo-500 rounded-2xl p-5 text-indigo-950 font-black shadow-sm text-center';
   } else {
     // occupied_by_other
-    return 'bg-slate-900/30 border-orange-950/30 opacity-40 cursor-not-allowed';
+    return 'bg-slate-100 border-2 border-slate-300 opacity-60 text-slate-500 rounded-2xl p-5 text-center';
   }
 };
 
-const glowBgClasses = (table) => {
-  if (table.status === 'empty') return 'bg-slate-400';
-  if (table.status === 'occupied_by_me') return 'bg-violet-500';
-  return 'bg-orange-500';
-};
-
 const statusTextClasses = (table) => {
-  if (table.status === 'empty') return 'text-slate-400';
-  if (table.status === 'occupied_by_me') return 'text-violet-400';
-  return 'text-orange-400';
+  if (table.status === 'empty') return 'text-emerald-800 font-black';
+  if (table.status === 'occupied_by_me') return 'text-indigo-900 font-black';
+  return 'text-slate-650 font-bold';
 };
 
 const statusLabel = (table) => {

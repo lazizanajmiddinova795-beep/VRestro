@@ -2,71 +2,71 @@
   <div class="space-y-6 pb-28">
     
     <!-- Waiter Profile Identity Card -->
-    <div class="backdrop-blur-xl bg-slate-900/50 border border-white/10 rounded-3xl p-6 text-center space-y-4">
+    <div class="bg-white border-2 border-slate-300 rounded-3xl p-6 text-center space-y-4 shadow-sm">
       <div class="w-20 h-20 rounded-full mx-auto bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white text-3xl font-extrabold shadow-lg shadow-indigo-600/30">
         {{ avatarInitials }}
       </div>
       <div class="space-y-1">
-        <h3 class="text-lg font-bold text-white leading-tight">{{ waiterName }}</h3>
-        <p class="text-xs text-slate-400 font-medium">{{ t('waiter_title') }}</p>
+        <h3 class="text-slate-900 font-black text-xl leading-tight">{{ waiterName }}</h3>
+        <p class="text-sm text-slate-700 font-bold">{{ t('waiter_title') }}</p>
       </div>
 
       <!-- Shift status toggle badge -->
-      <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-3xs uppercase font-extrabold tracking-wider text-emerald-400">{{ t('shift_active') }}</span>
+      <div class="inline-flex items-center space-x-2 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+        <span class="text-xs uppercase font-black tracking-wider text-emerald-800">{{ t('shift_active') }}</span>
       </div>
     </div>
 
     <!-- Daily Performance KPI Widgets (2x2 Grid) -->
-    <div class="space-y-2">
-      <h4 class="text-xxs font-black text-slate-400 uppercase tracking-widest pl-1">{{ t('daily_kpi') }}</h4>
+    <div class="space-y-3">
+      <h4 class="text-xs font-black text-slate-700 uppercase tracking-widest pl-1">{{ t('daily_kpi') }}</h4>
       <div class="grid grid-cols-2 gap-4">
         
         <!-- Box 1: Sales Amount -->
-        <div class="backdrop-blur-md bg-white/5 border border-white/5 p-4 rounded-2xl space-y-1.5 text-left">
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ t('daily_sales') }}</span>
-          <span class="text-sm font-black text-white block truncate leading-snug">{{ formatCurrency(stats.total_sales_amount) }}</span>
+        <div class="bg-white border-2 border-slate-300 p-4 rounded-2xl space-y-1.5 text-left shadow-sm">
+          <span class="text-slate-600 font-extrabold text-xs tracking-wider uppercase">{{ t('daily_sales') }}</span>
+          <span class="text-indigo-600 font-black text-2xl mt-2 block truncate leading-snug">{{ formatCurrency(stats.total_sales_amount) }}</span>
         </div>
 
         <!-- Box 2: Closed Tables count -->
-        <div class="backdrop-blur-md bg-white/5 border border-white/5 p-4 rounded-2xl space-y-1.5 text-left">
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ t('closed_tables') }}</span>
-          <span class="text-sm font-black text-white block leading-snug">{{ stats.total_orders_count }} {{ t('tables_unit') }}</span>
+        <div class="bg-white border-2 border-slate-300 p-4 rounded-2xl space-y-1.5 text-left shadow-sm">
+          <span class="text-slate-600 font-extrabold text-xs tracking-wider uppercase">{{ t('closed_tables') }}</span>
+          <span class="text-indigo-600 font-black text-2xl mt-2 block leading-snug">{{ stats.total_orders_count }} {{ t('tables_unit') }}</span>
         </div>
 
         <!-- Box 3: Pending cashier checkout -->
-        <div class="backdrop-blur-md bg-white/5 border border-white/5 p-4 rounded-2xl space-y-1.5 text-left border-cyan-500/10">
-          <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">{{ t('pending_cashier') }}</span>
-          <span class="text-sm font-black text-white block leading-snug">{{ stats.pending_checkout_count }} {{ t('orders_unit') }}</span>
+        <div class="bg-white border-2 border-slate-300 p-4 rounded-2xl space-y-1.5 text-left border-rose-300 shadow-sm">
+          <span class="text-slate-600 font-extrabold text-xs tracking-wider uppercase text-rose-700">{{ t('pending_cashier') }}</span>
+          <span class="text-rose-750 font-black text-2xl mt-2 block leading-snug">{{ stats.pending_checkout_count }} {{ t('orders_unit') }}</span>
         </div>
 
         <!-- Box 4: Earned Bonus -->
-        <div class="backdrop-blur-md bg-white/5 border border-white/5 p-4 rounded-2xl space-y-1.5 text-left border-emerald-500/25">
-          <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">{{ t('my_bonus') }}</span>
-          <span class="text-sm font-black text-emerald-400 block truncate leading-snug">{{ formatCurrency(stats.earned_bonus) }}</span>
+        <div class="bg-white border-2 border-slate-300 p-4 rounded-2xl space-y-1.5 text-left border-emerald-300 shadow-sm">
+          <span class="text-slate-600 font-extrabold text-xs tracking-wider uppercase text-emerald-800">{{ t('my_bonus') }}</span>
+          <span class="text-emerald-700 font-black text-2xl mt-2 block truncate leading-snug">{{ formatCurrency(stats.earned_bonus) }}</span>
         </div>
 
       </div>
     </div>
 
     <!-- Actions Drawer (Bottom Stack) -->
-    <div class="backdrop-blur-xl bg-slate-900/40 border border-white/5 rounded-3xl divide-y divide-white/5 overflow-hidden">
+    <div class="bg-white border-2 border-slate-300 rounded-3xl divide-y divide-slate-200 overflow-hidden shadow-sm">
       <!-- Language Selector -->
-      <div class="flex items-center justify-between p-4 text-xs font-bold text-slate-300">
+      <div class="flex items-center justify-between p-4 text-sm font-bold text-slate-800">
         <span>{{ t('sys_lang') }}</span>
         <div class="flex space-x-2">
           <button 
             @click="setLang('uz')" 
-            class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white font-black"
-            :class="{'bg-violet-600/30 border-violet-500 text-violet-400': currentLang === 'uz'}"
+            class="px-3 py-1.5 rounded bg-slate-100 border border-slate-300 text-slate-700 font-bold"
+            :class="{'bg-indigo-600 border-indigo-650 text-white font-black': currentLang === 'uz'}"
           >
             UZ
           </button>
           <button 
             @click="setLang('ru')" 
-            class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white font-black"
-            :class="{'bg-violet-600/30 border-violet-500 text-violet-400': currentLang === 'ru'}"
+            class="px-3 py-1.5 rounded bg-slate-100 border border-slate-300 text-slate-700 font-bold"
+            :class="{'bg-indigo-600 border-indigo-650 text-white font-black': currentLang === 'ru'}"
           >
             RU
           </button>
@@ -76,10 +76,10 @@
       <!-- Logout button trigger -->
       <button 
         @click="triggerLogout"
-        class="w-full flex items-center justify-between p-4 text-xs font-bold text-rose-400 hover:bg-rose-500/5 transition duration-150 text-left"
+        class="w-full flex items-center justify-between p-4 text-sm font-bold text-rose-700 hover:bg-rose-50 transition duration-150 text-left"
       >
         <span>{{ t('sys_logout') }}</span>
-        <LogOut class="w-4 h-4 text-rose-400" />
+        <LogOut class="w-4 h-4 text-rose-700" />
       </button>
     </div>
 

@@ -1,12 +1,9 @@
 <template>
-  <div class="relative min-h-screen bg-slate-950 text-slate-100 font-sans overflow-x-hidden selection:bg-indigo-500 selection:text-white">
-    <!-- Animated background -->
-    <AnimatedBackground />
-
+  <div class="relative min-h-screen bg-[#F8FAFC] text-slate-900 font-bold font-sans overflow-x-hidden selection:bg-indigo-500 selection:text-white">
     <!-- App shell wrapper -->
     <div class="relative z-10 min-h-screen flex flex-col">
       <!-- Header KPI Bar -->
-      <header class="sticky top-0 z-50 backdrop-blur-md border-b border-white/5 bg-slate-950/45 px-6 py-4 shadow-lg">
+      <header class="sticky top-0 z-50 bg-white border-b-2 border-slate-200 px-6 py-4 shadow-sm">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <!-- Logo & Chef Details -->
           <div class="flex items-center space-x-4">
@@ -14,36 +11,36 @@
               <ChefHat class="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-amber-200 tracking-wide">
+              <h1 class="text-lg font-black text-slate-900 tracking-wide">
                 Oshpaz Monitori
               </h1>
-              <div class="flex items-center space-x-2 text-xs text-slate-400">
-                <User class="w-3.5 h-3.5 text-orange-400" />
+              <div class="flex items-center space-x-2 text-xs text-slate-700">
+                <User class="w-3.5 h-3.5 text-orange-600" />
                 <span>{{ authStore.user?.name || 'Asilbek Povar' }}</span>
               </div>
             </div>
           </div>
 
           <!-- KDS Sub-Navigation Navigation Tabs -->
-          <div class="flex items-center space-x-1 bg-white/5 p-1 rounded-xl border border-white/5">
+          <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
             <router-link 
               to="/kitchen" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
-              :class="route.path === '/kitchen' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20' : 'text-slate-400 hover:text-slate-200'"
+              :class="route.path === '/kitchen' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200'"
             >
               Buyurtmalar
             </router-link>
             <router-link 
               to="/kitchen/stop-list" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
-              :class="route.path === '/kitchen/stop-list' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20' : 'text-slate-400 hover:text-slate-200'"
+              :class="route.path === '/kitchen/stop-list' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200'"
             >
               Stop-List
             </router-link>
             <router-link 
               to="/kitchen/settings" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
-              :class="route.path === '/kitchen/settings' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20' : 'text-slate-400 hover:text-slate-200'"
+              :class="route.path === '/kitchen/settings' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200'"
             >
               Sozlamalar
             </router-link>
@@ -52,32 +49,32 @@
           <!-- Real-Time Time and KPI stats -->
           <div class="flex flex-wrap items-center gap-4">
             <!-- Digital Ticking Clock -->
-            <div class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 font-mono text-sm tracking-widest text-amber-300 shadow-inner flex items-center space-x-2">
-              <Clock class="w-4 h-4 text-amber-400 animate-pulse" />
+            <div class="px-4 py-2 rounded-xl bg-white border border-slate-200 font-mono text-sm tracking-widest text-amber-800 shadow-sm flex items-center space-x-2">
+              <Clock class="w-4 h-4 text-amber-600 animate-pulse" />
               <span>{{ currentTime }}</span>
             </div>
 
             <!-- Pending KPI Badge -->
             <div 
-              class="px-4 py-2 rounded-xl bg-white/5 border transition-all duration-300 flex items-center space-x-2 shadow-inner"
-              :class="pendingCount > 0 ? 'border-red-500/30 bg-red-500/10 text-red-300 animate-pulse' : 'border-white/10 text-slate-400'"
+              class="px-4 py-2 rounded-xl bg-white border transition-all duration-300 flex items-center space-x-2 shadow-sm"
+              :class="pendingCount > 0 ? 'border-red-300 bg-red-50 text-red-800 animate-pulse' : 'border-slate-200 text-slate-700'"
             >
-              <span class="w-2.5 h-2.5 rounded-full bg-red-500" :class="{ 'animate-ping': pendingCount > 0 }"></span>
-              <span class="text-xs font-semibold">Kutilmoqda:</span>
-              <span class="font-bold text-sm">{{ pendingCount }}</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-red-600" :class="{ 'animate-ping': pendingCount > 0 }"></span>
+              <span class="text-xs font-bold">Kutilmoqda:</span>
+              <span class="font-black text-sm">{{ pendingCount }}</span>
             </div>
 
             <!-- Cooking KPI Badge -->
-            <div class="px-4 py-2 rounded-xl bg-white/5 border border-blue-500/30 bg-blue-500/10 text-blue-300 flex items-center space-x-2 shadow-inner">
-              <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
-              <span class="text-xs font-semibold">Tayyorlanmoqda:</span>
-              <span class="font-bold text-sm">{{ cookingCount }}</span>
+            <div class="px-4 py-2 rounded-xl bg-white border border-blue-200 bg-blue-50 text-blue-800 flex items-center space-x-2 shadow-sm">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+              <span class="text-xs font-bold">Tayyorlanmoqda:</span>
+              <span class="font-black text-sm">{{ cookingCount }}</span>
             </div>
 
             <!-- Logout action -->
             <button 
               @click="handleLogout" 
-              class="px-4 py-2 text-xs font-semibold rounded-xl bg-red-600/10 border border-red-500/20 hover:bg-red-500 hover:text-white transition duration-300 flex items-center space-x-1"
+              class="px-4 py-2 text-xs font-bold rounded-xl bg-red-50 border border-red-300 text-red-700 hover:bg-red-600 hover:text-white transition duration-300 flex items-center space-x-1"
             >
               <LogOut class="w-4 h-4" />
               <span>Chiqish</span>
@@ -92,7 +89,7 @@
       </main>
 
       <!-- Kitchen Status Info Bar -->
-      <footer class="backdrop-blur-md border-t border-white/5 bg-slate-950/20 py-4 text-center text-xs text-slate-500 relative z-10">
+      <footer class="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-600 relative z-10 shadow-inner font-semibold">
         KDS Real-time Kitchen Grid • Auto-polling har 4 soniyada faol
       </footer>
     </div>
@@ -101,7 +98,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useChefStore } from '@/stores/chef';
 import AnimatedBackground from '@/components/AnimatedBackground.vue';
@@ -110,6 +107,7 @@ import { ChefHat, Clock, User, LogOut } from 'lucide-vue-next';
 const authStore = useAuthStore();
 const chefStore = useChefStore();
 const route = useRoute();
+const router = useRouter();
 
 const currentTime = ref('');
 let clockInterval = null;
@@ -130,6 +128,7 @@ const updateClock = () => {
 const handleLogout = () => {
   chefStore.stopPolling();
   authStore.logout();
+  router.push({ name: 'login' });
 };
 
 onMounted(() => {

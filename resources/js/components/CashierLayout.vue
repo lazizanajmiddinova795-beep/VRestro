@@ -1,11 +1,8 @@
 <template>
-  <div class="h-screen w-screen bg-slate-950 text-slate-100 flex flex-col font-sans overflow-hidden relative">
-    <!-- Background glows -->
-    <div class="absolute w-[500px] h-[500px] rounded-full bg-violet-600/10 blur-[120px] -top-24 -left-24 pointer-events-none"></div>
-    <div class="absolute w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[120px] -bottom-24 -right-24 pointer-events-none"></div>
+  <div class="h-screen w-screen bg-[#F1F5F9] text-slate-900 flex flex-col font-sans overflow-hidden relative">
 
     <!-- Top Adaptive Navbar -->
-    <header class="w-full shrink-0 backdrop-blur-xl bg-slate-900/50 border-b border-white/10 relative z-30 px-4 py-3 md:px-8 flex flex-col md:flex-row justify-between items-center gap-4 no-print">
+    <header class="w-full shrink-0 bg-white border-b border-slate-200 relative z-30 px-4 py-3 md:px-8 flex flex-col md:flex-row justify-between items-center gap-4 no-print shadow-sm">
       <!-- Left: Profile and Time -->
       <div class="flex items-center justify-between w-full md:w-auto gap-4">
         <div class="flex items-center space-x-3">
@@ -13,19 +10,19 @@
             {{ authStore.user?.name ? authStore.user.name.charAt(0) : 'K' }}
           </div>
           <div>
-            <h1 class="text-sm md:text-base font-bold text-white tracking-wide truncate max-w-[150px] sm:max-w-[200px]" :title="authStore.user?.name">
+            <h1 class="text-sm md:text-base font-black text-slate-900 tracking-wide truncate max-w-[150px] sm:max-w-[200px]" :title="authStore.user?.name">
               {{ authStore.user?.name || 'Kassir' }}
             </h1>
             <div class="flex items-center space-x-2 mt-0.5">
-              <span class="text-xxs font-extrabold uppercase tracking-widest bg-violet-500/25 text-violet-300 border border-violet-500/30 px-2 py-0.5 rounded-md">
+              <span class="text-xxs font-black uppercase tracking-widest bg-violet-100 text-violet-850 border border-violet-300 px-2 py-0.5 rounded-md">
                 Kassir
               </span>
               <button 
                 @click="showShiftModal = true"
-                class="text-xxs text-slate-400 font-bold hover:text-indigo-400 bg-white/5 border border-white/10 hover:border-indigo-500/20 px-2 py-0.5 rounded-md flex items-center gap-1 transition"
+                class="text-xxs text-slate-700 font-bold hover:text-indigo-600 bg-slate-100 border border-slate-300 hover:bg-slate-200 px-2 py-0.5 rounded-md flex items-center gap-1 transition"
                 title="Smena boshqaruvi"
               >
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
                 <span>{{ cashierStore.t('smena_nazorati') }}</span>
               </button>
             </div>
@@ -34,38 +31,38 @@
 
         <!-- Clock for Mobile -->
         <div class="md:hidden text-right">
-          <span class="text-sm font-bold font-mono tracking-widest text-indigo-300 block">{{ currentTime }}</span>
-          <span class="text-xxs text-slate-400 block">{{ currentDate }}</span>
+          <span class="text-sm font-black font-mono tracking-widest text-indigo-600 block">{{ currentTime }}</span>
+          <span class="text-xxs text-slate-700 block font-bold">{{ currentDate }}</span>
         </div>
       </div>
 
       <!-- Navigation Links -->
-      <div class="flex items-center space-x-1 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-1 shrink-0 w-full md:w-auto justify-center">
+      <div class="flex items-center space-x-1 bg-slate-100 border border-slate-200 rounded-2xl p-1 shrink-0 w-full md:w-auto justify-center">
         <router-link 
           to="/cashier/tables" 
-          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-250 tracking-wide text-center flex-grow md:flex-grow-0"
-          :class="isActiveRoute('/cashier/tables') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:text-white'"
+          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-255 tracking-wide text-center flex-grow md:flex-grow-0"
+          :class="isActiveRoute('/cashier/tables') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'"
         >
           {{ cashierStore.t('stollar_xaritasi') }}
         </router-link>
         <router-link 
           to="/cashier/order" 
-          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-250 tracking-wide text-center flex-grow md:flex-grow-0"
-          :class="isActiveRoute('/cashier/order') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:text-white'"
+          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-255 tracking-wide text-center flex-grow md:flex-grow-0"
+          :class="isActiveRoute('/cashier/order') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'"
         >
           {{ cashierStore.t('tezkor_buyurtma') }}
         </router-link>
         <router-link 
           to="/cashier/receipts" 
-          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-250 tracking-wide text-center flex-grow md:flex-grow-0"
-          :class="isActiveRoute('/cashier/receipts') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:text-white'"
+          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-255 tracking-wide text-center flex-grow md:flex-grow-0"
+          :class="isActiveRoute('/cashier/receipts') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'"
         >
           {{ cashierStore.t('cheklar_tarixi') }}
         </router-link>
         <router-link 
           to="/cashier/settings" 
-          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-250 tracking-wide text-center flex-grow md:flex-grow-0"
-          :class="isActiveRoute('/cashier/settings') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:text-white'"
+          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-255 tracking-wide text-center flex-grow md:flex-grow-0"
+          :class="isActiveRoute('/cashier/settings') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'"
         >
           {{ cashierStore.t('sozlamalar') }}
         </router-link>
@@ -74,24 +71,24 @@
       <!-- Center: Quick-Stats Badge Grid -->
       <div class="grid grid-cols-4 gap-2 w-full md:w-auto max-w-lg md:max-w-none">
         <!-- Jami -->
-        <div class="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-2 text-center flex flex-col justify-center min-w-[70px] sm:min-w-[90px] shadow-sm">
-          <span class="text-xxs text-slate-400 uppercase font-bold tracking-wider">{{ cashierStore.t('jami') }}</span>
-          <span class="text-sm sm:text-base font-extrabold text-white mt-0.5">{{ totalStats.total }}</span>
+        <div class="bg-slate-100 border border-slate-300 rounded-xl p-2 text-center flex flex-col justify-center min-w-[70px] sm:min-w-[90px] shadow-sm">
+          <span class="text-xxs text-slate-700 uppercase font-black tracking-wider">{{ cashierStore.t('jami') }}</span>
+          <span class="text-sm sm:text-base font-extrabold text-slate-950 mt-0.5">{{ totalStats.total }}</span>
         </div>
         <!-- Bo'sh -->
-        <div class="backdrop-blur-md bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-2 text-center flex flex-col justify-center min-w-[70px] sm:min-w-[90px] shadow-sm shadow-emerald-500/5">
-          <span class="text-xxs text-emerald-400 uppercase font-bold tracking-wider">{{ cashierStore.t('bo_sh') }}</span>
-          <span class="text-sm sm:text-base font-extrabold text-emerald-400 mt-0.5">{{ totalStats.empty }}</span>
+        <div class="bg-emerald-50 border border-emerald-300 rounded-xl p-2 text-center flex flex-col justify-center min-w-[70px] sm:min-w-[90px] shadow-sm">
+          <span class="text-xxs text-emerald-800 uppercase font-black tracking-wider">{{ cashierStore.t('bo_sh') }}</span>
+          <span class="text-sm sm:text-base font-extrabold text-emerald-800 mt-0.5">{{ totalStats.empty }}</span>
         </div>
         <!-- Band -->
-        <div class="backdrop-blur-md bg-rose-500/5 border border-rose-500/20 rounded-xl p-2 text-center flex flex-col justify-center min-w-[70px] sm:min-w-[90px] shadow-sm shadow-rose-500/5">
-          <span class="text-xxs text-rose-400 uppercase font-bold tracking-wider">{{ cashierStore.t('band') }}</span>
-          <span class="text-sm sm:text-base font-extrabold text-rose-400 mt-0.5">{{ totalStats.occupied }}</span>
+        <div class="bg-rose-50 border border-rose-300 rounded-xl p-2 text-center flex flex-col justify-center min-w-[70px] sm:min-w-[90px] shadow-sm">
+          <span class="text-xxs text-rose-800 uppercase font-black tracking-wider">{{ cashierStore.t('band') }}</span>
+          <span class="text-sm sm:text-base font-extrabold text-rose-800 mt-0.5">{{ totalStats.occupied }}</span>
         </div>
         <!-- Bron -->
-        <div class="backdrop-blur-md bg-amber-500/5 border border-amber-500/20 rounded-xl p-2 text-center flex flex-col justify-center min-w-[70px] sm:min-w-[90px] shadow-sm shadow-amber-500/5">
-          <span class="text-xxs text-amber-400 uppercase font-bold tracking-wider">{{ cashierStore.t('bron') }}</span>
-          <span class="text-sm sm:text-base font-extrabold text-amber-400 mt-0.5">{{ totalStats.reserved }}</span>
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-2 text-center flex flex-col justify-center min-w-[70px] sm:min-w-[90px] shadow-sm">
+          <span class="text-xxs text-amber-800 uppercase font-black tracking-wider">{{ cashierStore.t('bron') }}</span>
+          <span class="text-sm sm:text-base font-extrabold text-amber-800 mt-0.5">{{ totalStats.reserved }}</span>
         </div>
       </div>
 
@@ -99,13 +96,13 @@
       <div class="hidden md:flex items-center space-x-6 shrink-0">
         <!-- Real-time clock -->
         <div class="text-right">
-          <span class="text-lg font-bold font-mono tracking-widest text-indigo-300 block">{{ currentTime }}</span>
-          <span class="text-xs text-slate-400 block mt-0.5">{{ currentDate }}</span>
+          <span class="text-lg font-black font-mono tracking-widest text-indigo-600 block">{{ currentTime }}</span>
+          <span class="text-xs text-slate-700 font-bold block mt-0.5">{{ currentDate }}</span>
         </div>
 
         <button 
           @click="handleLogout" 
-          class="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-400 text-xs font-bold tracking-wide transition duration-200 flex items-center space-x-2"
+          class="px-4 py-2.5 rounded-xl bg-red-50 border border-red-200 hover:bg-red-600 hover:text-white text-red-700 text-xs font-bold tracking-wide transition duration-200 flex items-center space-x-2"
         >
           <LogOut class="w-4 h-4" />
           <span>{{ cashierStore.t('chiqish') }}</span>
@@ -116,7 +113,7 @@
       <div class="flex md:hidden w-full justify-end mt-1">
         <button 
           @click="handleLogout" 
-          class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-400 text-xs font-bold tracking-wide transition duration-200 flex items-center justify-center space-x-2"
+          class="w-full py-2.5 rounded-xl bg-red-50 border border-red-200 hover:bg-red-650 hover:text-white text-red-700 text-xs font-bold tracking-wide transition duration-200 flex items-center justify-center space-x-2"
         >
           <LogOut class="w-4 h-4" />
           <span>{{ cashierStore.t('tizimdan_chiqish') }}</span>
@@ -133,52 +130,52 @@
     <Transition name="fade">
       <div 
         v-if="showShiftModal"
-        class="fixed inset-0 z-50 backdrop-blur-md bg-black/60 flex items-center justify-center p-6 no-print"
+        class="fixed inset-0 z-50 backdrop-blur-md bg-black/50 flex items-center justify-center p-6 no-print"
         @click.self="showShiftModal = false"
       >
-        <div class="w-full max-w-sm backdrop-blur-xl bg-slate-900/80 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn text-left text-white">
-          <div class="flex justify-between items-center border-b border-white/5 pb-3">
-            <h3 class="text-base font-bold text-white flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <div class="w-full max-w-sm bg-white border-2 border-slate-300 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn text-left text-slate-900">
+          <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+            <h3 class="text-base font-black text-slate-900 flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
               <span>Smena Seansi Nazorati</span>
             </h3>
-            <button @click="showShiftModal = false" class="p-1 rounded-lg bg-white/5 text-slate-400 hover:text-white transition">
+            <button @click="showShiftModal = false" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 transition">
               <X class="w-4 h-4" />
             </button>
           </div>
 
           <div class="space-y-4">
             <!-- Shift Details -->
-            <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-2.5 text-xs font-semibold">
+            <div class="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-2.5 text-xs font-bold text-slate-800">
               <div class="flex justify-between">
-                <span class="text-slate-400">Smena ochilgan vaqt:</span>
-                <span class="text-indigo-300 font-mono">{{ cashierStore.shiftOpenTime }}</span>
+                <span class="text-slate-600">Smena ochilgan vaqt:</span>
+                <span class="text-indigo-650 font-mono font-black">{{ cashierStore.shiftOpenTime }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-slate-400">Hozirgi vaqt:</span>
-                <span class="text-slate-300 font-mono">{{ currentTime }}</span>
+                <span class="text-slate-600">Hozirgi vaqt:</span>
+                <span class="text-slate-800 font-mono font-black">{{ currentTime }}</span>
               </div>
-              <div class="border-t border-white/10 my-2"></div>
+              <div class="border-t border-slate-250 my-2"></div>
               <div class="flex justify-between">
-                <span class="text-slate-400">Kassa (Naqd pul):</span>
-                <span class="font-mono text-white">{{ formatCurrency(shiftStats.cash) }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-slate-400">Kassa (Plastik):</span>
-                <span class="font-mono text-white">{{ formatCurrency(shiftStats.card) }}</span>
+                <span class="text-slate-600">Kassa (Naqd pul):</span>
+                <span class="font-mono text-slate-950 font-black">{{ formatCurrency(shiftStats.cash) }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-slate-400">Kassa (QR to'lov):</span>
-                <span class="font-mono text-white">{{ formatCurrency(shiftStats.qr) }}</span>
+                <span class="text-slate-600">Kassa (Plastik):</span>
+                <span class="font-mono text-slate-950 font-black">{{ formatCurrency(shiftStats.card) }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-slate-400">Jami cheklar soni:</span>
-                <span class="font-mono text-emerald-400">{{ shiftStats.count }} ta chek</span>
+                <span class="text-slate-600">Kassa (QR to'lov):</span>
+                <span class="font-mono text-slate-950 font-black">{{ formatCurrency(shiftStats.qr) }}</span>
               </div>
-              <div class="border-t border-dashed border-white/10 my-2"></div>
-              <div class="flex justify-between text-indigo-300 font-black text-sm">
+              <div class="flex justify-between">
+                <span class="text-slate-600">Jami cheklar soni:</span>
+                <span class="font-mono text-emerald-800 font-black">{{ shiftStats.count }} ta chek</span>
+              </div>
+              <div class="border-t border-dashed border-slate-250 my-2"></div>
+              <div class="flex justify-between text-indigo-700 font-black text-sm">
                 <span>JAMI TUSHUM:</span>
-                <span class="font-mono text-base">{{ formatCurrency(shiftStats.total) }}</span>
+                <span class="font-mono text-base font-black">{{ formatCurrency(shiftStats.total) }}</span>
               </div>
             </div>
           </div>
@@ -186,13 +183,13 @@
           <div class="flex flex-col space-y-2 pt-2">
             <button 
               @click="handleCloseShift"
-              class="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 font-bold text-xs text-white tracking-wide shadow-lg shadow-red-600/20 hover:shadow-red-600/40 transition duration-200"
+              class="w-full py-3 rounded-xl bg-gradient-to-r from-red-650 to-rose-650 hover:from-red-600 hover:to-rose-600 font-bold text-xs text-white tracking-wide shadow-lg shadow-red-600/20 transition duration-200"
             >
               {{ cashierStore.t('smena_yakunlash') }}
             </button>
             <button 
               @click="showShiftModal = false"
-              class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-semibold text-slate-300 transition"
+              class="w-full py-2.5 rounded-xl bg-slate-100 border border-slate-300 hover:bg-slate-200 text-xs font-bold text-slate-700 transition"
             >
               Yopish
             </button>

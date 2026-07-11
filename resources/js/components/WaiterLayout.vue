@@ -1,42 +1,38 @@
 <template>
-  <div class="min-h-screen bg-slate-950 text-slate-100 font-sans pb-24 relative overflow-hidden">
-    <!-- Premium background glowing design -->
-    <div class="absolute w-96 h-96 rounded-full bg-violet-600/10 blur-[120px] -top-12 -left-12 pointer-events-none"></div>
-    <div class="absolute w-96 h-96 rounded-full bg-indigo-600/10 blur-[120px] -bottom-12 -right-12 pointer-events-none"></div>
-
+  <div class="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans pb-24 relative overflow-hidden">
     <!-- Live Toast Notification Overlay -->
     <div 
       v-if="waiterStore.toastMessage"
-      class="fixed top-4 left-4 right-4 z-50 p-4 rounded-2xl bg-slate-900/90 border border-emerald-500/35 backdrop-blur-xl shadow-2xl flex items-start space-x-3 animate-slideDown pointer-events-auto"
+      class="fixed top-4 left-4 right-4 z-50 p-4 rounded-2xl bg-white border-2 border-emerald-500 shadow-2xl flex items-start space-x-3 animate-slideDown pointer-events-auto"
     >
-      <div class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400 shrink-0">
+      <div class="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-800 shrink-0">
         <BellRing class="w-4 h-4 animate-swing" />
       </div>
       <div class="min-w-0 flex-grow pt-0.5">
-        <h4 class="text-xs font-bold text-white leading-none">{{ t('dish_ready') }}</h4>
-        <p class="text-2xs text-slate-300 mt-1 leading-snug">{{ waiterStore.toastMessage }}</p>
+        <h4 class="text-sm font-bold text-slate-900 leading-none">{{ t('dish_ready') }}</h4>
+        <p class="text-xs text-slate-700 mt-1 leading-snug font-semibold">{{ waiterStore.toastMessage }}</p>
       </div>
-      <button @click="waiterStore.toastMessage = null" class="text-slate-500 hover:text-slate-300">
+      <button @click="waiterStore.toastMessage = null" class="text-slate-500 hover:text-slate-700">
         <X class="w-4 h-4" />
       </button>
     </div>
 
     <!-- Header Navigation -->
-    <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-white/5 px-6 py-4 flex items-center justify-between">
+    <header class="sticky top-0 z-40 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm">
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-indigo-500/20">
           {{ avatarInitials }}
         </div>
         <div>
-          <h2 class="text-sm font-bold text-white">{{ waiterName }}</h2>
-          <span class="inline-flex items-center text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full mt-0.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>
+          <h2 class="text-slate-900 font-black text-lg">{{ waiterName }}</h2>
+          <span class="inline-flex items-center text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full mt-0.5 border border-emerald-250">
+            <span class="w-2 h-2 rounded-full bg-emerald-600 mr-1.5 animate-pulse"></span>
             {{ t('active_badge') }}
           </span>
         </div>
       </div>
 
-      <button @click="handleLogout" class="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white transition duration-200">
+      <button @click="handleLogout" class="p-2 rounded-xl bg-slate-100 border border-slate-300 text-slate-700 hover:bg-slate-200 transition duration-200">
         <LogOut class="w-5 h-5" />
       </button>
     </header>
@@ -47,21 +43,21 @@
     </main>
 
     <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-xl bg-slate-950/80 border-t border-white/10 px-6 py-3 flex justify-between items-center shadow-lg shadow-black/80">
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 py-2 px-6 flex justify-between items-center shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
       <!-- Stollar -->
       <button 
         @click="navTo('stollar')" 
         class="flex flex-col items-center space-y-1 transition duration-200" 
-        :class="waiterStore.currentTab === 'stollar' ? 'text-violet-400' : 'text-slate-500 hover:text-slate-300'"
+        :class="waiterStore.currentTab === 'stollar' ? 'text-indigo-600 font-black' : 'text-slate-400 font-medium'"
       >
         <LayoutGrid class="w-6 h-6" />
-        <span class="text-[10px] font-bold">{{ t('tables_tab') }}</span>
+        <span class="text-xs">{{ t('tables_tab') }}</span>
       </button>
 
       <!-- Yangi Buyurtma -->
       <button 
         @click="navTo('yangi-buyurtma')" 
-        class="relative -top-5 flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/35 hover:scale-105 active:scale-95 transition-all duration-200 z-10 border-4 border-slate-950"
+        class="relative -top-5 flex items-center justify-center w-14 h-14 rounded-full bg-indigo-600 text-white shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 z-10 border-4 border-white"
       >
         <Plus class="w-7 h-7" />
       </button>
@@ -70,20 +66,20 @@
       <button 
         @click="navTo('holatlar')" 
         class="flex flex-col items-center space-y-1 transition duration-200"
-        :class="waiterStore.currentTab === 'holatlar' ? 'text-violet-400' : 'text-slate-500 hover:text-slate-300'"
+        :class="waiterStore.currentTab === 'holatlar' ? 'text-indigo-600 font-black' : 'text-slate-400 font-medium'"
       >
         <ClipboardList class="w-6 h-6" />
-        <span class="text-[10px] font-bold">{{ t('status_tab') }}</span>
+        <span class="text-xs">{{ t('status_tab') }}</span>
       </button>
 
       <!-- Profil -->
       <button 
         @click="navTo('profil')" 
         class="flex flex-col items-center space-y-1 transition duration-200"
-        :class="waiterStore.currentTab === 'profil' ? 'text-violet-400' : 'text-slate-500 hover:text-slate-300'"
+        :class="waiterStore.currentTab === 'profil' ? 'text-indigo-600 font-black' : 'text-slate-400 font-medium'"
       >
         <User class="w-6 h-6" />
-        <span class="text-[10px] font-bold">{{ t('profile_tab') }}</span>
+        <span class="text-xs">{{ t('profile_tab') }}</span>
       </button>
     </nav>
   </div>

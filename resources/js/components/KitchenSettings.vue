@@ -1,38 +1,38 @@
 <template>
   <ChefLayout>
     <div class="max-w-3xl mx-auto space-y-6">
-      <div class="text-left space-y-1">
-        <h2 class="text-xl font-bold text-white tracking-wide">Oshxona Ichki Sozlamalari</h2>
-        <p class="text-xs text-slate-400">Ishchi terminal displeyi va ovozli xabarnomalarni sozlang.</p>
+      <div class="text-left space-y-2">
+        <h2 class="text-2xl font-black text-slate-900 tracking-wide">Oshxona Ichki Sozlamalari</h2>
+        <p class="text-sm md:text-base text-slate-700 font-bold">Ishchi terminal displeyi va ovozli xabarnomalarni sozlang.</p>
       </div>
 
       <!-- Settings Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <!-- Audio Settings Card -->
-        <div class="rounded-2xl border border-white/5 bg-slate-900/40 backdrop-blur-md p-6 space-y-6">
-          <div class="flex items-center space-x-3 border-b border-white/5 pb-3">
-            <Volume2 class="w-5 h-5 text-orange-400" />
-            <h3 class="text-sm font-bold text-slate-200">Ovozli Xabarnomalar</h3>
+        <div class="bg-white border-2 border-slate-300 rounded-2xl shadow-md p-6 space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-200 pb-3 mb-6">
+            <Volume2 class="w-6 h-6 text-orange-600" />
+            <h3 class="text-slate-900 font-black text-xl">Ovozli Xabarnolar</h3>
           </div>
 
-          <div class="space-y-4">
+          <div class="space-y-6">
             <!-- New Order Sound Toggle -->
             <div class="flex items-center justify-between">
               <div>
-                <label class="text-xs font-bold text-slate-300 block">Yangi Buyurtma Ovozi</label>
-                <span class="text-[10px] text-slate-500">Yangi buyurtma kelganda ovoz berish</span>
+                <label class="text-base font-black text-slate-900 block">Yangi Buyurtma Ovozi</label>
+                <span class="text-slate-700 font-bold text-sm md:text-base">Yangi buyurtma kelganda ovoz berish</span>
               </div>
               <button 
                 @click="toggleSetting('newOrderSound')"
-                class="w-12 h-6 rounded-full transition-all duration-300 relative border"
+                class="w-12 h-7 rounded-full transition-all duration-300 relative border-2 flex-shrink-0"
                 :class="chefStore.kitchenSettings.newOrderSound 
-                  ? 'bg-orange-500 border-orange-500' 
-                  : 'bg-white/5 border-white/10'"
+                  ? 'bg-orange-500 border-orange-600' 
+                  : 'bg-slate-200 border-slate-350'"
               >
                 <span 
-                  class="absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white transition-all duration-300"
-                  :class="chefStore.kitchenSettings.newOrderSound ? 'left-6.5' : 'left-0.5'"
+                  class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-sm"
+                  :class="chefStore.kitchenSettings.newOrderSound ? 'translate-x-5' : 'translate-x-0'"
                 ></span>
               </button>
             </div>
@@ -40,28 +40,28 @@
             <!-- Overdue Warning Sound Toggle -->
             <div class="flex items-center justify-between">
               <div>
-                <label class="text-xs font-bold text-slate-300 block">Kechikish Ogohlantirish Ovozi</label>
-                <span class="text-[10px] text-slate-500">Buyurtma 20 daqiqadan oshganda ogohlantirish</span>
+                <label class="text-base font-black text-slate-900 block">Kechikish Ogohlantirish Ovozi</label>
+                <span class="text-slate-700 font-bold text-sm md:text-base">Buyurtma 20 daqiqadan oshganda ogohlantirish</span>
               </div>
               <button 
                 @click="toggleSetting('alertSound')"
-                class="w-12 h-6 rounded-full transition-all duration-300 relative border"
+                class="w-12 h-7 rounded-full transition-all duration-300 relative border-2 flex-shrink-0"
                 :class="chefStore.kitchenSettings.alertSound 
-                  ? 'bg-orange-500 border-orange-500' 
-                  : 'bg-white/5 border-white/10'"
+                  ? 'bg-orange-500 border-orange-600' 
+                  : 'bg-slate-200 border-slate-350'"
               >
                 <span 
-                  class="absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white transition-all duration-300"
-                  :class="chefStore.kitchenSettings.alertSound ? 'left-6.5' : 'left-0.5'"
+                  class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-sm"
+                  :class="chefStore.kitchenSettings.alertSound ? 'translate-x-5' : 'translate-x-0'"
                 ></span>
               </button>
             </div>
 
             <!-- Volume Slider -->
             <div class="space-y-2 pt-2">
-              <div class="flex items-center justify-between text-xs">
-                <span class="font-bold text-slate-300">Ovoz Balandligi</span>
-                <span class="font-mono text-orange-400 font-extrabold">
+              <div class="flex items-center justify-between text-sm md:text-base font-bold">
+                <span class="text-slate-900 font-black">Ovoz Balandligi</span>
+                <span class="font-mono text-orange-600 font-extrabold">
                   {{ Math.round(chefStore.kitchenSettings.volume * 100) }}%
                 </span>
               </div>
@@ -72,83 +72,89 @@
                 step="0.1" 
                 :value="chefStore.kitchenSettings.volume"
                 @input="updateVolume"
-                class="w-full accent-orange-500 cursor-pointer bg-white/10 h-2 rounded-lg appearance-none"
+                class="w-full accent-orange-500 cursor-pointer bg-slate-200 h-2 rounded-lg appearance-none"
               />
             </div>
 
             <!-- Test Sound Button -->
             <button 
               @click="testSound"
-              class="w-full py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-200 hover:text-white font-bold text-xs transition duration-200 flex items-center justify-center space-x-2"
+              class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl w-full border border-slate-950 shadow-sm transition duration-200 flex items-center justify-center space-x-2 text-base"
             >
-              <Music class="w-4 h-4 text-orange-400" />
+              <Music class="w-5 h-5 text-orange-500" />
               <span>Ovozni sinash (Test Sound)</span>
             </button>
           </div>
         </div>
 
         <!-- Scale Settings Card -->
-        <div class="rounded-2xl border border-white/5 bg-slate-900/40 backdrop-blur-md p-6 space-y-6">
-          <div class="flex items-center space-x-3 border-b border-white/5 pb-3">
-            <Maximize2 class="w-5 h-5 text-orange-400" />
-            <h3 class="text-sm font-bold text-slate-200">KDS Displey Masshtabi</h3>
+        <div class="bg-white border-2 border-slate-300 rounded-2xl shadow-md p-6 space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-200 pb-3 mb-6">
+            <Maximize2 class="w-6 h-6 text-orange-600" />
+            <h3 class="text-slate-900 font-black text-xl">KDS Displey Masshtabi</h3>
           </div>
 
           <div class="space-y-4">
-            <p class="text-xs text-slate-400 leading-relaxed">
+            <p class="text-slate-700 font-bold text-sm md:text-base leading-relaxed mb-6">
               Oshxona terminali ekran o'lchamiga qarab buyurtma kartalarining zichligi va shrift o'lchamlarini tanlang.
             </p>
 
-            <div class="flex flex-col space-y-2.5">
+            <div class="flex flex-col space-y-3 pt-2">
               <!-- Compact Scale Option -->
               <button 
                 @click="setScale('compact')"
-                class="w-full py-3.5 px-4 rounded-xl border flex items-center justify-between font-bold text-xs transition duration-200"
+                class="w-full text-left transition duration-200"
                 :class="chefStore.kitchenSettings.layoutScale === 'compact' 
-                  ? 'bg-orange-500/10 border-orange-500/40 text-orange-300' 
-                  : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10'"
+                  ? 'bg-orange-50 border-2 border-orange-500 p-4 rounded-xl text-orange-950 font-black block ring-2 ring-orange-500/20' 
+                  : 'bg-slate-50 border-2 border-slate-200 p-4 rounded-xl text-slate-800 font-bold block'"
               >
-                <div class="text-left">
-                  <span class="block">Zich (Compact)</span>
-                  <span class="text-[9px] font-normal text-slate-500">Monitorlar uchun (bir qatorda 5-6 ta karta)</span>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="block text-base md:text-lg">Zich (Compact)</span>
+                    <span class="text-xs md:text-sm font-bold text-slate-700 block mt-1">Monitorlar uchun (bir qatorda 5-6 ta karta)</span>
+                  </div>
+                  <span class="w-4 h-4 rounded-full border-2 border-orange-500 flex items-center justify-center flex-shrink-0">
+                    <span v-if="chefStore.kitchenSettings.layoutScale === 'compact'" class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+                  </span>
                 </div>
-                <span class="w-2.5 h-2.5 rounded-full border border-orange-400/50 flex items-center justify-center">
-                  <span v-if="chefStore.kitchenSettings.layoutScale === 'compact'" class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-                </span>
               </button>
 
               <!-- Normal Scale Option -->
               <button 
                 @click="setScale('normal')"
-                class="w-full py-3.5 px-4 rounded-xl border flex items-center justify-between font-bold text-xs transition duration-200"
+                class="w-full text-left transition duration-200"
                 :class="chefStore.kitchenSettings.layoutScale === 'normal' 
-                  ? 'bg-orange-500/10 border-orange-500/40 text-orange-300' 
-                  : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10'"
+                  ? 'bg-orange-50 border-2 border-orange-500 p-4 rounded-xl text-orange-950 font-black block ring-2 ring-orange-500/20' 
+                  : 'bg-slate-50 border-2 border-slate-200 p-4 rounded-xl text-slate-800 font-bold block'"
               >
-                <div class="text-left">
-                  <span class="block">Standart (Normal)</span>
-                  <span class="text-[9px] font-normal text-slate-500">Klassik ko'rinish (bir qatorda 3-4 ta karta)</span>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="block text-base md:text-lg">Standart (Normal)</span>
+                    <span class="text-xs md:text-sm font-bold text-slate-700 block mt-1">Klassik ko'rinish (bir qatorda 3-4 ta karta)</span>
+                  </div>
+                  <span class="w-4 h-4 rounded-full border-2 border-orange-500 flex items-center justify-center flex-shrink-0">
+                    <span v-if="chefStore.kitchenSettings.layoutScale === 'normal'" class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+                  </span>
                 </div>
-                <span class="w-2.5 h-2.5 rounded-full border border-orange-400/50 flex items-center justify-center">
-                  <span v-if="chefStore.kitchenSettings.layoutScale === 'normal'" class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-                </span>
               </button>
 
               <!-- Large Scale Option -->
               <button 
                 @click="setScale('large')"
-                class="w-full py-3.5 px-4 rounded-xl border flex items-center justify-between font-bold text-xs transition duration-200"
+                class="w-full text-left transition duration-200"
                 :class="chefStore.kitchenSettings.layoutScale === 'large' 
-                  ? 'bg-orange-500/10 border-orange-500/40 text-orange-300' 
-                  : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10'"
+                  ? 'bg-orange-50 border-2 border-orange-500 p-4 rounded-xl text-orange-950 font-black block ring-2 ring-orange-500/20' 
+                  : 'bg-slate-50 border-2 border-slate-200 p-4 rounded-xl text-slate-800 font-bold block'"
               >
-                <div class="text-left">
-                  <span class="block">Yirik (Large / Zoom)</span>
-                  <span class="text-[9px] font-normal text-slate-500">10 dyumli planshetlar uchun (bir qatorda 2 ta karta)</span>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="block text-base md:text-lg">Yirik (Large / Zoom)</span>
+                    <span class="text-xs md:text-sm font-bold text-slate-700 block mt-1">10 dyumli planshetlar uchun (bir qatorda 2 ta karta)</span>
+                  </div>
+                  <span class="w-4 h-4 rounded-full border-2 border-orange-500 flex items-center justify-center flex-shrink-0">
+                    <span v-if="chefStore.kitchenSettings.layoutScale === 'large'" class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+                  </span>
                 </div>
-                <span class="w-2.5 h-2.5 rounded-full border border-orange-400/50 flex items-center justify-center">
-                  <span v-if="chefStore.kitchenSettings.layoutScale === 'large'" class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-                </span>
               </button>
             </div>
           </div>

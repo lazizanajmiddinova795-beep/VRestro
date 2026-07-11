@@ -2,7 +2,7 @@
   <div class="space-y-4 pb-28">
     <!-- Back to Tables Map / Selected Table Info -->
     <div class="flex items-center justify-between">
-      <button @click="backToTables" class="flex items-center space-x-2 text-xs text-slate-400 hover:text-white transition duration-200">
+      <button @click="backToTables" class="flex items-center space-x-2 text-sm text-slate-600 hover:text-slate-900 font-bold transition duration-200">
         <ArrowLeft class="w-4 h-4" />
         <span>{{ t('back_to_tables') }}</span>
       </button>
@@ -11,18 +11,18 @@
       <div class="relative">
         <button 
           @click="toggleTableSelector"
-          class="flex items-center space-x-1.5 px-3 py-1 rounded-xl bg-violet-600/20 border border-violet-500/30 text-xs font-bold text-violet-400 cursor-pointer"
+          class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-sm font-bold text-indigo-700 cursor-pointer"
         >
           <span>{{ t('table_label') }}: {{ tableNumber }}</span>
           <ChevronDown class="w-3.5 h-3.5" />
         </button>
-        <div v-if="showTableDropdown" class="absolute right-0 mt-2 w-48 bg-slate-900 border border-white/10 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto">
+        <div v-if="showTableDropdown" class="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto">
           <button 
             v-for="table in waiterStore.tables" 
             :key="table.id"
             @click="switchTable(table)"
-            class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
-            :class="table.id === tableId ? 'text-violet-400 font-bold bg-violet-600/10' : ''"
+            class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-955 transition-colors"
+            :class="table.id === tableId ? 'text-indigo-600 font-black bg-indigo-50' : ''"
           >
             {{ table.table_number }} ({{ table.status === 'empty' ? t('empty_tag') : t('my_tag') }})
           </button>
@@ -39,7 +39,7 @@
         v-model="searchQuery"
         type="text" 
         :placeholder="t('search_placeholder')"
-        class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500 transition duration-200"
+        class="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-slate-300 text-slate-900 placeholder-slate-500 rounded-xl focus:outline-none focus:border-indigo-600 transition duration-200 font-bold"
       />
     </div>
 
@@ -47,8 +47,8 @@
     <div class="flex space-x-2 overflow-x-auto pb-2 scrollbar-none">
       <button 
         @click="selectCategory(null)"
-        class="px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition duration-200"
-        :class="!selectedCategoryId ? 'bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-lg' : 'bg-slate-900/60 text-slate-400 border border-white/5'"
+        class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition duration-200"
+        :class="!selectedCategoryId ? 'bg-indigo-600 text-white font-black shadow-md' : 'bg-slate-200/70 text-slate-700 font-bold border border-slate-300'"
       >
         🍲 {{ t('all_cats') }}
       </button>
@@ -57,8 +57,8 @@
         v-for="cat in menuStore.categories" 
         :key="cat.id"
         @click="selectCategory(cat.id)"
-        class="px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition duration-200"
-        :class="selectedCategoryId === cat.id ? 'bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-lg' : 'bg-slate-900/60 text-slate-400 border border-white/5'"
+        class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition duration-200"
+        :class="selectedCategoryId === cat.id ? 'bg-indigo-600 text-white font-black shadow-md' : 'bg-slate-200/70 text-slate-700 font-bold border border-slate-300'"
       >
         🍽️ {{ translateCategory(cat.name) }}
       </button>
@@ -66,7 +66,7 @@
 
     <!-- Loading Feed state -->
     <div v-if="menuStore.loading" class="space-y-3">
-      <div v-for="n in 5" :key="n" class="h-20 bg-slate-900/30 animate-pulse rounded-2xl border border-white/5"></div>
+      <div v-for="n in 5" :key="n" class="h-20 bg-slate-200 animate-pulse rounded-2xl border border-slate-300 shadow-sm"></div>
     </div>
 
     <!-- Foods List Feed -->
@@ -74,17 +74,17 @@
       <div 
         v-for="food in filteredFoods" 
         :key="food.id"
-        class="backdrop-blur-md bg-slate-900/40 border border-white/5 rounded-2xl p-3 flex items-center justify-between transition duration-200"
-        :class="!food.is_available ? 'opacity-40' : 'hover:border-white/10'"
+        class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm mb-3 flex items-center justify-between transition duration-200"
+        :class="!food.is_available ? 'opacity-50 bg-slate-100 border-slate-300' : 'hover:border-slate-350'"
       >
         <div class="flex items-center space-x-3 min-w-0">
-          <div class="w-14 h-14 rounded-xl bg-slate-950 flex items-center justify-center overflow-hidden border border-white/5 shrink-0">
+          <div class="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 shrink-0">
             <img v-if="food.image_url" :src="food.image_url" :alt="food.name" class="w-full h-full object-cover" />
-            <ChefHat v-else class="w-6 h-6 text-slate-600 stroke-[1.2]" />
+            <ChefHat v-else class="w-6 h-6 text-slate-500 stroke-[1.2]" />
           </div>
           <div class="min-w-0">
-            <h4 class="text-sm font-bold text-white leading-snug truncate" :title="food.name">{{ food.name }}</h4>
-            <span class="text-xs font-semibold text-slate-400 block mt-0.5">{{ formatCurrency(food.price) }}</span>
+            <h4 class="text-slate-900 font-black text-base leading-snug truncate" :title="food.name">{{ food.name }}</h4>
+            <span class="text-indigo-600 font-bold text-sm block mt-0.5">{{ formatCurrency(food.price) }}</span>
           </div>
         </div>
 
@@ -92,14 +92,14 @@
           <!-- Stop list check -->
           <span 
             v-if="!food.is_available" 
-            class="px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-3xs font-bold text-red-400 uppercase tracking-wider"
+            class="bg-rose-100 text-rose-700 font-black border border-rose-300 px-3 py-1.5 rounded-xl text-xs uppercase tracking-wider"
           >
             {{ t('out_of_stock') }}
           </span>
           <button 
             v-else
             @click="triggerAddFlow(food)"
-            class="px-3 py-1.5 rounded-xl bg-violet-600 text-white font-bold text-xs hover:bg-violet-500 active:scale-95 transition-all shadow-md shadow-violet-500/15"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2 px-4 rounded-xl shadow-sm text-sm active:scale-95 transition-all"
           >
             {{ t('add_btn') }}
           </button>
@@ -107,7 +107,7 @@
       </div>
 
       <!-- Empty state -->
-      <div v-if="filteredFoods.length === 0" class="text-center py-12 text-slate-500 text-xs">
+      <div v-if="filteredFoods.length === 0" class="text-center py-12 text-slate-700 font-bold text-sm">
         {{ t('no_foods_found') }}
       </div>
     </div>
@@ -125,15 +125,15 @@
     <!-- Slide-Up Floating Cart Bar -->
     <div 
       v-if="cartItems.length > 0"
-      class="fixed bottom-20 left-4 right-4 z-40 backdrop-blur-xl bg-violet-950/80 border border-violet-500/35 py-3.5 px-5 rounded-2xl flex items-center justify-between shadow-lg shadow-black/60 cursor-pointer animate-slideUp"
+      class="fixed bottom-20 left-4 right-4 z-40 bg-indigo-600 text-white py-3.5 px-5 rounded-2xl flex items-center justify-between shadow-xl cursor-pointer animate-slideUp"
       @click="openCartDrawer"
     >
-      <div class="flex items-center space-x-2 text-white font-bold text-xs">
+      <div class="flex items-center space-x-2 text-white font-black text-sm">
         <ShoppingBag class="w-5 h-5" />
         <span>{{ t('cart_items_count') }}: {{ cartCount }} {{ t('qty_unit') }}</span>
       </div>
       <div class="flex items-center space-x-1.5">
-        <span class="text-sm font-bold text-white">{{ formatCurrency(cartTotal) }}</span>
+        <span class="text-base font-black text-white">{{ formatCurrency(cartTotal) }}</span>
         <ChevronUp class="w-4 h-4 text-white" />
       </div>
     </div>
@@ -141,16 +141,16 @@
     <!-- Slide-Up Bottom Cart Drawer -->
     <div 
       v-if="showCartDrawer"
-      class="fixed inset-0 z-50 flex items-end justify-center bg-black/65 backdrop-blur-sm"
+      class="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm"
       @click.self="closeCartDrawer"
     >
-      <div class="w-full max-w-md bg-slate-950 border-t border-white/10 rounded-t-3xl p-6 flex flex-col max-h-[85vh] shadow-2xl animate-slideUp">
-        <div class="flex items-center justify-between border-b border-white/5 pb-4 shrink-0">
+      <div class="w-full max-w-md bg-white border-t-2 border-slate-300 rounded-t-3xl p-6 flex flex-col max-h-[85vh] shadow-2xl animate-slideUp">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-4 shrink-0">
           <div>
-            <h3 class="text-base font-bold text-white">{{ t('cart_title') }}</h3>
-            <p class="text-[10px] text-slate-400">{{ t('table_label') }}: {{ tableNumber }}</p>
+            <h3 class="text-lg font-black text-slate-900">{{ t('cart_title') }}</h3>
+            <p class="text-xs text-slate-700 font-bold">{{ t('table_label') }}: {{ tableNumber }}</p>
           </div>
-          <button @click="closeCartDrawer" class="p-2 rounded-xl bg-white/5 text-slate-400 hover:text-white">
+          <button @click="closeCartDrawer" class="p-2 rounded-xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200">
             <X class="w-5 h-5" />
           </button>
         </div>
@@ -160,25 +160,25 @@
           <div 
             v-for="item in cartItems" 
             :key="item.food_id + '-' + (item.size_name || 'default')"
-            class="p-3.5 rounded-2xl bg-white/5 border border-white/5 space-y-3"
+            class="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-3"
           >
             <div class="flex justify-between items-start">
               <div @click="triggerEditFlow(item)" class="cursor-pointer group flex-grow pr-4">
-                <h4 class="text-sm font-bold text-white group-hover:text-violet-400 transition-colors flex items-center">
+                <h4 class="text-base font-black text-slate-900 group-hover:text-indigo-600 transition-colors flex items-center">
                   {{ item.name }}
-                  <span v-if="item.size_name" class="text-3xs px-1.5 py-0.5 rounded bg-violet-600/20 border border-violet-500/30 text-violet-400 ml-1">
+                  <span v-if="item.size_name" class="text-[10px] px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 ml-1.5 font-bold">
                     {{ item.size_name }}
                   </span>
-                  <span class="text-3xs text-slate-500 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">({{ t('edit_tag') }})</span>
+                  <span class="text-xs text-slate-500 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">({{ t('edit_tag') }})</span>
                 </h4>
-                <span class="text-xs text-slate-400 block mt-0.5">{{ formatCurrency(item.price) }}</span>
+                <span class="text-sm font-bold text-slate-600 block mt-0.5">{{ formatCurrency(item.price) }}</span>
               </div>
 
               <!-- Count Adjustments -->
-              <div class="flex items-center space-x-3 bg-slate-900 border border-white/5 px-2 py-1 rounded-xl shrink-0">
-                <button @click="updateQty(item.food_id, -1, item.size_name)" class="text-slate-400 hover:text-white px-2 py-0.5 text-sm font-extrabold">-</button>
-                <span class="text-white text-xs font-bold">{{ item.quantity }}</span>
-                <button @click="updateQty(item.food_id, 1, item.size_name)" class="text-slate-400 hover:text-white px-2 py-0.5 text-sm font-extrabold">+</button>
+              <div class="flex items-center space-x-3 bg-white border-2 border-slate-350 px-2 py-1 rounded-xl shrink-0">
+                <button @click="updateQty(item.food_id, -1, item.size_name)" class="text-slate-700 hover:text-slate-955 px-2 py-0.5 text-base font-extrabold">-</button>
+                <span class="text-slate-950 text-sm font-black">{{ item.quantity }}</span>
+                <button @click="updateQty(item.food_id, 1, item.size_name)" class="text-slate-700 hover:text-slate-955 px-2 py-0.5 text-base font-extrabold">+</button>
               </div>
             </div>
 
@@ -189,30 +189,30 @@
                 v-model="item.notes"
                 :placeholder="t('modifier_placeholder')"
                 @input="updateNote(item.food_id, item.notes, item.size_name)"
-                class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/5 text-2xs text-white placeholder-slate-600 focus:outline-none focus:border-violet-500 transition duration-150"
+                class="w-full px-3 py-2 rounded-xl bg-white border-2 border-slate-300 text-xs text-slate-900 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition duration-150 font-bold"
               />
             </div>
           </div>
         </div>
 
         <!-- Action Drawer Section -->
-        <div class="border-t border-white/5 pt-4 space-y-4 shrink-0">
-          <div class="flex justify-between items-center text-xs font-bold text-white">
+        <div class="border-t border-slate-200 pt-4 space-y-4 shrink-0">
+          <div class="flex justify-between items-center text-sm font-bold text-slate-900">
             <span>{{ t('subtotal_cart') }}:</span>
-            <span class="text-base text-violet-400">{{ formatCurrency(cartTotal) }}</span>
+            <span class="text-lg text-indigo-600 font-black">{{ formatCurrency(cartTotal) }}</span>
           </div>
 
           <button 
             @click="submitOrder"
             :disabled="submitting"
-            class="w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white text-sm shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 active:scale-95 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full py-4 rounded-xl bg-indigo-600 font-black text-white text-base shadow-md hover:bg-indigo-750 active:scale-95 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
           >
             <span v-if="submitting" class="flex items-center space-x-2">
-              <Loader2 class="w-4 h-4 animate-spin" />
+              <Loader2 class="w-5 h-5 animate-spin" />
               <span>{{ t('sending_tag') }}...</span>
             </span>
             <span v-else class="flex items-center space-x-2">
-              <Send class="w-4 h-4" />
+              <Send class="w-5 h-5" />
               <span>{{ t('send_kitchen') }}</span>
             </span>
           </button>

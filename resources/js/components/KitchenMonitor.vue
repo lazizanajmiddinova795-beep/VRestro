@@ -1,28 +1,28 @@
 <template>
   <ChefLayout>
-    <div class="space-y-6">
+    <div class="space-y-6 bg-[#F8FAFC] min-h-screen p-1">
       <!-- Loading spinner -->
-      <div v-if="chefStore.loading" class="flex flex-col items-center justify-center py-20 space-y-4">
-        <div class="w-12 h-12 rounded-full border-4 border-amber-500/20 border-t-amber-500 animate-spin"></div>
-        <p class="text-slate-400 font-medium">Buyurtmalar yuklanmoqda...</p>
+      <div v-if="chefStore.loading" class="flex flex-col items-center justify-center py-20 space-y-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div class="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin"></div>
+        <p class="text-slate-600 font-bold text-lg">Buyurtmalar yuklanmoqda...</p>
       </div>
 
       <!-- Error message -->
-      <div v-else-if="chefStore.error" class="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center space-x-3">
-        <span>{{ chefStore.error }}</span>
-        <button @click="chefStore.fetchActiveItems" class="px-3 py-1 bg-red-500/20 rounded-lg text-xs font-semibold hover:bg-red-500/30 transition">
+      <div v-else-if="chefStore.error" class="p-4 rounded-xl bg-red-50 border-2 border-red-300 text-red-800 flex items-center space-x-3 shadow-md">
+        <span class="font-bold text-lg">{{ chefStore.error }}</span>
+        <button @click="chefStore.fetchActiveItems" class="px-3 py-1 bg-red-650 text-white rounded-lg text-sm font-bold hover:bg-red-700 transition shadow">
           Qayta urinish
         </button>
       </div>
 
       <!-- Empty state -->
-      <div v-else-if="groupedTickets.length === 0" class="flex flex-col items-center justify-center py-24 text-center space-y-4 bg-white/5 border border-white/5 backdrop-blur-md rounded-2xl">
-        <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center border border-white/10 text-slate-500">
+      <div v-else-if="groupedTickets.length === 0" class="flex flex-col items-center justify-center py-24 text-center space-y-4 bg-white border-2 border-slate-200 rounded-2xl shadow-md">
+        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center border border-slate-300 text-slate-500 shadow-inner">
           <ChefHat class="w-8 h-8" />
         </div>
         <div>
-          <h3 class="text-lg font-bold text-white">Hozircha buyurtmalar yo'q</h3>
-          <p class="text-sm text-slate-400 max-w-xs mx-auto mt-1">Oshxonada barcha taomlar tayyorlangan yoki yangi buyurtmalar kelib tushmagan.</p>
+          <h3 class="text-xl font-black text-slate-900">Hozircha buyurtmalar yo'q</h3>
+          <p class="text-base text-slate-700 max-w-sm mx-auto mt-2 font-bold">Oshxonada barcha taomlar tayyorlangan yoki yangi buyurtmalar kelib tushmagan.</p>
         </div>
       </div>
 
@@ -31,44 +31,66 @@
         v-else 
         class="grid gap-6"
         :class="{
-          'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 text-xs': chefStore.kitchenSettings.layoutScale === 'compact',
-          'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4': chefStore.kitchenSettings.layoutScale === 'normal',
-          'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 text-lg': chefStore.kitchenSettings.layoutScale === 'large'
+          'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 text-sm': chefStore.kitchenSettings.layoutScale === 'compact',
+          'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-base': chefStore.kitchenSettings.layoutScale === 'normal',
+          'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 text-xl': chefStore.kitchenSettings.layoutScale === 'large'
         }"
       >
         <div 
           v-for="ticket in groupedTickets" 
           :key="ticket.id"
-          class="flex flex-col justify-between rounded-2xl border bg-slate-900/50 backdrop-blur-md overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"
+          class="flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"
           :class="[
-            ticket.status === 'cooking' ? 'border-blue-500/20 shadow-blue-950/20' : 'border-white/5 shadow-black/20',
-            isOverdue(ticket.created_at) ? 'border-red-500/40 bg-red-950/10 shadow-red-950/10' : ''
+            ticket.status === 'pending' ? 'bg-white border-2 border-slate-300 rounded-xl shadow-md text-slate-900 font-black' : '',
+            ticket.status === 'cooking' ? 'bg-amber-50 border-2 border-amber-500 rounded-xl shadow-lg animate-pulse text-amber-950 font-black' : '',
+            ticket.status === 'ready' ? 'bg-emerald-600 border-2 border-emerald-700 rounded-xl text-white shadow-md font-bold' : '',
+            isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'border-red-500 bg-red-50 shadow-red-200' : ''
           ]"
         >
           <!-- Card Header Zone -->
           <div 
-            class="px-4 py-3 border-b flex items-center justify-between"
+            class="px-4 py-3.5 border-b flex items-center justify-between"
             :class="[
-              ticket.status === 'cooking' ? 'border-blue-500/10 bg-blue-500/5' : 'border-white/5 bg-white/5',
-              isOverdue(ticket.created_at) ? 'border-red-500/15 bg-red-500/5' : ''
+              ticket.status === 'pending' ? 'border-slate-200 bg-slate-50' : '',
+              ticket.status === 'cooking' ? 'border-amber-200 bg-amber-100/50' : '',
+              ticket.status === 'ready' ? 'border-emerald-700 bg-emerald-700/50' : '',
+              isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'border-red-200 bg-red-100' : ''
             ]"
           >
             <div>
-              <div class="font-bold text-white tracking-wide text-base">
+              <div 
+                class="font-black tracking-wide text-lg"
+                :class="[
+                  ticket.status === 'pending' ? 'text-slate-900' : '',
+                  ticket.status === 'cooking' ? 'text-amber-950' : '',
+                  ticket.status === 'ready' ? 'text-white' : '',
+                  isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'text-red-950' : ''
+                ]"
+              >
                 {{ ticket.order?.table?.table_number || 'Olib ketish' }}
               </div>
-              <div class="text-[11px] text-slate-400 mt-0.5 flex items-center space-x-1">
+              <div 
+                class="text-xs mt-1 flex items-center space-x-1 font-bold"
+                :class="[
+                  ticket.status === 'pending' ? 'text-slate-700' : '',
+                  ticket.status === 'cooking' ? 'text-amber-900' : '',
+                  ticket.status === 'ready' ? 'text-emerald-100' : '',
+                  isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'text-red-900' : ''
+                ]"
+              >
                 <span>Ofitsiant: {{ ticket.order?.waiter?.name || 'Tizim' }}</span>
               </div>
             </div>
 
             <!-- Elapsed Time Timer -->
             <div 
-              class="text-xs font-mono font-bold px-2 py-1 rounded-md"
+              class="text-sm font-mono font-black px-2 py-1 rounded-md border"
               :class="[
-                isOverdue(ticket.created_at) 
-                  ? 'text-red-500 bg-red-500/10 border border-red-500/20 animate-pulse font-extrabold' 
-                  : 'text-amber-400 bg-amber-500/10 border border-amber-500/10'
+                ticket.status === 'ready' 
+                  ? 'text-white bg-emerald-850 border-emerald-650 font-bold' 
+                  : (isOverdue(ticket.created_at) 
+                      ? 'text-red-900 bg-red-200 border-red-400 animate-pulse font-extrabold' 
+                      : (ticket.status === 'cooking' ? 'text-amber-950 bg-amber-200 border-amber-400 font-black' : 'text-slate-900 bg-slate-200 border-slate-350 font-black'))
               ]"
             >
               {{ getElapsedTime(ticket.created_at) }}
@@ -76,32 +98,71 @@
           </div>
 
           <!-- Body Line Items -->
-          <div class="p-4 flex-grow space-y-3">
-            <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-white/5 pb-1">
+          <div class="p-4 flex-grow space-y-4">
+            <div 
+              class="flex items-center justify-between text-xs border-b pb-1.5 font-bold"
+              :class="[
+                ticket.status === 'pending' ? 'text-slate-600 border-slate-200' : '',
+                ticket.status === 'cooking' ? 'text-amber-900 border-amber-250' : '',
+                ticket.status === 'ready' ? 'text-emerald-100 border-emerald-500' : '',
+                isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'text-red-900 border-red-250' : ''
+              ]"
+            >
               <span>Buyurtma: #{{ ticket.order?.order_number }}</span>
-              <span class="capitalize" :class="ticket.status === 'cooking' ? 'text-blue-400' : 'text-amber-400'">
-                {{ ticket.status === 'cooking' ? 'Tayyorlanmoqda' : 'Kutilmoqda' }}
+              <span class="capitalize font-black">
+                {{ ticket.status === 'cooking' ? 'Tayyorlanmoqda' : (ticket.status === 'pending' ? 'Kutilmoqda' : 'Tayyor!') }}
               </span>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-4">
               <div 
                 v-for="item in ticket.items" 
                 :key="item.id" 
-                class="flex flex-col space-y-0.5 border-b border-white/5 last:border-b-0 pb-2 last:pb-0"
+                class="flex flex-col space-y-1.5 border-b last:border-b-0 pb-3 last:pb-0"
+                :class="[
+                  ticket.status === 'pending' ? 'border-slate-100' : '',
+                  ticket.status === 'cooking' ? 'border-amber-100' : '',
+                  ticket.status === 'ready' ? 'border-emerald-500' : '',
+                  isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'border-red-100' : ''
+                ]"
               >
                 <div class="flex items-start justify-between">
-                  <span class="text-sm font-semibold text-slate-200 leading-tight">
+                  <span 
+                    class="text-base leading-tight font-black"
+                    :class="[
+                      ticket.status === 'ready' ? 'text-white font-bold' : '',
+                      ticket.status === 'cooking' ? 'text-amber-950 font-black' : '',
+                      ticket.status === 'pending' ? 'text-slate-900 font-black' : '',
+                      isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'text-red-950 font-black' : ''
+                    ]"
+                  >
                     {{ item.food?.name }}
-                    <span v-if="item.size_name" class="text-xs text-slate-400 font-normal">({{ item.size_name }})</span>
+                    <span 
+                      v-if="item.size_name" 
+                      class="text-sm font-bold"
+                      :class="[
+                        ticket.status === 'ready' ? 'text-emerald-100' : '',
+                        ticket.status === 'cooking' ? 'text-amber-900 font-bold' : '',
+                        ticket.status === 'pending' ? 'text-slate-700 font-bold' : '',
+                        isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'text-red-900 font-bold' : ''
+                      ]"
+                    >({{ item.size_name }})</span>
                   </span>
-                  <span class="text-base font-extrabold text-amber-300 whitespace-nowrap ml-2">
+                  <span 
+                    class="text-lg font-black whitespace-nowrap ml-2"
+                    :class="[
+                      ticket.status === 'ready' ? 'text-white' : '',
+                      ticket.status === 'cooking' ? 'text-amber-950' : '',
+                      ticket.status === 'pending' ? 'text-slate-900' : '',
+                      isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'text-red-950' : ''
+                    ]"
+                  >
                     {{ item.quantity }}x
                   </span>
                 </div>
-                <!-- Modification Notes -->
-                <div v-if="item.notes" class="text-xs bg-amber-500/5 text-amber-300/80 px-2 py-1 rounded border border-amber-500/10 italic flex items-center space-x-1 mt-1">
-                  <span class="font-semibold not-italic">Izoh:</span>
+                <!-- Modification Notes Badges: bg-rose-100 text-rose-800 px-2 py-1 rounded font-black -->
+                <div v-if="item.notes" class="text-sm bg-rose-100 text-rose-800 px-2 py-1 rounded font-black flex items-center space-x-1 mt-1 border border-rose-250">
+                  <span class="not-italic">Izoh:</span>
                   <span>{{ item.notes }}</span>
                 </div>
               </div>
@@ -114,9 +175,9 @@
               v-if="ticket.status === 'pending'"
               @click="handleAction(ticket, 'cooking')"
               :disabled="ticket.actioning"
-              class="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-all duration-200 active:scale-[0.98] shadow-md shadow-blue-600/20 hover:shadow-blue-500/40 disabled:opacity-50 flex items-center justify-center space-x-2"
+              class="w-full py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold transition-all duration-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg"
             >
-              <Play class="w-4 h-4" />
+              <Play class="w-5 h-5" />
               <span>Boshlash (Start Cooking)</span>
             </button>
 
@@ -124,9 +185,9 @@
               v-else-if="ticket.status === 'cooking'"
               @click="handleAction(ticket, 'ready')"
               :disabled="ticket.actioning"
-              class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-all duration-200 active:scale-[0.98] shadow-md shadow-emerald-600/20 hover:shadow-emerald-500/40 disabled:opacity-50 flex items-center justify-center space-x-2 animate-pulse-slow"
+              class="w-full py-3 px-4 rounded-lg bg-amber-500 text-slate-950 text-lg font-black transition-all duration-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md hover:bg-amber-650"
             >
-              <CheckCircle class="w-4 h-4 animate-bounce" />
+              <CheckCircle class="w-5 h-5 animate-bounce" />
               <span>Tayyor! (Mark Ready)</span>
             </button>
           </div>

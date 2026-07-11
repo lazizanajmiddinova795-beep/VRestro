@@ -1,14 +1,14 @@
 <template>
-  <div class="h-full flex flex-col lg:flex-row gap-6 overflow-hidden">
+  <div class="h-full flex flex-col lg:flex-row gap-6 overflow-hidden bg-[#F1F5F9] p-1">
     
     <!-- LEFT COLUMN: Categories and Foods Grid (60% width) -->
-    <div class="w-full lg:w-3/5 flex flex-col h-full overflow-hidden backdrop-blur-xl bg-slate-900/40 border border-white/10 rounded-3xl p-6 shadow-2xl">
+    <div class="w-full lg:w-3/5 flex flex-col h-full overflow-hidden bg-white border border-slate-200 rounded-3xl p-6 shadow-md">
       <!-- Category Tabs -->
       <div class="flex items-center space-x-2 overflow-x-auto pb-3 shrink-0 scrollbar-thin">
         <button 
           @click="selectedCategory = 'all'"
           class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200 shrink-0 border"
-          :class="selectedCategory === 'all' ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'"
+          :class="selectedCategory === 'all' ? 'bg-indigo-600 border-indigo-650 text-white font-black shadow-sm' : 'bg-slate-100 border border-slate-300 text-slate-700 hover:bg-slate-200'"
         >
           {{ cashierStore.t('barchasi') }}
         </button>
@@ -17,7 +17,7 @@
           :key="cat.id"
           @click="selectedCategory = cat.id"
           class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200 shrink-0 border"
-          :class="selectedCategory === cat.id ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'"
+          :class="selectedCategory === cat.id ? 'bg-indigo-600 border-indigo-650 text-white font-black shadow-sm' : 'bg-slate-100 border border-slate-300 text-slate-700 hover:bg-slate-200'"
         >
           {{ cashierStore.t(cat.name.toLowerCase()) }}
         </button>
@@ -36,36 +36,36 @@
             :disabled="!food.is_available"
             class="group text-left border rounded-3xl p-4 flex flex-col justify-between min-h-[140px] relative transition-all duration-300 hover:scale-[1.02] overflow-hidden"
             :class="food.is_available 
-              ? 'bg-slate-950/40 border-white/10 hover:border-indigo-500/40 shadow-lg' 
-              : 'bg-slate-950/20 border-white/5 opacity-50 cursor-not-allowed'"
+              ? 'bg-slate-50 border-slate-200 hover:border-indigo-500/40 shadow-sm' 
+              : 'bg-slate-100/50 border-slate-200 opacity-50 cursor-not-allowed'"
           >
             <!-- Background gradient hover -->
             <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
             <div class="space-y-2 relative z-10">
               <!-- Category Badge -->
-              <span class="text-[9px] uppercase font-extrabold tracking-widest text-indigo-400">
+              <span class="text-[9px] uppercase font-extrabold tracking-widest text-indigo-600">
                 {{ cashierStore.t(food.category?.name?.toLowerCase() || 'menyu') }}
               </span>
-              <h3 class="text-sm font-bold text-white tracking-wide truncate max-w-full">
+              <h3 class="text-sm font-black text-slate-900 tracking-wide truncate max-w-full">
                 {{ cashierStore.t(food.name.toLowerCase()) }}
               </h3>
             </div>
 
             <!-- Price & Availability status -->
             <div class="mt-4 flex items-center justify-between w-full relative z-10">
-              <span class="text-xs font-mono font-black text-indigo-300">
+              <span class="text-xs font-mono font-black text-indigo-600">
                 {{ formatCurrency(food.price) }}
               </span>
               <span 
                 v-if="!food.is_available" 
-                class="text-[9px] font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded-full"
+                class="text-[9px] font-bold text-rose-700 bg-rose-100 border border-rose-300 px-2 py-0.5 rounded-full"
               >
                 Mavjud emas
               </span>
               <span 
                 v-else
-                class="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition duration-200"
+                class="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition duration-200"
               >
                 <Plus class="w-4 h-4" />
               </span>
@@ -74,51 +74,52 @@
         </div>
 
         <div v-else-if="loading" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <div v-for="n in 9" :key="n" class="bg-white/5 border border-white/5 rounded-3xl p-5 min-h-[140px] animate-pulse"></div>
+          <div v-for="n in 9" :key="n" class="bg-slate-100 border border-slate-200 rounded-3xl p-5 min-h-[140px] animate-pulse"></div>
         </div>
 
-        <div v-else class="text-center py-16 backdrop-blur-md bg-white/5 border border-white/10 rounded-3xl p-8">
-          <p class="text-slate-400 text-sm">Ushbu turkumda taomlar topilmadi.</p>
+        <div v-else class="text-center py-16 bg-slate-50 border border-slate-200 rounded-3xl p-8">
+          <p class="text-slate-700 font-bold text-sm">Ushbu turkumda taomlar topilmadi.</p>
         </div>
       </div>
     </div>
 
     <!-- RIGHT COLUMN: Shopping Cart Drawer (40% width) -->
-    <div class="w-full lg:w-2/5 flex flex-col h-full overflow-hidden backdrop-blur-xl bg-slate-900/40 border border-white/10 rounded-3xl p-6 shadow-2xl justify-between">
+    <!-- Receipt Wrapper (Savatcha qismi): bg-white border-l border-slate-200 p-6 -->
+    <div class="w-full lg:w-2/5 flex flex-col h-full overflow-hidden bg-white border-l border-slate-200 p-6 shadow-md justify-between">
       <div class="flex-grow flex flex-col overflow-hidden">
-        <h3 class="text-sm font-extrabold uppercase text-slate-400 tracking-wider shrink-0 mb-4">{{ cashierStore.t('savatcha') }}</h3>
+        <h3 class="text-xs font-extrabold uppercase text-slate-700 tracking-wider shrink-0 mb-4">{{ cashierStore.t('savatcha') }}</h3>
 
         <!-- Cart Items List -->
-        <div class="flex-grow overflow-y-auto pr-1 divide-y divide-white/5 space-y-2 mb-4">
+        <div class="flex-grow overflow-y-auto pr-1 divide-y divide-slate-200 space-y-2 mb-4">
           <div 
             v-for="item in cashierStore.cart" 
             :key="item.food_id"
             class="flex items-center justify-between py-2 text-xs"
           >
             <div class="space-y-0.5 truncate max-w-[180px]">
-              <h4 class="font-bold text-white truncate">{{ cashierStore.t(item.name.toLowerCase()) }}</h4>
-              <p class="font-mono text-slate-400 text-[10px]">{{ formatCurrency(item.price) }}</p>
+              <h4 class="font-bold text-slate-900 truncate">{{ cashierStore.t(item.name.toLowerCase()) }}</h4>
+              <p class="font-mono text-slate-650 text-[10px]">{{ formatCurrency(item.price) }}</p>
             </div>
 
             <!-- Increments -->
             <div class="flex items-center space-x-2.5 shrink-0">
               <button 
                 @click="cashierStore.updateQuantity(item.food_id, -1)"
-                class="w-6 h-6 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 flex items-center justify-center font-bold"
+                class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-750 flex items-center justify-center font-black"
               >
                 -
               </button>
-              <span class="font-bold font-mono text-white text-xs w-4 text-center">{{ item.quantity }}</span>
+              <span class="font-bold font-mono text-slate-900 text-xs w-4 text-center">{{ item.quantity }}</span>
               <button 
                 @click="cashierStore.updateQuantity(item.food_id, 1)"
-                class="w-6 h-6 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 flex items-center justify-center font-bold"
+                class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-750 flex items-center justify-center font-black"
               >
                 +
               </button>
               
               <button 
                 @click="cashierStore.removeFromCart(item.food_id)"
-                class="p-1 rounded bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition"
+                class="p-1 rounded bg-rose-100 text-rose-700 hover:bg-rose-600 hover:text-white transition"
               >
                 <Trash2 class="w-3.5 h-3.5" />
               </button>
@@ -132,31 +133,32 @@
       </div>
 
       <!-- Financial calculations & checkout -->
-      <div class="border-t border-white/10 pt-4 space-y-3 shrink-0">
+      <div class="border-t border-slate-200 pt-4 space-y-3 shrink-0">
         <div class="space-y-1.5 text-xs font-semibold">
           <div class="flex justify-between">
-            <span class="text-slate-400">{{ cashierStore.t('oraliq_jami') }}:</span>
-            <span class="font-mono text-white">{{ formatCurrency(totals.subtotal) }}</span>
+            <span class="text-slate-600 font-bold">{{ cashierStore.t('oraliq_jami') }}:</span>
+            <span class="font-mono text-slate-900 font-bold">{{ formatCurrency(totals.subtotal) }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-slate-400">{{ cashierStore.t('xizmat_haqi') }} ({{ serviceChargeRate }}%):</span>
-            <span class="font-mono text-white">{{ formatCurrency(totals.service) }}</span>
+            <span class="text-slate-600 font-bold">{{ cashierStore.t('xizmat_haqi') }} ({{ serviceChargeRate }}%):</span>
+            <span class="font-mono text-slate-900 font-bold">{{ formatCurrency(totals.service) }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-slate-400">{{ cashierStore.t('qqs') }} ({{ taxRate }}%):</span>
-            <span class="font-mono text-white">{{ formatCurrency(totals.tax) }}</span>
+            <span class="text-slate-600 font-bold">{{ cashierStore.t('qqs') }} ({{ taxRate }}%):</span>
+            <span class="font-mono text-slate-900 font-bold">{{ formatCurrency(totals.tax) }}</span>
           </div>
-          <div class="border-t border-dashed border-white/10 my-2"></div>
-          <div class="flex justify-between text-indigo-300 font-black text-sm">
+          <div class="border-t border-dashed border-slate-200 my-2"></div>
+          <!-- Monetary Aggregations Display: text-slate-950 font-black text-2xl md:text-3xl -->
+          <div class="flex justify-between text-slate-955 font-black text-2xl">
             <span>{{ cashierStore.t('jami_to_lov') }}:</span>
-            <span class="font-mono text-base">{{ formatCurrency(totals.total) }}</span>
+            <span class="font-mono text-slate-950 font-black text-2xl md:text-3xl">{{ formatCurrency(totals.total) }}</span>
           </div>
         </div>
 
         <button 
           @click="openCheckout"
           :disabled="cashierStore.cart.length === 0"
-          class="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 font-extrabold text-xs text-white tracking-wider shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 font-extrabold text-xs text-white tracking-wider shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {{ cashierStore.t('to_lovga_o_tish') }}
         </button>
@@ -167,40 +169,40 @@
     <Transition name="fade">
       <div 
         v-if="showCheckoutModal" 
-        class="fixed inset-0 z-50 backdrop-blur-md bg-black/60 flex items-center justify-center p-6"
+        class="fixed inset-0 z-50 backdrop-blur-md bg-black/50 flex items-center justify-center p-6 no-print"
         @click.self="showCheckoutModal = false"
       >
-        <div class="w-full max-w-md backdrop-blur-xl bg-slate-900/80 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn text-left text-white max-h-[90vh] overflow-y-auto">
+        <div class="w-full max-w-md bg-white border-2 border-slate-300 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn text-left text-slate-900 max-h-[90vh] overflow-y-auto">
           
-          <div class="flex justify-between items-center border-b border-white/5 pb-3">
-            <h3 class="text-base font-bold text-white flex items-center space-x-2">
-              <Receipt class="w-5 h-5 text-indigo-400" />
+          <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+            <h3 class="text-base font-black text-slate-900 flex items-center space-x-2">
+              <Receipt class="w-5 h-5 text-indigo-600" />
               <span>Tezkor POS To'lovi</span>
             </h3>
-            <button @click="showCheckoutModal = false" class="p-1 rounded-lg bg-white/5 text-slate-400 hover:text-white transition">
+            <button @click="showCheckoutModal = false" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-950 transition">
               <X class="w-4 h-4" />
             </button>
           </div>
 
           <div class="space-y-4">
             <!-- Order Summary -->
-            <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-2 text-xs font-semibold">
-              <div class="flex justify-between text-slate-400">
+            <div class="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-2 text-xs font-bold text-slate-800">
+              <div class="flex justify-between text-slate-600">
                 <span>Savatchadagi taomlar soni:</span>
                 <span>{{ cashierStore.cart.reduce((acc, i) => acc + i.quantity, 0) }} ta</span>
               </div>
-              <div class="flex justify-between text-indigo-300 font-black text-sm pt-1">
+              <div class="flex justify-between text-indigo-700 font-black text-sm pt-1 border-t border-slate-200 mt-2">
                 <span>JAMI SUMMA:</span>
-                <span class="font-mono text-base">{{ formatCurrency(totals.total) }}</span>
+                <span class="font-mono text-slate-950 font-black text-2xl md:text-3xl">{{ formatCurrency(totals.total) }}</span>
               </div>
             </div>
 
             <!-- Table Selection (Optional, defaults to Takeaway) -->
             <div class="space-y-1.5">
-              <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">Stolni Tanlang (Ixtiyoriy)</label>
+              <label class="text-xxs text-slate-600 font-bold uppercase tracking-wider">Stolni Tanlang (Ixtiyoriy)</label>
               <select 
                 v-model="checkoutForm.table_id" 
-                class="w-full px-4 py-2.5 rounded-xl bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+                class="w-full px-4 py-2.5 rounded-xl bg-white border-2 border-slate-300 focus:border-indigo-600 text-sm text-slate-900 font-bold focus:outline-none transition"
               >
                 <option :value="null">Olib ketish (Takeaway / Stol yo'q)</option>
                 <option 
@@ -216,15 +218,15 @@
             <!-- CRM Customer loyalty -->
             <div class="space-y-1.5">
               <div class="flex justify-between items-center">
-                <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">Mijoz (Sodiqlik tizimi)</label>
-                <span class="text-[10px] text-indigo-400 font-bold" v-if="selectedCustomer">
+                <label class="text-xxs text-slate-600 font-bold uppercase tracking-wider">Mijoz (Sodiqlik tizimi)</label>
+                <span class="text-xs text-indigo-650 font-black" v-if="selectedCustomer">
                   Bonus: {{ formatCurrency(selectedCustomer.bonus_balance) }}
                 </span>
               </div>
               <select 
                 v-model="checkoutForm.customer_id" 
                 @change="handleCustomerSelect"
-                class="w-full px-4 py-2.5 rounded-xl bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+                class="w-full px-4 py-2.5 rounded-xl bg-white border-2 border-slate-300 focus:border-indigo-600 text-sm text-slate-900 font-bold focus:outline-none transition"
               >
                 <option :value="null">Mehmon (Mijoz bog'lanmagan)</option>
                 <option 
@@ -239,11 +241,11 @@
 
             <!-- Payment Method -->
             <div class="space-y-1.5">
-              <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">To'lov Usuli *</label>
+              <label class="text-xxs text-slate-600 font-bold uppercase tracking-wider">To'lov Usuli *</label>
               <select 
                 v-model="checkoutForm.payment_method" 
                 @change="handlePaymentMethodChange"
-                class="w-full px-4 py-2.5 rounded-xl bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+                class="w-full px-4 py-2.5 rounded-xl bg-white border-2 border-slate-300 focus:border-indigo-600 text-sm text-slate-900 font-bold focus:outline-none transition"
               >
                 <option value="cash">Naqd pul (Cash)</option>
                 <option value="card">Plastik karta (Card)</option>
@@ -253,44 +255,45 @@
             </div>
 
             <!-- Amount splits -->
-            <div class="p-3 rounded-2xl bg-white/5 border border-white/5 space-y-3 text-xs">
+            <!-- Payment Split Fields: bg-white border-2 border-slate-300 text-slate-955 font-bold text-lg focus:border-indigo-600 focus:ring-2 -->
+            <div class="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-3 text-xs font-bold">
               <div class="grid grid-cols-3 items-center gap-2" v-if="checkoutForm.payment_method === 'cash' || checkoutForm.payment_method === 'mixed'">
-                <span class="text-slate-400 font-semibold">Naqd pul:</span>
+                <span class="text-slate-700 font-black">Naqd pul:</span>
                 <input 
                   v-model.number="checkoutForm.cash_amount"
                   type="number"
                   placeholder="0"
                   :disabled="checkoutForm.payment_method === 'cash'"
-                  class="col-span-2 px-3 py-1.5 rounded-lg bg-slate-950/40 border border-white/10 text-white text-xs font-mono focus:outline-none"
+                  class="col-span-2 px-3 py-2 rounded-lg bg-white border-2 border-slate-300 text-slate-955 font-bold text-base focus:outline-none focus:border-indigo-600"
                 />
               </div>
               <div class="grid grid-cols-3 items-center gap-2" v-if="checkoutForm.payment_method === 'card' || checkoutForm.payment_method === 'mixed'">
-                <span class="text-slate-400 font-semibold">Plastik karta:</span>
+                <span class="text-slate-700 font-black">Plastik karta:</span>
                 <input 
                   v-model.number="checkoutForm.card_amount"
                   type="number"
                   placeholder="0"
                   :disabled="checkoutForm.payment_method === 'card'"
-                  class="col-span-2 px-3 py-1.5 rounded-lg bg-slate-950/40 border border-white/10 text-white text-xs font-mono focus:outline-none"
+                  class="col-span-2 px-3 py-2 rounded-lg bg-white border-2 border-slate-300 text-slate-955 font-bold text-base focus:outline-none focus:border-indigo-600"
                 />
               </div>
               <div class="grid grid-cols-3 items-center gap-2" v-if="checkoutForm.payment_method === 'qr' || checkoutForm.payment_method === 'mixed'">
-                <span class="text-slate-400 font-semibold">QR to'lov:</span>
+                <span class="text-slate-700 font-black">QR to'lov:</span>
                 <input 
                   v-model.number="checkoutForm.qr_amount"
                   type="number"
                   placeholder="0"
                   :disabled="checkoutForm.payment_method === 'qr'"
-                  class="col-span-2 px-3 py-1.5 rounded-lg bg-slate-950/40 border border-white/10 text-white text-xs font-mono focus:outline-none"
+                  class="col-span-2 px-3 py-2 rounded-lg bg-white border-2 border-slate-300 text-slate-955 font-bold text-base focus:outline-none focus:border-indigo-600"
                 />
               </div>
               <div class="grid grid-cols-3 items-center gap-2" v-if="selectedCustomer && selectedCustomer.bonus_balance > 0">
-                <span class="text-slate-400 font-semibold">Bonusdan:</span>
+                <span class="text-slate-700 font-black">Bonusdan:</span>
                 <input 
                   v-model.number="checkoutForm.bonus_used"
                   type="number"
                   placeholder="0"
-                  class="col-span-2 px-3 py-1.5 rounded-lg bg-slate-950/40 border border-white/10 text-white text-xs font-mono focus:outline-none"
+                  class="col-span-2 px-3 py-2 rounded-lg bg-white border-2 border-slate-300 text-slate-955 font-bold text-base focus:outline-none focus:border-indigo-600"
                 />
               </div>
             </div>
@@ -298,22 +301,23 @@
             <!-- Balance Split Warning -->
             <div 
               v-if="!isSplitAmountValid && checkoutForm.payment_method === 'mixed'"
-              class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xxs text-amber-400 font-semibold"
+              class="p-3 rounded-xl bg-amber-50 border-2 border-amber-300 text-xxs text-amber-800 font-bold"
             >
               Diqqat: To'lov summasi jami miqdorga to'g'ri kelmayapti. Kiritilgan: {{ formatCurrency(totalEnteredAmount) }} (Jami: {{ formatCurrency(totals.total) }}).
             </div>
           </div>
 
-          <div class="flex justify-end space-x-2 pt-2 border-t border-white/5">
-            <button @click="showCheckoutModal = false" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-semibold text-slate-300 transition">
+          <div class="flex justify-end space-x-2 pt-4 border-t border-slate-200">
+            <button @click="showCheckoutModal = false" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 transition">
               Bekor qilish
             </button>
+            <!-- The final "To'lovni Yopish (Close Bill)" button must look heavy and powerful: bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-xl text-xl shadow-md -->
             <button 
               @click="submitCheckout"
               :disabled="loadingSubmit || (checkoutForm.payment_method === 'mixed' && !isSplitAmountValid)"
-              class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+              class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-black shadow-md transition disabled:opacity-50"
             >
-              {{ loadingSubmit ? 'To\'lanmoqda...' : 'To\'lovni yakunlash' }}
+              {{ loadingSubmit ? 'To\'lanmoqda...' : 'To\'lovni Yopish' }}
             </button>
           </div>
         </div>
@@ -323,18 +327,18 @@
     <!-- Clean Success Modal -->
     <Transition name="fade">
       <div v-if="modal.show" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" @click="closeModal"></div>
-        <div class="relative z-10 w-full max-w-sm backdrop-blur-2xl bg-slate-900/90 border border-white/10 rounded-3xl p-6 shadow-2xl text-center space-y-6 animate-scaleIn">
-          <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+        <div class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" @click="closeModal"></div>
+        <div class="relative z-10 w-full max-w-sm bg-white border-2 border-slate-300 rounded-3xl p-6 shadow-2xl text-center space-y-6 animate-scaleIn text-slate-900">
+          <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center bg-emerald-50 border border-emerald-350 text-emerald-600">
             <CheckCircle class="w-8 h-8" />
           </div>
           <div class="space-y-2">
-            <h4 class="text-lg font-bold text-white">{{ modal.title }}</h4>
-            <p class="text-xs text-slate-300 leading-relaxed">{{ modal.message }}</p>
+            <h4 class="text-lg font-black text-slate-900">{{ modal.title }}</h4>
+            <p class="text-sm text-slate-700 font-bold leading-relaxed">{{ modal.message }}</p>
           </div>
           <button 
             @click="closeModal" 
-            class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg transition duration-200"
+            class="w-full py-3 rounded-xl font-bold text-sm bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition duration-200"
           >
             Yopish
           </button>
