@@ -48,7 +48,7 @@ class Food extends Model
     }
 
     /**
-     * Generate slug from name on save.
+     * Generate unique slug from name on save.
      *
      * @param string $value
      * @return void
@@ -56,7 +56,16 @@ class Food extends Model
     public function setNameAttribute(string $value): void
     {
         $this->attributes['name'] = $value;
-        $this->attributes['slug'] = Str::slug($value);
+        $slug = Str::slug($value);
+        
+        $originalSlug = $slug;
+        $count = 1;
+        while (self::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+        
+        $this->attributes['slug'] = $slug;
     }
 
     /**

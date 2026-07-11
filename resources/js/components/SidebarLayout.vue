@@ -65,7 +65,7 @@
             :class="isActiveRoute('/ingredients') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'"
           >
             <Database class="w-5 h-5" />
-            <span>Masalliqlar</span>
+            <span>Ta'minot</span>
           </router-link>
 
           <!-- Recipes (All Roles) -->

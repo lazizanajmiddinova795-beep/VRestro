@@ -5,7 +5,7 @@
     <div class="flex items-center justify-between mb-6 shrink-0">
       <div>
         <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400 tracking-wide">
-          Masalliqlar Zaxirasi
+          Ta'minot Zaxirasi
         </h1>
         <p class="text-xs text-slate-400">Xom-ashyolar, ularning miqdori va sotib olish qiymatlarini boshqarish oynasi</p>
       </div>
