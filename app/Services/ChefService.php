@@ -50,6 +50,14 @@ class ChefService
         return DB::transaction(function () use ($itemId, $status) {
             $item = OrderItem::with('order.items')->findOrFail($itemId);
             
+            if ($status === 'ready' && $item->status !== 'cooking') {
+                throw new \InvalidArgumentException("Taomni tayyor deb belgilash uchun, avval u tayyorlanayotgan (cooking) bo'lishi shart!");
+            }
+            
+            if ($status === 'cooking' && $item->status !== 'pending') {
+                throw new \InvalidArgumentException("Faqat yangi kutilayotgan (pending) taomlarni tayyorlashni boshlash mumkin!");
+            }
+
             // Transition order item status
             $item->status = $status;
             $item->save();
