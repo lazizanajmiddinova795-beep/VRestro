@@ -27,16 +27,7 @@
             <span>Boshqaruv paneli</span>
           </router-link>
 
-          <!-- Analytics (Admin and Cashier only) -->
-          <router-link 
-            v-if="['Admin', 'Cashier'].includes(authStore.user?.roles?.[0])"
-            to="/analytics" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition duration-200"
-            :class="isActiveRoute('/analytics') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'"
-          >
-            <BarChart3 class="w-5 h-5" />
-            <span>Tahlillar</span>
-          </router-link>
+
 
           <!-- Orders (All Roles) -->
           <router-link 
