@@ -34,7 +34,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/verify-face', [AuthController::class, 'verifyFace']);
 });
 
-Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'role:Admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
 });
 

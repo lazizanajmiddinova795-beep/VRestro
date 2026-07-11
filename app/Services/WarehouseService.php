@@ -57,6 +57,10 @@ class WarehouseService
                 $incomingQty = (float) $item['quantity'];
                 $incomingPrice = (float) $item['unit_price'];
 
+                if ($incomingQty <= 0 || $incomingPrice < 0) {
+                    throw new \InvalidArgumentException("Kirim qilinayotgan tovar miqdori yoki narxi salbiy bo'lishi mumkin emas!");
+                }
+
                 $newQty = $oldQty + $incomingQty;
 
                 // Moving Average Purchase Price Calculation

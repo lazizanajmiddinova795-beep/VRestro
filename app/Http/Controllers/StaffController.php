@@ -53,12 +53,15 @@ class StaffController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'phone' => ['required', 'string', 'max:20', 'unique:users,phone'],
-            'login' => ['required', 'string', 'max:50', 'unique:users,login'],
+            'login' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z0-9_\.]+$/', 'unique:users,login'],
             'password' => ['required', 'string', 'min:4', 'max:100'],
             'role' => ['required', 'string', 'in:Admin,Chef,Waiter,Cashier'],
             'shift_hours' => ['nullable', 'string', 'max:100'],
             'status' => ['required', 'string', 'in:active,inactive'],
         ]);
+
+        $data['name'] = strip_tags($data['name']);
+        $data['login'] = strip_tags($data['login']);
 
         $user = $this->staffService->createStaff($request->user()->id, $data);
 
@@ -82,12 +85,15 @@ class StaffController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'phone' => ['required', 'string', 'max:20', 'unique:users,phone,' . $id],
-            'login' => ['required', 'string', 'max:50', 'unique:users,login,' . $id],
+            'login' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z0-9_\.]+$/', 'unique:users,login,' . $id],
             'password' => ['nullable', 'string', 'min:4', 'max:100'],
             'role' => ['required', 'string', 'in:Admin,Chef,Waiter,Cashier'],
             'shift_hours' => ['nullable', 'string', 'max:100'],
             'status' => ['required', 'string', 'in:active,inactive'],
         ]);
+
+        $data['name'] = strip_tags($data['name']);
+        $data['login'] = strip_tags($data['login']);
 
         $user = $this->staffService->updateStaff($request->user()->id, $id, $data);
 

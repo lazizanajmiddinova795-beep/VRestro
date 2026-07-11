@@ -196,7 +196,9 @@ class NotificationTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->adminUser, 'sanctum')
-            ->postJson("/api/orders/{$order->id}/cancel");
+            ->postJson("/api/orders/{$order->id}/cancel", [
+                'cancellation_reason' => 'Customer changed mind'
+            ]);
 
         $response->assertStatus(200);
         Queue::assertPushed(ProcessNotificationJob::class);
