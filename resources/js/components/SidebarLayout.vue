@@ -1,8 +1,18 @@
 <template>
   <div class="h-screen w-screen bg-[#F8FAFC] text-slate-900 flex font-sans overflow-hidden">
-    
-    <!-- Left Sidebar -->
-    <aside class="w-64 bg-white border-r border-slate-200/80 shadow-[2px_0_15px_rgba(0,0,0,0.02)] flex flex-col justify-between shrink-0 sticky top-0 h-screen z-40 overflow-y-auto">
+
+    <!-- Mobile backdrop, closes the drawer when tapped -->
+    <div
+      v-if="mobileMenuOpen"
+      class="fixed inset-0 bg-slate-900/40 z-40 md:hidden"
+      @click="mobileMenuOpen = false"
+    ></div>
+
+    <!-- Left Sidebar: static column on desktop, off-canvas drawer on mobile -->
+    <aside
+      class="w-64 bg-white border-r border-slate-200/80 shadow-[2px_0_15px_rgba(0,0,0,0.02)] flex flex-col justify-between shrink-0 h-screen z-50 overflow-y-auto fixed md:sticky top-0 left-0 transition-transform duration-300 md:translate-x-0"
+      :class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'"
+    >
       <div class="p-6 space-y-8">
         <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-3 group">
@@ -104,8 +114,15 @@
     <!-- Main Content Area -->
     <div class="flex-grow flex flex-col h-screen overflow-hidden relative bg-slate-50">
       <!-- Top header bar inside Main Content Area -->
-      <header class="h-16 border-b border-slate-200 bg-white px-6 flex items-center justify-between shrink-0 relative z-30">
-        <div></div>
+      <header class="h-16 border-b border-slate-200 bg-white px-4 md:px-6 flex items-center justify-between shrink-0 relative z-30">
+        <!-- Mobile menu toggle -->
+        <button
+          @click="mobileMenuOpen = true"
+          class="md:hidden p-2 -ml-2 rounded-xl text-slate-600 hover:bg-slate-100 transition"
+        >
+          <Menu class="w-5.5 h-5.5" />
+        </button>
+        <div class="hidden md:block"></div>
         <!-- Right side: Bell icon dropdown and alerts -->
         <div class="flex items-center space-x-4 relative">
           
@@ -210,7 +227,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ChefHat, LayoutDashboard, ShoppingBag, LogOut, BookOpen, Database, Sparkles, Package, Layers, Users, Smile, DollarSign, Tag, BarChart3, Bell, Info, X, Settings, ChevronDown, Folder, Wallet } from 'lucide-vue-next';
+import { ChefHat, LayoutDashboard, ShoppingBag, LogOut, BookOpen, Database, Sparkles, Package, Layers, Users, Smile, DollarSign, Tag, BarChart3, Bell, Info, X, Settings, ChevronDown, Folder, Wallet, Menu } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationStore } from '@/stores/notifications';
 import { useSettingStore } from '@/stores/settings';
@@ -286,6 +303,10 @@ const expandActiveGroup = () => {
 };
 
 watch(() => route.path, expandActiveGroup, { immediate: true });
+
+// Off-canvas drawer state for mobile screens
+const mobileMenuOpen = ref(false);
+watch(() => route.path, () => { mobileMenuOpen.value = false; });
 
 const showDropdown = ref(false);
 const activeToasts = ref([]);
