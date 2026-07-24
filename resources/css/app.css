@@ -198,4 +198,28 @@ html.night-filter {
   border-color: rgba(226, 232, 240, 0.9) !important;
 }
 
+/* Minimalist Design System Helpers */
+.minimal-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.minimal-input {
+  background-color: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.minimal-input:focus {
+  border-color: #0f172a;
+}
+
 

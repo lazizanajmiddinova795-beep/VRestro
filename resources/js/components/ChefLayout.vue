@@ -1,21 +1,21 @@
 <template>
-  <div class="relative min-h-screen bg-[#F8FAFC] text-slate-900 font-bold font-sans overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+  <div class="relative min-h-screen bg-slate-50 text-slate-900 font-bold font-sans overflow-x-hidden selection:bg-slate-900 selection:text-white">
     <!-- App shell wrapper -->
     <div class="relative z-10 min-h-screen flex flex-col">
       <!-- Header KPI Bar -->
-      <header class="sticky top-0 z-50 bg-white border-b-2 border-slate-200 px-6 py-4 shadow-sm">
+      <header class="sticky top-0 z-50 bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <!-- Logo & Chef Details -->
           <div class="flex items-center space-x-4">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <div class="w-11 h-11 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-sm">
               <ChefHat class="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 class="text-lg font-black text-slate-900 tracking-wide">
+              <h1 class="text-lg font-black text-slate-900 tracking-tight">
                 Oshpaz Monitori
               </h1>
-              <div class="flex items-center space-x-2 text-xs text-slate-700">
-                <User class="w-3.5 h-3.5 text-orange-600" />
+              <div class="flex items-center space-x-2 text-xs text-slate-500 font-bold">
+                <User class="w-3.5 h-3.5 text-slate-700" />
                 <span>{{ authStore.user?.name || 'Asilbek Povar' }}</span>
               </div>
             </div>
@@ -26,21 +26,21 @@
             <router-link 
               to="/kitchen" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
-              :class="route.path === '/kitchen' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200'"
+              :class="route.path === '/kitchen' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
             >
               Buyurtmalar
             </router-link>
             <router-link 
               to="/kitchen/stop-list" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
-              :class="route.path === '/kitchen/stop-list' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200'"
+              :class="route.path === '/kitchen/stop-list' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
             >
               Stop-List
             </router-link>
             <router-link 
               to="/kitchen/settings" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
-              :class="route.path === '/kitchen/settings' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200'"
+              :class="route.path === '/kitchen/settings' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
             >
               Sozlamalar
             </router-link>

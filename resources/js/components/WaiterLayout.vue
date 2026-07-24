@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans pb-24 relative overflow-hidden">
+  <div class="min-h-screen bg-slate-50 text-slate-900 font-sans pb-24 relative overflow-hidden">
     <!-- Live Toast Notification Overlay -->
     <div 
       v-if="waiterStore.toastMessage"
-      class="fixed top-4 left-4 right-4 z-50 p-4 rounded-2xl bg-white border-2 border-emerald-500 shadow-2xl flex items-start space-x-3 animate-slideDown pointer-events-auto"
+      class="fixed top-4 left-4 right-4 z-50 p-4 rounded-2xl bg-white border border-emerald-500 shadow-sm flex items-start space-x-3 animate-slideDown pointer-events-auto"
     >
       <div class="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-800 shrink-0">
         <BellRing class="w-4 h-4 animate-swing" />
@@ -20,19 +20,19 @@
     <!-- Header Navigation -->
     <header class="sticky top-0 z-40 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-indigo-500/20">
+        <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-lg shadow-sm">
           {{ avatarInitials }}
         </div>
         <div>
-          <h2 class="text-slate-900 font-black text-lg">{{ waiterName }}</h2>
-          <span class="inline-flex items-center text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full mt-0.5 border border-emerald-250">
+          <h2 class="text-slate-900 font-black text-lg tracking-tight">{{ waiterName }}</h2>
+          <span class="inline-flex items-center text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full mt-0.5 border border-emerald-200">
             <span class="w-2 h-2 rounded-full bg-emerald-600 mr-1.5 animate-pulse"></span>
             {{ t('active_badge') }}
           </span>
         </div>
       </div>
 
-      <button @click="handleLogout" class="p-2 rounded-xl bg-slate-100 border border-slate-300 text-slate-700 hover:bg-slate-200 transition duration-200">
+      <button @click="handleLogout" class="p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 hover:bg-slate-200 transition duration-200">
         <LogOut class="w-5 h-5" />
       </button>
     </header>

@@ -39,23 +39,16 @@
         <div 
           v-for="ticket in groupedTickets" 
           :key="ticket.id"
-          class="flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"
+          class="flex flex-col justify-between overflow-hidden transition-all duration-200 bg-white border border-slate-200 rounded-2xl shadow-sm"
           :class="[
-            ticket.status === 'pending' ? 'bg-white border-2 border-slate-300 rounded-xl shadow-md text-slate-900 font-black' : '',
-            ticket.status === 'cooking' ? 'bg-amber-50 border-2 border-amber-500 rounded-xl shadow-lg animate-pulse text-amber-950 font-black' : '',
-            ticket.status === 'ready' ? 'bg-emerald-600 border-2 border-emerald-700 rounded-xl text-white shadow-md font-bold' : '',
-            isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'border-red-500 bg-red-50 shadow-red-200' : ''
+            ticket.status === 'cooking' ? 'border-amber-400 bg-amber-50/20' : '',
+            ticket.status === 'ready' ? 'border-emerald-500 bg-emerald-50/20' : '',
+            isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'border-red-400 bg-red-50/20' : ''
           ]"
         >
           <!-- Card Header Zone -->
           <div 
-            class="px-4 py-3.5 border-b flex items-center justify-between"
-            :class="[
-              ticket.status === 'pending' ? 'border-slate-200 bg-slate-50' : '',
-              ticket.status === 'cooking' ? 'border-amber-200 bg-amber-100/50' : '',
-              ticket.status === 'ready' ? 'border-emerald-700 bg-emerald-700/50' : '',
-              isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'border-red-200 bg-red-100' : ''
-            ]"
+            class="px-4 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50"
           >
             <div>
               <div 

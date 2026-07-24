@@ -1,25 +1,25 @@
 <template>
-  <div class="h-screen w-screen bg-[#F1F5F9] text-slate-900 flex flex-col font-sans overflow-hidden relative">
+  <div class="h-screen w-screen bg-slate-50 text-slate-900 flex flex-col font-sans overflow-hidden relative">
 
     <!-- Top Adaptive Navbar -->
     <header class="w-full shrink-0 bg-white border-b border-slate-200 relative z-30 px-4 py-3 md:px-8 flex flex-col md:flex-row justify-between items-center gap-4 no-print shadow-sm">
       <!-- Left: Profile and Time -->
       <div class="flex items-center justify-between w-full md:w-auto gap-4">
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-bold text-lg uppercase shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-lg uppercase shrink-0 shadow-sm">
             {{ authStore.user?.name ? authStore.user.name.charAt(0) : 'K' }}
           </div>
           <div>
-            <h1 class="text-sm md:text-base font-black text-slate-900 tracking-wide truncate max-w-[150px] sm:max-w-[200px]" :title="authStore.user?.name">
+            <h1 class="text-sm md:text-base font-black text-slate-900 tracking-tight truncate max-w-[150px] sm:max-w-[200px]" :title="authStore.user?.name">
               {{ authStore.user?.name || 'Kassir' }}
             </h1>
             <div class="flex items-center space-x-2 mt-0.5">
-              <span class="text-xxs font-black uppercase tracking-widest bg-violet-100 text-violet-850 border border-violet-300 px-2 py-0.5 rounded-md">
+              <span class="text-xxs font-black uppercase tracking-widest bg-slate-100 text-slate-900 border border-slate-200 px-2 py-0.5 rounded-md">
                 Kassir
               </span>
               <button 
                 @click="showShiftModal = true"
-                class="text-xxs text-slate-700 font-bold hover:text-indigo-600 bg-slate-100 border border-slate-300 hover:bg-slate-200 px-2 py-0.5 rounded-md flex items-center gap-1 transition"
+                class="text-xxs text-slate-700 font-bold hover:text-slate-900 bg-slate-100 border border-slate-200 hover:bg-slate-200 px-2 py-0.5 rounded-md flex items-center gap-1 transition"
                 title="Smena boshqaruvi"
               >
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
@@ -31,31 +31,31 @@
 
         <!-- Clock for Mobile -->
         <div class="md:hidden text-right">
-          <span class="text-sm font-black font-mono tracking-widest text-indigo-600 block">{{ currentTime }}</span>
-          <span class="text-xxs text-slate-700 block font-bold">{{ currentDate }}</span>
+          <span class="text-sm font-black font-mono tracking-widest text-slate-900 block">{{ currentTime }}</span>
+          <span class="text-xxs text-slate-500 block font-bold">{{ currentDate }}</span>
         </div>
       </div>
 
       <!-- Navigation Links -->
-      <div class="flex items-center space-x-1 bg-slate-100 border border-slate-200 rounded-2xl p-1 shrink-0 w-full md:w-auto justify-center">
+      <div class="flex items-center space-x-1 bg-slate-100 border border-slate-200 rounded-xl p-1 shrink-0 w-full md:w-auto justify-center">
         <router-link 
           to="/cashier/tables" 
-          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-255 tracking-wide text-center flex-grow md:flex-grow-0"
-          :class="isActiveRoute('/cashier/tables') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'"
+          class="px-4 py-2 rounded-lg text-xs font-bold transition duration-200 tracking-wide text-center flex-grow md:flex-grow-0"
+          :class="isActiveRoute('/cashier/tables') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
         >
           {{ cashierStore.t('stollar_xaritasi') }}
         </router-link>
         <router-link 
           to="/cashier/order" 
-          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-255 tracking-wide text-center flex-grow md:flex-grow-0"
-          :class="isActiveRoute('/cashier/order') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'"
+          class="px-4 py-2 rounded-lg text-xs font-bold transition duration-200 tracking-wide text-center flex-grow md:flex-grow-0"
+          :class="isActiveRoute('/cashier/order') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
         >
           {{ cashierStore.t('tezkor_buyurtma') }}
         </router-link>
         <router-link 
           to="/cashier/receipts" 
-          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-255 tracking-wide text-center flex-grow md:flex-grow-0"
-          :class="isActiveRoute('/cashier/receipts') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'"
+          class="px-4 py-2 rounded-lg text-xs font-bold transition duration-200 tracking-wide text-center flex-grow md:flex-grow-0"
+          :class="isActiveRoute('/cashier/receipts') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
         >
           {{ cashierStore.t('cheklar_tarixi') }}
         </router-link>
