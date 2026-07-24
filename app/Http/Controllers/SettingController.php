@@ -67,6 +67,31 @@ class SettingController extends Controller
     }
 
     /**
+     * Update user profile details.
+     */
+    public function updateProfile(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'phone' => ['required', 'string', 'max:20', 'unique:users,phone,' . $user->id],
+            'email' => ['nullable', 'email', 'max:100'],
+            'passport_number' => ['nullable', 'string', 'max:20'],
+            'birth_date' => ['nullable', 'date'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'avatar_url' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $user->update($data);
+
+        return response()->json([
+            'message' => 'Profil muvaffaqiyatli yangilandi.',
+            'user' => $user
+        ]);
+    }
+
+    /**
      * Clear system cache.
      */
     public function clearCache(): JsonResponse

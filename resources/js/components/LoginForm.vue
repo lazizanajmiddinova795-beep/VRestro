@@ -204,12 +204,31 @@ const handleCredentialsSubmit = async () => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || 'Tizimga kirishda xatolik yuz berdi.');
+      throw new Error(data.message || (data.errors ? Object.values(data.errors).flat().join(', ') : 'Tizimga kirishda xatolik yuz berdi.'));
     }
 
-    // Step 1 success: Set temporary user data
-    otpCode.value = '';
-    authStore.setTempUser(data.user);
+    if (data.requires_otp) {
+      otpCode.value = '';
+      authStore.setTempUser(data.user);
+    } else if (data.token) {
+      authStore.setAuth(data.user, data.token);
+      let dashboardName = 'admin-dashboard';
+      const roles = data.user?.roles || [];
+      if (roles.includes('Admin')) {
+        dashboardName = 'admin-dashboard';
+      } else if (roles.includes('Cashier')) {
+        dashboardName = 'cashier-tables';
+      } else if (roles.includes('Chef')) {
+        dashboardName = 'kitchen';
+      } else if (roles.includes('Waiter')) {
+        dashboardName = 'waiter-tables';
+      } else {
+        dashboardName = 'orders';
+      }
+      setTimeout(() => {
+        router.push({ name: dashboardName });
+      }, 300);
+    }
   } catch (err) {
     error.value = err.message;
   } finally {

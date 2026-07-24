@@ -93,10 +93,12 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useWaiterStore } from '@/stores/waiter';
 import { X, PlusCircle } from 'lucide-vue-next';
 
 const waiterStore = useWaiterStore();
+const router = useRouter();
 const showDrawer = ref(false);
 const selectedTable = ref(null);
 
@@ -178,7 +180,9 @@ const handleTableClick = (table) => {
   selectedTable.value = table;
 
   if (table.status === 'empty') {
-    showDrawer.value = true;
+    waiterStore.selectTable(table.id, null);
+    waiterStore.setTab('yangi-buyurtma');
+    router.push({ name: 'waiter-order' });
   } else if (table.status === 'occupied_by_me') {
     waiterStore.selectTable(table.id, table.active_order_id);
     waiterStore.setTab('yangi-buyurtma');

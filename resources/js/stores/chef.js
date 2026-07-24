@@ -11,17 +11,24 @@ export const useChefStore = defineStore('chef', () => {
     const error = ref('');
     let pollingInterval = null;
 
-    // Kitchen terminal settings state persisted locally
-    const savedSettings = JSON.parse(localStorage.getItem('vrestro_kitchen_pref') || 'null') || {
+    // Kitchen terminal settings state persisted locally with defaults
+    const defaultSettings = {
         volume: 0.8,
         newOrderSound: true,
         alertSound: true,
         layoutScale: 'normal' // compact | normal | large
     };
+    const savedSettings = {
+        ...defaultSettings,
+        ...JSON.parse(localStorage.getItem('vrestro_kitchen_pref') || '{}')
+    };
     const kitchenSettings = ref(savedSettings);
 
     const updateSetting = (key, value) => {
-        kitchenSettings.value[key] = value;
+        kitchenSettings.value = {
+            ...kitchenSettings.value,
+            [key]: value
+        };
         localStorage.setItem('vrestro_kitchen_pref', JSON.stringify(kitchenSettings.value));
     };
 

@@ -144,6 +144,7 @@ export const useWaiterStore = defineStore('waiter', () => {
         loading,
         error,
         toastMessage,
+        triggerToast,
         fetchTables,
         fetchActiveStatus,
         startPolling,

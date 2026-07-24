@@ -9,70 +9,36 @@ const routes = [
         path: '/',
         name: 'landing',
         component: LandingPage,
+        meta: { requiresAuth: false }
     },
     {
         path: '/login',
         name: 'login',
         component: LoginForm,
-        beforeEnter: (to, from, next) => {
-            const authStore = useAuthStore();
-            if (authStore.isAuthenticated()) {
-                next({ name: 'landing' }); // redirect if already logged in
-            } else {
-                next();
-            }
-        }
+        meta: { guestOnly: true }
     },
     {
         path: '/kitchen',
         name: 'kitchen',
         component: () => import('@/components/KitchenMonitor.vue'),
-        beforeEnter: (to, from, next) => {
-            const authStore = useAuthStore();
-            if (!authStore.isAuthenticated()) {
-                next({ name: 'login' });
-            } else {
-                next();
-            }
-        }
+        meta: { requiresAuth: true }
     },
     {
         path: '/kitchen/stop-list',
         name: 'kitchen-stop-list',
         component: () => import('@/components/KitchenStopList.vue'),
-        beforeEnter: (to, from, next) => {
-            const authStore = useAuthStore();
-            if (!authStore.isAuthenticated()) {
-                next({ name: 'login' });
-            } else {
-                next();
-            }
-        }
+        meta: { requiresAuth: true }
     },
     {
         path: '/kitchen/settings',
         name: 'kitchen-settings',
         component: () => import('@/components/KitchenSettings.vue'),
-        beforeEnter: (to, from, next) => {
-            const authStore = useAuthStore();
-            if (!authStore.isAuthenticated()) {
-                next({ name: 'login' });
-            } else {
-                next();
-            }
-        }
+        meta: { requiresAuth: true }
     },
     {
         path: '/cashier',
         component: () => import('@/components/CashierLayout.vue'),
-        beforeEnter: (to, from, next) => {
-            const authStore = useAuthStore();
-            if (!authStore.isAuthenticated()) {
-                next({ name: 'login' });
-            } else {
-                next();
-            }
-        },
+        meta: { requiresAuth: true },
         children: [
             {
                 path: 'tables',
@@ -99,14 +65,7 @@ const routes = [
     {
         path: '/waiter',
         component: () => import('@/components/WaiterLayout.vue'),
-        beforeEnter: (to, from, next) => {
-            const authStore = useAuthStore();
-            if (!authStore.isAuthenticated()) {
-                next({ name: 'login' });
-            } else {
-                next();
-            }
-        },
+        meta: { requiresAuth: true },
         children: [
             {
                 path: 'tables',
@@ -133,14 +92,7 @@ const routes = [
     {
         path: '/',
         component: SidebarLayout,
-        beforeEnter: (to, from, next) => {
-            const authStore = useAuthStore();
-            if (!authStore.isAuthenticated()) {
-                next({ name: 'login' });
-            } else {
-                next();
-            }
-        },
+        meta: { requiresAuth: true },
         children: [
             {
                 path: 'admin/dashboard',
@@ -219,6 +171,37 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
+});
+
+// Dynamic Route Guard
+router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore();
+    const isAuthenticated = authStore.isAuthenticated();
+
+    // 1. If route is landing page or guest-only and user is already logged in, redirect to respective dashboard
+    if ((to.path === '/' || to.matched.some(record => record.meta.guestOnly)) && isAuthenticated) {
+        let dashboardName = 'admin-dashboard';
+        const roles = authStore.user?.roles || [];
+        if (roles.includes('Admin')) {
+            dashboardName = 'admin-dashboard';
+        } else if (roles.includes('Cashier')) {
+            dashboardName = 'cashier-tables';
+        } else if (roles.includes('Chef')) {
+            dashboardName = 'kitchen';
+        } else if (roles.includes('Waiter')) {
+            dashboardName = 'waiter-tables';
+        } else {
+            dashboardName = 'orders';
+        }
+        return next({ name: dashboardName });
+    }
+
+    // 2. If route requires authentication and user is not logged in, force redirect to login
+    if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+        return next({ name: 'login' });
+    }
+
+    next();
 });
 
 export default router;

@@ -54,52 +54,60 @@ class DatabaseSeeder extends Seeder
         $cashierRole->givePermissionTo($viewReports);
         $cashierRole->givePermissionTo($viewCashierDashboard);
 
-        // Create Admin User
-        $adminUser = User::create([
-            'name' => 'Tizim Administratori',
-            'login' => 'admin',
-            'password' => Hash::make('admin123'),
-            'face_registered' => true,
-            'phone' => '+998901234567',
-            'shift_hours' => '09:00 - 18:00',
-            'status' => 'active',
-        ]);
+        // Create or update Admin User
+        $adminUser = User::firstOrCreate(
+            ['login' => 'admin'],
+            [
+                'name' => 'Tizim Administratori',
+                'password' => Hash::make('admin123'),
+                'face_registered' => true,
+                'phone' => '+998901234567',
+                'shift_hours' => '09:00 - 18:00',
+                'status' => 'active',
+            ]
+        );
         $adminUser->assignRole($adminRole);
 
-        // Create Chef User
-        $chefUser = User::create([
-            'name' => 'Asilbek Povar',
-            'login' => 'chef',
-            'password' => Hash::make('chef123'),
-            'face_registered' => true,
-            'phone' => '+998901234568',
-            'shift_hours' => '08:00 - 20:00',
-            'status' => 'active',
-        ]);
+        // Create or update Chef User
+        $chefUser = User::firstOrCreate(
+            ['login' => 'chef'],
+            [
+                'name' => 'Asilbek Povar',
+                'password' => Hash::make('chef123'),
+                'face_registered' => true,
+                'phone' => '+998901234568',
+                'shift_hours' => '08:00 - 20:00',
+                'status' => 'active',
+            ]
+        );
         $chefUser->assignRole($chefRole);
 
-        // Create Waiter User
-        $waiterUser = User::create([
-            'name' => 'Davron Ofitsiant',
-            'login' => 'waiter',
-            'password' => Hash::make('waiter123'),
-            'face_registered' => true,
-            'phone' => '+998901234569',
-            'shift_hours' => '10:00 - 22:00',
-            'status' => 'active',
-        ]);
+        // Create or update Waiter User
+        $waiterUser = User::firstOrCreate(
+            ['login' => 'waiter'],
+            [
+                'name' => 'Davron Ofitsiant',
+                'password' => Hash::make('waiter123'),
+                'face_registered' => true,
+                'phone' => '+998901234569',
+                'shift_hours' => '10:00 - 22:00',
+                'status' => 'active',
+            ]
+        );
         $waiterUser->assignRole($waiterRole);
 
-        // Create Cashier User
-        $cashierUser = User::create([
-            'name' => 'Lobar Kassir',
-            'login' => 'cashier',
-            'password' => Hash::make('cashier123'),
-            'face_registered' => true,
-            'phone' => '+998901234570',
-            'shift_hours' => '09:00 - 21:00',
-            'status' => 'active',
-        ]);
+        // Create or update Cashier User
+        $cashierUser = User::firstOrCreate(
+            ['login' => 'cashier'],
+            [
+                'name' => 'Lobar Kassir',
+                'password' => Hash::make('cashier123'),
+                'face_registered' => true,
+                'phone' => '+998901234570',
+                'shift_hours' => '09:00 - 21:00',
+                'status' => 'active',
+            ]
+        );
         $cashierUser->assignRole($cashierRole);
 
         // Create Tables

@@ -58,6 +58,11 @@ class StaffController extends Controller
             'role' => ['required', 'string', 'in:Admin,Chef,Waiter,Cashier'],
             'shift_hours' => ['nullable', 'string', 'max:100'],
             'status' => ['required', 'string', 'in:active,inactive'],
+            'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
+            'passport_number' => ['nullable', 'string', 'max:30'],
+            'birth_date' => ['nullable', 'date'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'avatar_url' => ['nullable', 'string', 'max:255'],
         ]);
 
         $data['name'] = strip_tags($data['name']);
@@ -90,6 +95,11 @@ class StaffController extends Controller
             'role' => ['required', 'string', 'in:Admin,Chef,Waiter,Cashier'],
             'shift_hours' => ['nullable', 'string', 'max:100'],
             'status' => ['required', 'string', 'in:active,inactive'],
+            'email' => ['nullable', 'email', 'max:100', 'unique:users,email,' . $id],
+            'passport_number' => ['nullable', 'string', 'max:30'],
+            'birth_date' => ['nullable', 'date'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'avatar_url' => ['nullable', 'string', 'max:255'],
         ]);
 
         $data['name'] = strip_tags($data['name']);

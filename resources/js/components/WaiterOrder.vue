@@ -138,29 +138,31 @@
       </div>
     </div>
 
-    <!-- Slide-Up Bottom Cart Drawer -->
+    <!-- Strict Centered Modal Popup -->
     <div 
       v-if="showCartDrawer"
-      class="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm"
+      class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[999] flex items-center justify-center p-4 md:p-6"
       @click.self="closeCartDrawer"
     >
-      <div class="w-full max-w-md bg-white border-t-2 border-slate-300 rounded-t-3xl p-6 flex flex-col max-h-[85vh] shadow-2xl animate-slideUp">
-        <div class="flex items-center justify-between border-b border-slate-200 pb-4 shrink-0">
+      <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl flex flex-col h-[75vh] max-h-[680px] overflow-hidden border border-slate-200">
+        
+        <!-- FIXED HEADER (Does not shrink or scroll) -->
+        <div class="p-4 border-b border-slate-150 flex justify-between items-center bg-white shrink-0">
           <div>
-            <h3 class="text-lg font-black text-slate-900">{{ t('cart_title') }}</h3>
-            <p class="text-xs text-slate-700 font-bold">{{ t('table_label') }}: {{ tableNumber }}</p>
+            <h3 class="text-slate-900 font-black text-lg tracking-tight">{{ t('cart_title') }}</h3>
+            <p class="text-slate-500 font-bold text-xs mt-0.5">{{ t('table_label') }}: {{ tableNumber }}</p>
           </div>
-          <button @click="closeCartDrawer" class="p-2 rounded-xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200">
+          <button @click="closeCartDrawer" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 rounded-full transition-colors">
             <X class="w-5 h-5" />
           </button>
         </div>
 
-        <!-- Cart items list -->
-        <div class="flex-grow overflow-y-auto py-4 space-y-4 pr-1">
+        <!-- ISOLATED INNER SCROLLABLE ZONE (Fills remaining space, scrolls internally) -->
+        <div class="p-4 overflow-y-auto flex-1 space-y-3 bg-slate-50">
           <div 
             v-for="item in cartItems" 
             :key="item.food_id + '-' + (item.size_name || 'default')"
-            class="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-3"
+            class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm flex flex-col"
           >
             <div class="flex justify-between items-start">
               <div @click="triggerEditFlow(item)" class="cursor-pointer group flex-grow pr-4">
@@ -183,7 +185,7 @@
             </div>
 
             <!-- Notes Modification -->
-            <div class="relative">
+            <div class="relative mt-3">
               <input 
                 type="text" 
                 v-model="item.notes"
@@ -195,17 +197,17 @@
           </div>
         </div>
 
-        <!-- Action Drawer Section -->
-        <div class="border-t border-slate-200 pt-4 space-y-4 shrink-0">
-          <div class="flex justify-between items-center text-sm font-bold text-slate-900">
-            <span>{{ t('subtotal_cart') }}:</span>
-            <span class="text-lg text-indigo-600 font-black">{{ formatCurrency(cartTotal) }}</span>
+        <!-- FIXED FOOTER (Strictly locked at the bottom) -->
+        <div class="p-4 border-t border-slate-200 bg-white shrink-0 shadow-[0_-4px_15px_rgba(0,0,0,0.03)]">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-slate-500 font-extrabold text-xs uppercase tracking-wider">{{ t('subtotal_cart') }}:</span>
+            <span class="text-slate-950 font-black text-xl">{{ formatCurrency(cartTotal) }}</span>
           </div>
-
+          
           <button 
             @click="submitOrder"
             :disabled="submitting"
-            class="w-full py-4 rounded-xl bg-indigo-600 font-black text-white text-base shadow-md hover:bg-indigo-750 active:scale-95 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3 rounded-xl text-base shadow-md transition-transform active:scale-[0.98] disabled:opacity-50 flex items-center justify-center space-x-2"
           >
             <span v-if="submitting" class="flex items-center space-x-2">
               <Loader2 class="w-5 h-5 animate-spin" />
@@ -217,6 +219,7 @@
             </span>
           </button>
         </div>
+
       </div>
     </div>
   </div>
@@ -409,7 +412,7 @@ const toggleTableSelector = () => {
 const switchTable = (table) => {
   showTableDropdown.value = false;
   if (table.status === 'occupied_by_other') {
-    alert(t('occupied_table_alert'));
+    waiterStore.triggerToast(t('occupied_table_alert'));
     return;
   }
   waiterStore.selectTable(table.id, table.active_order_id);
@@ -447,14 +450,15 @@ const submitOrder = async () => {
     // Success clearing
     waiterCartStore.clearCart(tableId.value);
     closeCartDrawer();
-    alert(t('submit_success'));
+    waiterStore.triggerToast(t('submit_success'));
     
-    // Refresh tables and redirect back
+    // Refresh tables and redirect to Status screen
     await waiterStore.fetchTables();
-    router.push({ name: 'waiter-tables' });
+    waiterStore.setTab('holatlar');
+    router.push({ name: 'waiter-status' });
 
   } catch (error) {
-    alert(error.message);
+    waiterStore.triggerToast(error.message);
   } finally {
     submitting.value = false;
   }

@@ -4,16 +4,16 @@
     <!-- Top Header -->
     <div class="flex items-center justify-between mb-6 shrink-0">
       <div>
-        <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400 tracking-wide">
+        <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-wide">
           Stollar Xaritasi
         </h1>
-        <p class="text-xs text-slate-400">Restoranning zallaridagi jismoniy stollar holati, odam sig'imi va holatlarini boshqarish</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">Restoranning zallaridagi jismoniy stollar holati, odam sig'imi va holatlarini boshqarish</p>
       </div>
 
       <!-- Add Table button -->
       <button 
         @click="openAddEditModal()"
-        class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-semibold text-sm text-white shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
+        class="px-5 py-2.5 rounded-xl bg-indigo-600 font-extrabold text-sm text-white shadow-md shadow-indigo-600/30 hover:bg-indigo-500 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
       >
         <Plus class="w-4.5 h-4.5" />
         <span>Yangi Stol Qo'shish</span>
@@ -23,54 +23,54 @@
     <!-- Status Statistics Widgets -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 shrink-0">
       <!-- Total Tables -->
-      <div class="backdrop-blur-md bg-slate-900/40 border border-white/5 rounded-2xl p-4 flex items-center space-x-3.5">
-        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+      <div class="bg-white dark:bg-slate-900/60 border-2 border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 flex items-center space-x-3.5 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold">
           <Layers class="w-5 h-5" />
         </div>
         <div>
-          <span class="block text-4xs uppercase tracking-wider text-slate-500 font-bold">Jami stollar</span>
-          <span class="text-lg font-bold text-white tracking-tight">{{ totalTablesCount }} ta</span>
+          <span class="block text-4xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-extrabold">Jami stollar</span>
+          <span class="text-lg font-black text-slate-900 dark:text-white tracking-tight">{{ totalTablesCount }} ta</span>
         </div>
       </div>
 
       <!-- Empty -->
-      <div class="backdrop-blur-md bg-slate-900/40 border border-white/5 rounded-2xl p-4 flex items-center space-x-3.5">
-        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+      <div class="bg-white dark:bg-slate-900/60 border-2 border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 flex items-center space-x-3.5 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold">
           <CheckCircle2 class="w-5 h-5" />
         </div>
         <div>
-          <span class="block text-4xs uppercase tracking-wider text-slate-500 font-bold">Bo'sh</span>
-          <span class="text-lg font-bold text-white tracking-tight text-emerald-400">{{ emptyTablesCount }} ta</span>
+          <span class="block text-4xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-extrabold">Bo'sh</span>
+          <span class="text-lg font-black text-emerald-600 dark:text-emerald-400 tracking-tight">{{ emptyTablesCount }} ta</span>
         </div>
       </div>
 
       <!-- Occupied -->
-      <div class="backdrop-blur-md bg-slate-900/40 border border-white/5 rounded-2xl p-4 flex items-center space-x-3.5">
-        <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
+      <div class="bg-white dark:bg-slate-900/60 border-2 border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 flex items-center space-x-3.5 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400 font-bold">
           <Users class="w-5 h-5" />
         </div>
         <div>
-          <span class="block text-4xs uppercase tracking-wider text-slate-500 font-bold">Band</span>
-          <span class="text-lg font-bold text-white tracking-tight text-red-400">{{ occupiedTablesCount }} ta</span>
+          <span class="block text-4xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-extrabold">Band</span>
+          <span class="text-lg font-black text-red-600 dark:text-red-400 tracking-tight">{{ occupiedTablesCount }} ta</span>
         </div>
       </div>
 
       <!-- Reserved -->
-      <div class="backdrop-blur-md bg-slate-900/40 border border-white/5 rounded-2xl p-4 flex items-center space-x-3.5">
-        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+      <div class="bg-white dark:bg-slate-900/60 border-2 border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 flex items-center space-x-3.5 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold">
           <CalendarHeart class="w-5 h-5" />
         </div>
         <div>
-          <span class="block text-4xs uppercase tracking-wider text-slate-500 font-bold">Bron qilingan</span>
-          <span class="text-lg font-bold text-white tracking-tight text-amber-400">{{ reservedTablesCount }} ta</span>
+          <span class="block text-4xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-extrabold">Bron qilingan</span>
+          <span class="text-lg font-black text-amber-600 dark:text-amber-400 tracking-tight">{{ reservedTablesCount }} ta</span>
         </div>
       </div>
     </div>
 
     <!-- Tables Grid Container -->
     <div v-if="tablesStore.loading && tablesStore.tables.length === 0" class="flex-grow flex flex-col items-center justify-center space-y-4">
-      <Loader2 class="w-10 h-10 text-indigo-500 animate-spin" />
-      <p class="text-slate-400 text-xs font-medium animate-pulse">Zallar yuklanmoqda...</p>
+      <Loader2 class="w-10 h-10 text-indigo-600 animate-spin" />
+      <p class="text-slate-600 dark:text-slate-400 text-xs font-bold animate-pulse">Zallar yuklanmoqda...</p>
     </div>
 
     <div v-else class="flex-grow overflow-y-auto pr-1">
@@ -80,7 +80,7 @@
         <div 
           v-for="table in tablesStore.tables" 
           :key="table.id"
-          class="backdrop-blur-md bg-slate-900/30 border rounded-3xl p-5 flex flex-col justify-between h-44 transition-all duration-300 relative group"
+          class="bg-white dark:bg-slate-900/60 border-2 border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 flex flex-col justify-between h-44 transition-all duration-300 relative group shadow-sm"
           :class="tableStatusBorderClass(table.status)"
         >
           <!-- Status Glow/Background -->
@@ -89,11 +89,11 @@
           <div class="space-y-3 relative z-10">
             <!-- Header Row -->
             <div class="flex justify-between items-start">
-              <h3 class="text-sm font-bold text-white tracking-wide truncate pr-2">{{ table.table_number }}</h3>
+              <h3 class="text-sm font-black text-slate-900 dark:text-white tracking-wide truncate pr-2">{{ table.table_number }}</h3>
               
               <!-- Quick State badge -->
               <span 
-                class="px-2 py-0.5 rounded-md text-4xs font-bold border capitalize"
+                class="px-2 py-0.5 rounded-md text-4xs font-extrabold border capitalize"
                 :class="tableStatusBadgeClass(table.status)"
               >
                 {{ tableStatusLabel(table.status) }}
@@ -101,28 +101,28 @@
             </div>
 
             <!-- Capacity details -->
-            <div class="flex items-center text-xs text-slate-400 space-x-1.5 pt-1">
+            <div class="flex items-center text-xs text-slate-600 dark:text-slate-400 font-bold space-x-1.5 pt-1">
               <User2 class="w-4 h-4 text-slate-500" />
               <span>Sig'imi: {{ table.capacity }} kishi</span>
             </div>
             
-            <div class="text-4xs font-mono text-slate-500 truncate" v-if="table.qr_code_token">
+            <div class="text-4xs font-mono text-slate-500 font-bold truncate" v-if="table.qr_code_token">
               QR: {{ table.qr_code_token }}
             </div>
           </div>
 
           <!-- Bottom Actions (Hover show or quick list) -->
-          <div class="border-t border-white/5 pt-3.5 flex items-center justify-between relative z-10">
+          <div class="border-t border-slate-200/80 dark:border-white/5 pt-3.5 flex items-center justify-between relative z-10">
             <!-- Quick Status Change Select -->
             <div class="relative">
               <select 
                 :value="table.status"
                 @change="handleStatusChange(table.id, $event.target.value)"
-                class="bg-slate-950/60 hover:bg-slate-950 border border-white/10 hover:border-white/20 rounded-lg text-4xs font-bold text-slate-300 px-2 py-1 focus:outline-none transition appearance-none cursor-pointer pr-5"
+                class="bg-slate-100 dark:bg-slate-950/80 hover:bg-slate-200 dark:hover:bg-slate-950 border border-slate-300 dark:border-white/10 rounded-lg text-4xs font-bold text-slate-800 dark:text-slate-200 px-2 py-1 focus:outline-none transition appearance-none cursor-pointer pr-5"
               >
-                <option value="empty" class="bg-slate-900 text-emerald-400">Bo'sh</option>
-                <option value="occupied" class="bg-slate-900 text-red-400">Band</option>
-                <option value="reserved" class="bg-slate-900 text-amber-400">Bron</option>
+                <option value="empty" class="bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400">Bo'sh</option>
+                <option value="occupied" class="bg-white dark:bg-slate-900 text-red-600 dark:text-red-400">Band</option>
+                <option value="reserved" class="bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400">Bron</option>
               </select>
               <ChevronDown class="w-2.5 h-2.5 text-slate-500 absolute right-1.5 bottom-2 pointer-events-none" />
             </div>

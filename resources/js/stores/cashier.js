@@ -19,6 +19,7 @@ export const useCashierStore = defineStore('cashier', () => {
     // 3. Local Settings (Kassa Sozlamalari)
     const defaultSettings = {
         theme: 'dark',
+        nightFilter: false,
         fontSize: 'normal',
         zoomScale: 100,
         printerWidth: '80mm',
@@ -348,22 +349,31 @@ export const useCashierStore = defineStore('cashier', () => {
             html.classList.add('dark');
         }
 
-        // Font size class mapping
-        const body = document.body;
-        body.classList.remove('text-sm', 'text-base', 'text-lg');
-        if (settings.fontSize === 'small') {
-            body.classList.add('text-sm');
-        } else if (settings.fontSize === 'large') {
-            body.classList.add('text-lg');
+        // Night Filter (Ko'z himoyasi)
+        if (settings.nightFilter) {
+            html.classList.add('night-filter');
         } else {
-            body.classList.add('text-base');
+            html.classList.remove('night-filter');
+        }
+
+        // Font size scaling on root HTML element
+        if (settings.fontSize === 'small') {
+            html.style.fontSize = '14px';
+        } else if (settings.fontSize === 'large') {
+            html.style.fontSize = '18px';
+        } else {
+            html.style.fontSize = '16px';
         }
 
         // Zoom scale
-        if (settings.zoomScale) {
+        const body = document.body;
+        if (body && settings.zoomScale) {
             body.style.zoom = `${settings.zoomScale}%`;
         }
     };
+
+    // Apply settings immediately on store load
+    applyLocalSettings();
 
     // Auto-save localSettings when altered
     watch(localSettings, (newVal) => {

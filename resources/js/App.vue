@@ -6,5 +6,18 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
 import AnimatedBackground from '@/components/AnimatedBackground.vue';
+import { useCashierStore } from '@/stores/cashier';
+
+onMounted(() => {
+  try {
+    const cashierStore = useCashierStore();
+    if (cashierStore && cashierStore.applyLocalSettings) {
+      cashierStore.applyLocalSettings();
+    }
+  } catch (e) {
+    console.warn('Initial settings apply:', e);
+  }
+});
 </script>

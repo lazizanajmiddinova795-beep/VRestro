@@ -30,19 +30,24 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $user = $this->authService->verifyCredentials(
+        $authData = $this->authService->verifyCredentials(
             $credentials['login'],
             $credentials['password']
         );
 
+        if (!empty($authData['requires_otp'])) {
+            return response()->json([
+                'requires_otp' => true,
+                'message' => 'Login tekshirildi. Telegram orqali 8 xonali parolni kiriting.',
+                'user' => $authData['user'],
+            ]);
+        }
+
         return response()->json([
-            'message' => 'Credentials verified. Proceed to biometric check.',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'login' => $user->login,
-                'face_registered' => $user->face_registered,
-            ]
+            'requires_otp' => false,
+            'message' => 'Tizimga kirish muvaffaqiyatli yakunlandi.',
+            'user' => $authData['user'],
+            'token' => $authData['token']
         ]);
     }
 

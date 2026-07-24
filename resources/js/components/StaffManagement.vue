@@ -90,8 +90,15 @@
             <!-- Header Row -->
             <div class="flex items-center space-x-3">
               <!-- Avatar Circle -->
+              <img 
+                v-if="member.avatar_url"
+                :src="member.avatar_url"
+                alt="Avatar"
+                class="w-10 h-10 rounded-xl object-cover border-2 border-indigo-500/20 shadow-sm shrink-0"
+              />
               <div 
-                class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm border uppercase"
+                v-else
+                class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm border uppercase shrink-0"
                 :class="avatarClass(member.roles?.[0]?.name)"
               >
                 {{ member.name.substring(0, 2) }}
@@ -179,115 +186,156 @@
     <!-- MODAL: Add / Edit Employee -->
     <div 
       v-if="showModal" 
-      class="fixed inset-0 z-50 backdrop-blur-md bg-black/60 flex items-center justify-center p-6"
+      class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
       @click.self="showModal = false"
     >
-      <div class="w-full max-w-sm backdrop-blur-xl bg-slate-900/80 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn">
-        <div class="flex justify-between items-center border-b border-white/5 pb-3">
-          <h3 class="text-base font-bold text-white">
+      <div class="bg-slate-900 text-white w-full max-w-xl rounded-3xl p-6 shadow-2xl border border-white/10 my-auto max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b border-white/10 pb-4 shrink-0">
+          <h3 class="text-white font-black text-xl tracking-tight">
             {{ editingStaff ? 'Xodimni Tahrirlash' : 'Yangi Xodim Qo\'shish' }}
           </h3>
-          <button @click="showModal = false" class="p-1 rounded-lg bg-white/5 text-slate-400 hover:text-white transition">
-            <X class="w-4 h-4" />
+          <button @click="showModal = false" class="bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white p-2 rounded-full transition-colors">
+            <X class="w-5 h-5" />
           </button>
         </div>
 
-        <div class="space-y-4">
-          <!-- Full name -->
-          <div class="space-y-1.5">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">To'liq ism-familiyasi *</label>
-            <input 
-              v-model="staffForm.name"
-              type="text" 
-              placeholder="Masalan, Alisher Qodirov..."
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
-            />
+        <!-- Form Body -->
+        <form @submit.prevent="submitForm" class="flex flex-col flex-grow overflow-hidden mt-4">
+          <div class="overflow-y-auto pr-2 space-y-4 flex-grow max-h-[65vh]">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                
+                <div class="sm:col-span-2 flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">To'liq Ism-Familiyasi *</label>
+                    <input type="text" v-model="staffForm.name" required placeholder="Masalan: Asilbek Povar" 
+                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Telefon Raqami *</label>
+                    <input type="text" v-model="staffForm.phone" required placeholder="+998 90 123 45 67" 
+                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tizimga kirish logini *</label>
+                    <input type="text" v-model="staffForm.login" required placeholder="Masalan: chef123" 
+                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Ish vaqti / Smena</label>
+                    <input type="text" v-model="staffForm.shift_hours" placeholder="08:00 - 20:00" 
+                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tizimdagi Lavozimi (Role) *</label>
+                    <div class="relative">
+                        <select v-model="staffForm.role" required 
+                                class="w-full bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all appearance-none">
+                            <option value="Admin" class="bg-slate-900 text-white">Administrator</option>
+                            <option value="Chef" class="bg-slate-900 text-white">Chef (Oshpaz)</option>
+                            <option value="Waiter" class="bg-slate-900 text-white">Waiter (Ofitsiant)</option>
+                            <option value="Cashier" class="bg-slate-900 text-white">Cashier (Kassir)</option>
+                        </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col" v-if="!editingStaff">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Faollik holati *</label>
+                    <div class="relative">
+                        <select v-model="staffForm.status" required 
+                                class="w-full bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all appearance-none">
+                            <option value="active" class="bg-slate-900 text-white">Faol (Active)</option>
+                            <option value="inactive" class="bg-slate-900 text-white">Nofaol (Inactive)</option>
+                        </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Email Manzili</label>
+                    <input type="email" v-model="staffForm.email" placeholder="example@mail.com" 
+                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Pasport Ma'lumotlari</label>
+                    <input type="text" v-model="staffForm.passport_number" placeholder="AA1234567" 
+                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tug'ilgan Sanasi</label>
+                    <input type="date" v-model="staffForm.birth_date" 
+                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all" />
+                </div>
+
+                <div class="sm:col-span-2 flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Yashash Manzili</label>
+                    <input type="text" v-model="staffForm.address" placeholder="Toshkent sh., Chilonzor tumani..." 
+                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                </div>
+
+                <div class="sm:col-span-2 flex flex-col space-y-3">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase">Avatar tanlash yoki yuklash</label>
+                    <!-- Custom file uploader -->
+                    <div class="flex items-center space-x-4">
+                      <div class="relative shrink-0">
+                        <img v-if="staffForm.avatar_url" :src="staffForm.avatar_url" class="w-14 h-14 rounded-full object-cover border-2 border-indigo-500 shadow-sm animate-in fade-in" />
+                        <div v-else class="w-14 h-14 rounded-full bg-slate-800 border-2 border-dashed border-white/10 flex items-center justify-center text-slate-400">
+                          <Camera class="w-5 h-5" />
+                        </div>
+                      </div>
+                      <label class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/10 rounded-xl cursor-pointer font-bold text-xs transition duration-200">
+                        <span>Rasm yuklash</span>
+                        <input type="file" @change="handleAvatarUpload" accept="image/*" class="hidden" />
+                      </label>
+                      <button v-if="staffForm.avatar_url" type="button" @click="staffForm.avatar_url = ''" class="text-xs font-bold text-rose-400 hover:underline">O'chirish</button>
+                    </div>
+
+                    <!-- Presets -->
+                    <div class="grid grid-cols-6 gap-2 pt-1">
+                      <button 
+                        type="button"
+                        v-for="(preset, i) in avatarPresets" 
+                        :key="i"
+                        @click="staffForm.avatar_url = preset"
+                        class="w-9 h-9 rounded-full overflow-hidden border-2 transition active:scale-90"
+                        :class="staffForm.avatar_url === preset ? 'border-indigo-500 ring-2 ring-indigo-500/40' : 'border-white/10 hover:border-white/30'"
+                      >
+                        <img :src="preset" class="w-full h-full object-cover" />
+                      </button>
+                    </div>
+                </div>
+
+                <div class="sm:col-span-2 flex flex-col">
+                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tizim Paroli (Bo'sh qolsa o'zgarmaydi)</label>
+                    <input type="password" v-model="staffForm.password" placeholder="Kamida 4 belgili yangi parol..." 
+                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                </div>
+
+            </div>
           </div>
 
-          <!-- Phone number -->
-          <div class="space-y-1.5">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Telefon raqami *</label>
-            <input 
-              v-model="staffForm.phone"
-              type="text" 
-              placeholder="Masalan, +998901234567..."
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
-            />
+          <!-- Actions Footer (Sticky) -->
+          <div class="flex items-center justify-end gap-3 pt-4 mt-2 border-t border-white/10 shrink-0">
+              <button type="button" @click="showModal = false" 
+                      class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 font-extrabold text-xs transition-all active:scale-95">
+                  Bekor qilish
+              </button>
+              <button type="submit" 
+                      class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:opacity-90 text-white font-black text-xs shadow-lg shadow-indigo-600/30 transition-all active:scale-95">
+                  Saqlash
+              </button>
           </div>
-
-          <!-- Login/Username -->
-          <div class="space-y-1.5">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Tizimga kirish logini *</label>
-            <input 
-              v-model="staffForm.login"
-              type="text" 
-              placeholder="Masalan, alisher99..."
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
-            />
-          </div>
-
-          <!-- Password -->
-          <div class="space-y-1.5">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">
-              Tizim paroli {{ editingStaff ? '(Bo\'sh qolsa o\'zgarmaydi)' : '*' }}
-            </label>
-            <input 
-              v-model="staffForm.password"
-              type="password" 
-              placeholder="Kamida 4 belgili parol..."
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
-            />
-          </div>
-
-          <!-- Shift Hours -->
-          <div class="space-y-1.5">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Ish vaqti / Smena</label>
-            <input 
-              v-model="staffForm.shift_hours"
-              type="text" 
-              placeholder="Masalan, 09:00 - 18:00..."
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
-            />
-          </div>
-
-          <!-- Spatie Role selection -->
-          <div class="space-y-1.5">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Tizimdagi lavozimi (Role) *</label>
-            <select 
-              v-model="staffForm.role"
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
-            >
-              <option value="Admin">Administrator</option>
-              <option value="Chef">Chef (Oshpaz)</option>
-              <option value="Waiter">Waiter (Ofitsiant)</option>
-              <option value="Cashier">Cashier (Kassir)</option>
-            </select>
-          </div>
-
-          <!-- Status selection (only create) -->
-          <div class="space-y-1.5" v-if="!editingStaff">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Faollik holati *</label>
-            <select 
-              v-model="staffForm.status"
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
-            >
-              <option value="active">Faol (Active)</option>
-              <option value="inactive">Nofaol (Inactive)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="flex justify-end space-x-2 pt-2">
-          <button @click="showModal = false" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-semibold text-slate-300 transition">
-            Bekor qilish
-          </button>
-          <button 
-            @click="submitForm"
-            class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition"
-          >
-            Saqlash
-          </button>
-        </div>
+        </form>
       </div>
     </div>
 
@@ -297,7 +345,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { 
-  UserPlus, Search, Phone, Clock, KeyRound, Edit3, Trash2, X, Loader2, Users
+  UserPlus, Search, Phone, Clock, KeyRound, Edit3, Trash2, X, Loader2, Users, Camera
 } from 'lucide-vue-next';
 import { useStaffStore } from '@/stores/staff';
 
@@ -318,8 +366,33 @@ const staffForm = ref({
   password: '',
   shift_hours: '',
   role: 'Waiter',
-  status: 'active'
+  status: 'active',
+  email: '',
+  passport_number: '',
+  birth_date: '',
+  address: '',
+  avatar_url: ''
 });
+
+const avatarPresets = [
+  'https://api.dicebear.com/7.x/adventurer/svg?seed=Felix',
+  'https://api.dicebear.com/7.x/adventurer/svg?seed=Aneka',
+  'https://api.dicebear.com/7.x/adventurer/svg?seed=Liam',
+  'https://api.dicebear.com/7.x/adventurer/svg?seed=Sophia',
+  'https://api.dicebear.com/7.x/adventurer/svg?seed=Jack',
+  'https://api.dicebear.com/7.x/adventurer/svg?seed=Emmy'
+];
+
+const handleAvatarUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      staffForm.value.avatar_url = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
 // Lifecycle
 onMounted(async () => {
@@ -345,7 +418,12 @@ const openAddEditModal = (member = null) => {
     password: '',
     shift_hours: member.shift_hours || '',
     role: member.roles?.[0]?.name || 'Waiter',
-    status: member.status
+    status: member.status,
+    email: member.email || '',
+    passport_number: member.passport_number || '',
+    birth_date: member.birth_date || '',
+    address: member.address || '',
+    avatar_url: member.avatar_url || ''
   } : {
     name: '',
     phone: '',
@@ -353,7 +431,12 @@ const openAddEditModal = (member = null) => {
     password: '',
     shift_hours: '',
     role: 'Waiter',
-    status: 'active'
+    status: 'active',
+    email: '',
+    passport_number: '',
+    birth_date: '',
+    address: '',
+    avatar_url: ''
   };
   showModal.value = true;
 };

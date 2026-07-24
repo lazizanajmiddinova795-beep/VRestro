@@ -152,6 +152,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Settings
     Route::get('/settings', [SettingController::class, 'index']);
     Route::post('/settings/password', [SettingController::class, 'changePassword']);
+    Route::post('/user/profile', [SettingController::class, 'updateProfile']);
     Route::post('/shift/close', [ShiftController::class, 'closeShift']);
     Route::middleware('permission:manage settings')->group(function () {
         Route::post('/settings', [SettingController::class, 'update']);

@@ -9,11 +9,14 @@ export const useCashierTablesStore = defineStore('cashierTables', () => {
     const loading = ref(false);
     const error = ref('');
 
-    const getHeaders = () => ({
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-    });
+    const getHeaders = () => {
+        const token = authStore.token || localStorage.getItem('vrestro_token');
+        return {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+        };
+    };
 
     const handleAuthError = (status) => {
         if (status === 401) {

@@ -97,7 +97,7 @@
               <!-- Action Safeguard -->
               <button 
                 v-if="item.status === 'pending'"
-                @click="cancelItem(item)"
+                @click="confirmCancelItem(item)"
                 class="p-1 rounded-lg bg-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white transition duration-150"
                 :title="t('cancel_tooltip')"
               >
@@ -115,11 +115,45 @@
         </div>
       </div>
     </div>
+
+    <!-- Custom Touch-Friendly Cancel Confirmation Modal -->
+    <div 
+      v-if="isCancelModalOpen" 
+      class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[999] flex items-center justify-center p-4"
+    >
+      <div class="bg-white border-2 border-slate-350 rounded-3xl w-full max-w-sm shadow-2xl p-6 space-y-6 text-slate-900">
+        <div class="text-center space-y-3">
+          <div class="w-12 h-12 rounded-full bg-rose-100 border border-rose-300 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">
+            ⚠
+          </div>
+          <h3 class="text-lg font-black text-slate-900">Bekor qilishni tasdiqlang</h3>
+          <p class="text-xs text-slate-700 font-bold leading-relaxed">
+            Haqiqatan ham <strong>{{ itemToCancel?.food?.name }}</strong> taomini buyurtmadan o'chirmoqchimisiz?
+          </p>
+        </div>
+
+        <div class="flex items-center space-x-3 pt-2">
+          <button 
+            @click="isCancelModalOpen = false"
+            class="flex-1 py-3 border-2 border-slate-200 hover:bg-slate-50 text-slate-800 rounded-xl font-bold transition text-xs"
+          >
+            Bekor qilish
+          </button>
+          <button 
+            @click="executeCancelItem"
+            class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-black transition text-xs shadow-md"
+          >
+            Ha, o'chirish
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useWaiterStore } from '@/stores/waiter';
 import { Trash2, Lock } from 'lucide-vue-next';
 
@@ -201,9 +235,17 @@ const pendingCount = computed(() => allItems.value.filter(i => i.status === 'pen
 const cookingCount = computed(() => allItems.value.filter(i => i.status === 'cooking').length);
 const readyCount = computed(() => allItems.value.filter(i => i.status === 'ready').length);
 
-const cancelItem = async (item) => {
-  if (!confirm(t('confirm_cancel'))) return;
+const isCancelModalOpen = ref(false);
+const itemToCancel = ref(null);
 
+const confirmCancelItem = (item) => {
+  itemToCancel.value = item;
+  isCancelModalOpen.value = true;
+};
+
+const executeCancelItem = async () => {
+  if (!itemToCancel.value) return;
+  const item = itemToCancel.value;
   try {
     const token = localStorage.getItem('vrestro_token');
     const response = await fetch(`/api/waiter/order-item/${item.id}`, {
@@ -220,12 +262,15 @@ const cancelItem = async (item) => {
       throw new Error(result.message || 'Taomni bekor qilishda xatolik.');
     }
 
-    alert(t('cancel_success'));
+    waiterStore.triggerToast(t('cancel_success'));
     // Re-fetch status to update tracking feed
     await waiterStore.fetchActiveStatus();
-    await waiterStore.fetchTables(); // Refresh tables view status (Emerald green state changes)
+    await waiterStore.fetchTables(); // Refresh tables view status
   } catch (error) {
-    alert(error.message);
+    waiterStore.triggerToast(error.message);
+  } finally {
+    isCancelModalOpen.value = false;
+    itemToCancel.value = null;
   }
 };
 

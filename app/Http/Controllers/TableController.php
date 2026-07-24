@@ -126,9 +126,9 @@ class TableController extends Controller
      */
     public function cashierTables(Request $request): JsonResponse
     {
-        $tables = \App\Models\Table::orderBy('table_number')->get()->map(function ($table) {
+        $tables = \App\Models\Table::orderBy('id')->get()->map(function ($table) {
             $orderId = null;
-            if ($table->status === 'occupied') {
+            if (in_array($table->status, ['occupied', 'waiting_checkout'])) {
                 $order = $table->orders()
                     ->whereIn('status', ['new', 'cooking', 'ready', 'delivered'])
                     ->latest()
