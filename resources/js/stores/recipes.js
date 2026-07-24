@@ -62,7 +62,9 @@ export const useRecipesStore = defineStore('recipes', () => {
 
             if (!response.ok) {
                 handleAuthError(response.status);
-                throw new Error(data.message || 'Retseptni saqlashda xatolik yuz berdi.');
+                const err = new Error(data.message || 'Retseptni saqlashda xatolik yuz berdi.');
+                err.errors = data.errors;
+                throw err;
             }
 
             // Refetch recipe to refresh capacity metrics

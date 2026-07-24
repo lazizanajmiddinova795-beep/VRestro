@@ -64,9 +64,9 @@
                 </div>
               </div>
               <div class="relative">
-                <select 
+                <select
                   :value="settingsStore.language"
-                  @change="settingsStore.setLanguage($event.target.value)"
+                  @change="onLanguageChange($event.target.value)"
                   class="px-4 py-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition cursor-pointer min-w-[150px]"
                 >
                   <option value="uz">O'zbek (UZ)</option>
@@ -273,20 +273,8 @@
         </div>
 
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Tizim tili</label>
-          <select 
-            v-model="financeForm.language"
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition appearance-none"
-          >
-            <option value="uz">O'zbekcha</option>
-            <option value="ru">Русский</option>
-            <option value="en">English</option>
-          </select>
-        </div>
-
-        <div class="space-y-1.5">
           <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Xizmat haqi stavkasi (%)</label>
-          <input 
+          <input
             v-model.number="financeForm.service_charge_rate"
             type="number" 
             placeholder="10"
@@ -467,27 +455,22 @@ import { ref, onMounted } from 'vue';
 import { Save, UploadCloud, Loader2, KeyRound, Trash2, Send, Settings, Globe, Moon, Eye, Type } from 'lucide-vue-next';
 import { useSettingStore, useSettingsStore } from '@/stores/settings';
 import { useAuthStore } from '@/stores/auth';
-import { useCashierStore } from '@/stores/cashier';
 
 const settingStore = useSettingStore();
 const settingsStore = useSettingsStore();
 const authStore = useAuthStore();
-const cashierStore = useCashierStore();
 
-// Language change: sync financeForm, save to server, then reload
-const onLanguageChange = async () => {
-  cashierStore.playNotificationBeep();
-  const newLang = cashierStore.localSettings.language;
-  financeForm.value.language = newLang;
-  // Auto-save so language persists after reload
+// Language change: uses settingsStore directly, persists via system_language key
+const onLanguageChange = async (lang) => {
+  settingsStore.setLanguage(lang);
+  // Save to server immediately
   try {
     const formData = new FormData();
-    formData.append('language', newLang);
-    await settingStore.updateSettings(formData);
+    formData.append('system_language', lang);
+    await settingsStore.updateSettings(formData);
   } catch (e) {
     // silent – non-critical
   }
-  setTimeout(() => { window.location.reload(); }, 400);
 };
 
 const activeTab = ref('general');
@@ -514,7 +497,6 @@ const logoPreview = ref(null);
 const financeForm = ref({
   tax_rate: 12,
   currency: 'UZS',
-  language: 'uz',
   service_charge_rate: 10,
   receipt_header: '',
   receipt_footer: ''
@@ -546,8 +528,7 @@ onMounted(async () => {
   logoPreview.value = settingStore.settings.restaurant_logo;
 
   financeForm.value.tax_rate = parseFloat(settingStore.settings.tax_rate) || 0;
-  financeForm.value.currency = settingStore.settings.currency;
-  financeForm.value.language = settingStore.settings.language;
+  financeForm.value.currency = settingStore.settings.currency || 'UZS';
   financeForm.value.service_charge_rate = parseFloat(settingStore.settings.service_charge_rate) || 0;
   financeForm.value.receipt_header = settingStore.settings.receipt_header || '';
   financeForm.value.receipt_footer = settingStore.settings.receipt_footer || '';
@@ -584,7 +565,6 @@ const saveAllSettings = async () => {
 
   formData.append('tax_rate', financeForm.value.tax_rate);
   formData.append('currency', financeForm.value.currency);
-  formData.append('language', financeForm.value.language);
   formData.append('service_charge_rate', financeForm.value.service_charge_rate);
   formData.append('receipt_header', financeForm.value.receipt_header);
   formData.append('receipt_footer', financeForm.value.receipt_footer);
@@ -600,15 +580,7 @@ const saveAllSettings = async () => {
   try {
     const msg = await settingStore.updateSettings(formData);
     successMsg.value = msg || 'Sozlamalar muvaffaqiyatli saqlandi.';
-
-    // Sync language to local cashier settings so UI updates immediately
-    if (cashierStore.localSettings.language !== financeForm.value.language) {
-      cashierStore.localSettings.language = financeForm.value.language;
-      // Reload page after short delay so the new language takes full effect
-      setTimeout(() => { window.location.reload(); }, 800);
-    } else {
-      setTimeout(() => { successMsg.value = ''; }, 4000);
-    }
+    setTimeout(() => { successMsg.value = ''; }, 4000);
   } catch (err) {
     errorMsg.value = err.message;
   }

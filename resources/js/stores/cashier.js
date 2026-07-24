@@ -18,7 +18,7 @@ export const useCashierStore = defineStore('cashier', () => {
 
     // 3. Local Settings (Kassa Sozlamalari)
     const defaultSettings = {
-        theme: 'dark',
+        theme: 'light',
         nightFilter: false,
         fontSize: 'normal',
         zoomScale: 100,
@@ -30,6 +30,13 @@ export const useCashierStore = defineStore('cashier', () => {
     const localSettings = ref(
         JSON.parse(localStorage.getItem('vrestro_cashier_settings')) || { ...defaultSettings }
     );
+
+    // One-time migration: force existing sessions saved with the old dark default
+    // over to the new minimalist white default theme.
+    if (!localStorage.getItem('vrestro_theme_migrated_v2')) {
+        localSettings.value.theme = 'light';
+        localStorage.setItem('vrestro_theme_migrated_v2', '1');
+    }
 
     // Language translations dictionary
     const dictionary = {
@@ -404,15 +411,18 @@ export const useCashierStore = defineStore('cashier', () => {
     };
 
     // Cart operations
-    const addToCart = (food) => {
-        const existing = cart.value.find(item => item.food_id === food.id);
+    const addToCart = (food, sizeName = null, price = null, notes = '') => {
+        const finalPrice = price !== null ? parseFloat(price) : parseFloat(food.price);
+        const existing = cart.value.find(item => item.food_id === food.id && (item.size_name || null) === sizeName);
         if (existing) {
             existing.quantity++;
         } else {
             cart.value.push({
                 food_id: food.id,
                 name: food.name,
-                price: parseFloat(food.price),
+                price: finalPrice,
+                size_name: sizeName,
+                notes: notes || '',
                 quantity: 1,
                 food: food
             });
@@ -420,20 +430,29 @@ export const useCashierStore = defineStore('cashier', () => {
         playNotificationBeep();
     };
 
-    const removeFromCart = (foodId) => {
-        cart.value = cart.value.filter(item => item.food_id !== foodId);
+    const removeFromCart = (foodId, sizeName = null) => {
+        cart.value = cart.value.filter(item => !(item.food_id === foodId && (item.size_name || null) === sizeName));
         playNotificationBeep();
     };
 
-    const updateQuantity = (foodId, delta) => {
-        const item = cart.value.find(item => item.food_id === foodId);
+    const updateQuantity = (foodId, delta, sizeName = null) => {
+        const item = cart.value.find(item => item.food_id === foodId && (item.size_name || null) === sizeName);
         if (item) {
             item.quantity += delta;
             if (item.quantity <= 0) {
-                removeFromCart(foodId);
+                removeFromCart(foodId, sizeName);
             } else {
                 playNotificationBeep();
             }
+        }
+    };
+
+    const editCartItem = (foodId, oldSizeName, newSizeName, newPrice, newNotes) => {
+        const item = cart.value.find(item => item.food_id === foodId && (item.size_name || null) === oldSizeName);
+        if (item) {
+            item.size_name = newSizeName;
+            item.price = parseFloat(newPrice);
+            item.notes = newNotes || '';
         }
     };
 
@@ -464,6 +483,7 @@ export const useCashierStore = defineStore('cashier', () => {
         addToCart,
         removeFromCart,
         updateQuantity,
+        editCartItem,
         clearCart,
 
         // Settings & Sound & Translations

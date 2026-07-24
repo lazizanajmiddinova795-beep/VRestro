@@ -175,7 +175,9 @@ export const useMenuStore = defineStore('menu', () => {
             const data = await response.json();
             if (!response.ok) {
                 handleAuthError(response.status);
-                throw new Error(data.message || 'Taom yaratishda xatolik.');
+                const err = new Error(data.message || 'Taom yaratishda xatolik.');
+                err.errors = data.errors;
+                throw err;
             }
 
             await fetchFoods();
@@ -202,7 +204,9 @@ export const useMenuStore = defineStore('menu', () => {
             const data = await response.json();
             if (!response.ok) {
                 handleAuthError(response.status);
-                throw new Error(data.message || 'Taomni tahrirlashda xatolik.');
+                const err = new Error(data.message || 'Taomni tahrirlashda xatolik.');
+                err.errors = data.errors;
+                throw err;
             }
 
             await fetchFoods();

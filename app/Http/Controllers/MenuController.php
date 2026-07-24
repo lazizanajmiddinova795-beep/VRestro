@@ -51,7 +51,7 @@ class MenuController extends Controller
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'description' => ['nullable', 'string'],
             'is_available' => ['nullable', 'boolean'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'], // Max 2MB
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'], // Max 5MB
             'sizes' => ['nullable'],
             'ingredients' => ['nullable'],
         ]);
@@ -116,7 +116,7 @@ class MenuController extends Controller
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'description' => ['nullable', 'string'],
             'is_available' => ['nullable', 'boolean'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'sizes' => ['nullable'],
             'ingredients' => ['nullable'],
         ]);

@@ -32,7 +32,7 @@
           <button
             v-for="food in filteredFoods"
             :key="food.id"
-            @click="addToCart(food)"
+            @click="triggerAddFlow(food)"
             :disabled="!food.is_available"
             class="group text-left border rounded-3xl p-4 flex flex-col justify-between min-h-[140px] relative transition-all duration-300 hover:scale-[1.02] overflow-hidden"
             :class="food.is_available 
@@ -91,34 +91,39 @@
 
         <!-- Cart Items List -->
         <div class="flex-grow overflow-y-auto pr-1 divide-y divide-slate-200 space-y-2 mb-4">
-          <div 
-            v-for="item in cashierStore.cart" 
-            :key="item.food_id"
+          <div
+            v-for="item in cashierStore.cart"
+            :key="item.food_id + '-' + (item.size_name || 'default')"
             class="flex items-center justify-between py-2 text-xs"
           >
-            <div class="space-y-0.5 truncate max-w-[180px]">
-              <h4 class="font-bold text-slate-900 truncate">{{ cashierStore.t(item.name.toLowerCase()) }}</h4>
+            <div @click="triggerEditFlow(item)" class="space-y-0.5 truncate max-w-[180px] cursor-pointer group">
+              <h4 class="font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors flex items-center gap-1">
+                {{ cashierStore.t(item.name.toLowerCase()) }}
+                <span v-if="item.size_name" class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold">
+                  {{ item.size_name }}
+                </span>
+              </h4>
               <p class="font-mono text-slate-650 text-[10px]">{{ formatCurrency(item.price) }}</p>
             </div>
 
             <!-- Increments -->
             <div class="flex items-center space-x-2.5 shrink-0">
-              <button 
-                @click="cashierStore.updateQuantity(item.food_id, -1)"
+              <button
+                @click="cashierStore.updateQuantity(item.food_id, -1, item.size_name)"
                 class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-750 flex items-center justify-center font-black"
               >
                 -
               </button>
               <span class="font-bold font-mono text-slate-900 text-xs w-4 text-center">{{ item.quantity }}</span>
-              <button 
-                @click="cashierStore.updateQuantity(item.food_id, 1)"
+              <button
+                @click="cashierStore.updateQuantity(item.food_id, 1, item.size_name)"
                 class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-750 flex items-center justify-center font-black"
               >
                 +
               </button>
-              
-              <button 
-                @click="cashierStore.removeFromCart(item.food_id)"
+
+              <button
+                @click="cashierStore.removeFromCart(item.food_id, item.size_name)"
                 class="p-1 rounded bg-rose-100 text-rose-700 hover:bg-rose-600 hover:text-white transition"
               >
                 <Trash2 class="w-3.5 h-3.5" />
@@ -164,6 +169,16 @@
         </button>
       </div>
     </div>
+
+    <!-- Product Options Sheet: portion/size selection before adding to cart -->
+    <ProductOptionsSheet
+      v-if="activeCustomFood"
+      :food="activeCustomFood"
+      :initialSizeName="editingCartItem ? editingCartItem.size_name : null"
+      :initialNotes="editingCartItem ? editingCartItem.notes : ''"
+      @close="activeCustomFood = null; editingCartItem = null"
+      @add="handleCustomAdd"
+    />
 
     <!-- MODAL: FAST POS BILLING CHECKOUT -->
     <Transition name="fade">
@@ -355,6 +370,39 @@ import { useCashierStore } from '@/stores/cashier';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingStore } from '@/stores/settings';
 import { useRouter } from 'vue-router';
+import ProductOptionsSheet from './ProductOptionsSheet.vue';
+
+const activeCustomFood = ref(null);
+const editingCartItem = ref(null);
+
+const triggerAddFlow = (food) => {
+  editingCartItem.value = null;
+  activeCustomFood.value = food;
+};
+
+const triggerEditFlow = (item) => {
+  const food = item.food || foods.value.find(f => f.id === item.food_id);
+  if (food) {
+    editingCartItem.value = item;
+    activeCustomFood.value = food;
+  }
+};
+
+const handleCustomAdd = (payload) => {
+  if (editingCartItem.value) {
+    cashierStore.editCartItem(
+      editingCartItem.value.food_id,
+      editingCartItem.value.size_name,
+      payload.size_name,
+      payload.price,
+      payload.notes
+    );
+  } else {
+    cashierStore.addToCart(activeCustomFood.value, payload.size_name, payload.price, payload.notes);
+  }
+  activeCustomFood.value = null;
+  editingCartItem.value = null;
+};
 
 const cashierStore = useCashierStore();
 const authStore = useAuthStore();
@@ -430,10 +478,6 @@ const formatCurrency = (val) => {
   return new Intl.NumberFormat('uz-UZ').format(Math.round(val)) + ' UZS';
 };
 
-const addToCart = (food) => {
-  cashierStore.addToCart(food);
-};
-
 const openCheckout = async () => {
   checkoutForm.value = {
     table_id: null,
@@ -507,7 +551,9 @@ const submitCheckout = async () => {
       waiter_id: authStore.user?.id || null,
       items: cashierStore.cart.map(it => ({
         food_id: it.food_id,
-        quantity: it.quantity
+        quantity: it.quantity,
+        size_name: it.size_name || null,
+        notes: it.notes || null
       }))
     };
 

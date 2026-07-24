@@ -142,6 +142,16 @@
         <p class="text-slate-400 text-xs font-medium">Hujjatlar yuklanmoqda...</p>
       </div>
 
+      <!-- Error state -->
+      <div v-else-if="warehouseStore.error" class="flex-grow flex flex-col items-center justify-center p-6 text-center space-y-4">
+        <AlertTriangle class="w-12 h-12 text-red-400" />
+        <h3 class="text-base font-bold text-white">Tarixni yuklashda xatolik</h3>
+        <p class="text-xs text-red-300/80">{{ warehouseStore.error }}</p>
+        <button @click="triggerHistoryFetch" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition">
+          Qayta yuklash
+        </button>
+      </div>
+
       <!-- Logs Grid -->
       <div v-else class="flex-grow overflow-y-auto pr-1">
         <div class="space-y-4 pb-12">

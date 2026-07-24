@@ -358,6 +358,90 @@
       </div>
     </div>
 
+    <!-- 4. Payment History -->
+    <div class="rounded-2xl border border-white/5 bg-slate-950/40 p-5 backdrop-blur-xl shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+        <h2 class="text-base font-semibold text-white flex items-center gap-2">
+          <History class="w-4 h-4 text-indigo-400" />
+          To'lovlar tarixi
+        </h2>
+        <div class="flex flex-wrap items-center gap-2">
+          <input
+            type="date"
+            v-model="historyFilters.date_from"
+            @change="loadHistory"
+            class="bg-slate-900 border border-white/10 rounded-lg py-1.5 px-3 text-xs text-white focus:outline-none focus:border-indigo-500"
+          />
+          <input
+            type="date"
+            v-model="historyFilters.date_to"
+            @change="loadHistory"
+            class="bg-slate-900 border border-white/10 rounded-lg py-1.5 px-3 text-xs text-white focus:outline-none focus:border-indigo-500"
+          />
+          <select
+            v-model="historyFilters.payment_method"
+            @change="loadHistory"
+            class="bg-slate-900 border border-white/10 rounded-lg py-1.5 px-3 text-xs text-white focus:outline-none focus:border-indigo-500"
+          >
+            <option value="">Barcha turlar</option>
+            <option value="cash">Naqd</option>
+            <option value="card">Karta</option>
+            <option value="click">Click</option>
+            <option value="payme">Payme</option>
+          </select>
+          <button @click="loadHistory" class="p-1.5 rounded-lg bg-indigo-600/20 border border-indigo-500/20 text-indigo-300 hover:bg-indigo-600 hover:text-white transition">
+            <RefreshCw class="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      <div v-if="paymentStore.loading" class="flex items-center justify-center py-10">
+        <Loader2 class="w-6 h-6 text-indigo-500 animate-spin" />
+      </div>
+
+      <div v-else-if="paymentStore.error" class="text-center py-10 text-red-300/80 text-xs">
+        {{ paymentStore.error }}
+      </div>
+
+      <div v-else-if="paymentStore.payments.length === 0" class="text-center py-10 text-slate-500 text-xs">
+        To'lovlar tarixi topilmadi.
+      </div>
+
+      <div v-else class="overflow-x-auto">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="border-b border-white/5 text-slate-400 text-xxs font-bold uppercase tracking-wider">
+              <th class="px-4 py-3">Sana</th>
+              <th class="px-4 py-3">Mijoz</th>
+              <th class="px-4 py-3">Stol / Buyurtma</th>
+              <th class="px-4 py-3">To'lov turi</th>
+              <th class="px-4 py-3">Holat</th>
+              <th class="px-4 py-3 text-right">Summa</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 text-sm">
+            <tr v-for="p in paymentStore.payments" :key="p.id" class="hover:bg-white/5 transition">
+              <td class="px-4 py-3 text-xs text-slate-300">{{ formatDate(p.created_at) }}</td>
+              <td class="px-4 py-3 text-xs text-slate-300">{{ p.customer?.name || 'Mehmon' }}</td>
+              <td class="px-4 py-3 text-xs text-slate-300">
+                {{ p.order?.table?.table_number ? 'Stol: ' + p.order.table.table_number : (p.order?.order_number || '—') }}
+              </td>
+              <td class="px-4 py-3 text-xs text-slate-300 uppercase">{{ p.payment_method }}</td>
+              <td class="px-4 py-3">
+                <span
+                  class="px-2 py-0.5 rounded-full text-xxs font-bold uppercase"
+                  :class="p.status === 'refunded' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'"
+                >
+                  {{ p.status === 'refunded' ? 'Qaytarilgan' : 'Yakunlangan' }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-right font-bold text-white">{{ formatCurrency(p.total_amount) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Alert Dialog -->
     <div v-if="alertMessage" class="fixed bottom-6 right-6 z-50 rounded-2xl bg-slate-900 border border-emerald-500/30 p-4 shadow-2xl flex items-center gap-3 backdrop-blur-xl animate-slideIn">
       <div class="rounded-lg bg-emerald-500/20 text-emerald-400 p-2 border border-emerald-500/30">
@@ -373,9 +457,9 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { 
-  DollarSign, Banknote, CreditCard, QrCode, Layers, 
-  Clock, CheckCircle, User, ShoppingBag, X, Search, Loader2 
+import {
+  DollarSign, Banknote, CreditCard, QrCode, Layers,
+  Clock, CheckCircle, User, ShoppingBag, X, Search, Loader2, History, RefreshCw
 } from 'lucide-vue-next';
 import { usePaymentStore } from '@/stores/payment';
 import { useOrdersStore } from '@/stores/orders';
@@ -405,11 +489,27 @@ const mixedQr = ref(0);
 const alertTitle = ref('');
 const alertMessage = ref('');
 
+// Payment history
+const historyFilters = ref({
+  date_from: '',
+  date_to: '',
+  payment_method: ''
+});
+
+const loadHistory = async () => {
+  const filters = {};
+  if (historyFilters.value.date_from) filters.date_from = historyFilters.value.date_from;
+  if (historyFilters.value.date_to) filters.date_to = historyFilters.value.date_to;
+  if (historyFilters.value.payment_method) filters.payment_method = historyFilters.value.payment_method;
+  await paymentStore.fetchPayments(filters);
+};
+
 // Load initial data
 onMounted(async () => {
   await paymentStore.fetchTodayRevenue();
   await ordersStore.fetchOrders();
   await customerStore.fetchCustomers();
+  await loadHistory();
 });
 
 // Computed properties
@@ -551,6 +651,7 @@ const submitPayment = async () => {
     
     // Refresh lists
     await ordersStore.fetchOrders();
+    await loadHistory();
     selectedOrder.value = null;
 
     // Show Success message

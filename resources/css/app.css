@@ -202,6 +202,72 @@ html.night-filter {
   border-color: rgba(226, 232, 240, 0.9) !important;
 }
 
+/* Broader minimalist-white coverage: catch the remaining hardcoded dark
+   utility classes used throughout the admin/kitchen/cashier/waiter panels
+   so toggling .light-theme reliably turns the whole app white, without
+   having to hand-edit every component's markup. */
+.light-theme .bg-slate-900,
+.light-theme .bg-slate-900\/95,
+.light-theme .bg-slate-800,
+.light-theme .bg-slate-800\/60,
+.light-theme .bg-slate-800\/50,
+.light-theme .bg-slate-800\/80,
+.light-theme .bg-slate-950\/60,
+.light-theme .bg-slate-950\/90,
+.light-theme .bg-black,
+.light-theme .bg-black\/40,
+.light-theme .bg-black\/60 {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
+}
+
+.light-theme .bg-white\/2,
+.light-theme .bg-white\/5,
+.light-theme .bg-white\/10,
+.light-theme .bg-white\/20 {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+.light-theme .hover\:bg-white\/5:hover,
+.light-theme .hover\:bg-white\/10:hover {
+  background-color: rgba(15, 23, 42, 0.06) !important;
+}
+
+.light-theme .text-slate-500 {
+  color: #64748b !important;
+}
+
+.light-theme .text-slate-600 {
+  color: #475569 !important;
+}
+
+.light-theme .hover\:text-white:hover,
+.light-theme .hover\:text-slate-200:hover {
+  color: #0f172a !important;
+}
+
+.light-theme .border-slate-700,
+.light-theme .border-slate-700\/60,
+.light-theme .border-white\/5,
+.light-theme .border-white\/20 {
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+.light-theme .placeholder-slate-500::placeholder,
+.light-theme .placeholder-slate-600::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light-theme .shadow-2xl {
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Body background for the whole app shell */
+.light-theme,
+.light-theme body {
+  background-color: #f8fafc !important;
+}
+
 /* Vibrant Modern Light Theme Helpers */
 .vibrant-card {
   background-color: #ffffff;

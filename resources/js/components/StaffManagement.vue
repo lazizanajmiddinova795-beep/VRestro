@@ -106,12 +106,20 @@
 
               <!-- Name & Role -->
               <div class="overflow-hidden">
-                <h3 class="text-sm font-bold text-white tracking-wide truncate">{{ member.name }}</h3>
-                <span 
-                  class="px-2 py-0.5 rounded text-4xs font-bold uppercase tracking-wider border mt-1 inline-block"
-                  :class="roleBadgeClass(member.roles?.[0]?.name)"
-                >
-                  {{ member.roles?.[0]?.name || 'Xodim' }}
+                <h3 class="text-sm font-bold text-white tracking-wide truncate flex items-center gap-1.5">
+                  {{ member.name }}
+                  <ShieldCheck v-if="member.is_superadmin" class="w-3.5 h-3.5 text-amber-400 shrink-0" title="Bosh administrator" />
+                </h3>
+                <span class="flex items-center gap-1 mt-1">
+                  <span
+                    class="px-2 py-0.5 rounded text-4xs font-bold uppercase tracking-wider border inline-block"
+                    :class="roleBadgeClass(member.roles?.[0]?.name)"
+                  >
+                    {{ member.roles?.[0]?.name || 'Xodim' }}
+                  </span>
+                  <span v-if="member.is_superadmin" class="px-2 py-0.5 rounded text-4xs font-bold uppercase tracking-wider border bg-amber-500/10 border-amber-500/20 text-amber-400 inline-block">
+                    Bosh admin
+                  </span>
                 </span>
               </div>
             </div>
@@ -137,11 +145,12 @@
           <div class="border-t border-white/5 pt-3.5 mt-4 flex items-center justify-between">
             <!-- Active switch -->
             <div class="flex items-center space-x-2">
-              <button 
+              <button
                 @click="handleToggleStatus(member)"
-                class="w-8 h-4.5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none relative"
+                :disabled="!canManage(member)"
+                class="w-8 h-4.5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none relative disabled:opacity-40 disabled:cursor-not-allowed"
                 :class="member.status === 'active' ? 'bg-indigo-600' : 'bg-slate-800'"
-                :title="member.status === 'active' ? 'Faol (Bloklash)' : 'Nofaol (Aktivlashtirish)'"
+                :title="!canManage(member) ? 'Faqat Bosh administrator o\'zgartira oladi' : (member.status === 'active' ? 'Faol (Bloklash)' : 'Nofaol (Aktivlashtirish)')"
               >
                 <span 
                   class="block w-3.5 h-3.5 rounded-full bg-white transition-transform duration-200"
@@ -155,17 +164,19 @@
 
             <!-- Actions -->
             <div class="flex items-center space-x-1.5">
-              <button 
+              <button
                 @click="openAddEditModal(member)"
-                class="p-1.5 rounded bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition"
-                title="Tahrirlash"
+                :disabled="!canManage(member)"
+                class="p-1.5 rounded bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white/5 disabled:hover:text-slate-400"
+                :title="!canManage(member) ? 'Faqat Bosh administrator tahrirlay oladi' : 'Tahrirlash'"
               >
                 <Edit3 class="w-3.5 h-3.5" />
               </button>
-              <button 
+              <button
                 @click="handleDelete(member)"
-                class="p-1.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition"
-                title="O'chirish"
+                :disabled="!canManage(member)"
+                class="p-1.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-red-500/10 disabled:hover:text-red-400"
+                :title="!canManage(member) ? 'Faqat Bosh administrator o\'chira oladi' : 'O\'chirish'"
               >
                 <Trash2 class="w-3.5 h-3.5" />
               </button>
@@ -344,12 +355,21 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { 
-  UserPlus, Search, Phone, Clock, KeyRound, Edit3, Trash2, X, Loader2, Users, Camera
+import {
+  UserPlus, Search, Phone, Clock, KeyRound, Edit3, Trash2, X, Loader2, Users, Camera, ShieldCheck
 } from 'lucide-vue-next';
 import { useStaffStore } from '@/stores/staff';
+import { useAuthStore } from '@/stores/auth';
 
 const staffStore = useStaffStore();
+const authStore = useAuthStore();
+
+// Whether the currently logged-in user is allowed to edit/deactivate/delete a
+// given staff member. Only a super-admin may touch another super-admin's account.
+const canManage = (member) => {
+  if (!member.is_superadmin) return true;
+  return !!authStore.user?.is_superadmin;
+};
 
 // Search parameters
 const searchQuery = ref('');
@@ -459,7 +479,7 @@ const submitForm = async () => {
     }
     showModal.value = false;
   } catch (err) {
-    alert(err.message);
+    alertValidationError(err);
   }
 };
 
@@ -467,7 +487,7 @@ const handleToggleStatus = async (member) => {
   try {
     await staffStore.toggleStaffStatus(member.id);
   } catch (err) {
-    alert(err.message);
+    alertValidationError(err);
   }
 };
 
@@ -476,6 +496,16 @@ const handleDelete = async (member) => {
   try {
     await staffStore.deleteStaff(member.id);
   } catch (err) {
+    alertValidationError(err);
+  }
+};
+
+// Laravel validation errors (422) carry the real reason under err.errors,
+// while err.message is just the generic "The given data was invalid."
+const alertValidationError = (err) => {
+  if (err.errors) {
+    alert(Object.values(err.errors).flat().join('\n'));
+  } else {
     alert(err.message);
   }
 };

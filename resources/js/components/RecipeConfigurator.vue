@@ -289,7 +289,12 @@ const submitRecipe = async () => {
     await recipesStore.saveRecipe(selectedFood.value.id, payload);
     alert('Retsept muvaffaqiyatli saqlandi!');
   } catch (err) {
-    alert(err.message);
+    if (err.errors) {
+      const messages = Object.values(err.errors).flat().join('\n');
+      alert(messages || err.message);
+    } else {
+      alert(err.message);
+    }
   }
 };
 

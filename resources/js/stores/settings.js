@@ -3,6 +3,12 @@ import { ref, computed } from 'vue';
 
 export const useSettingsStore = defineStore('settings', () => {
     // 1. Core Reactive States
+    // One-time migration: force sessions that previously saved 'dark' (the old
+    // default) back to the new minimalist white default theme.
+    if (!localStorage.getItem('vrestro_theme_migrated_v2')) {
+        localStorage.setItem('vrestro_theme', 'light');
+        localStorage.setItem('vrestro_theme_migrated_v2', '1');
+    }
     const theme = ref(localStorage.getItem('vrestro_theme') || 'light');
     const language = ref(localStorage.getItem('vrestro_language') || 'uz');
     const nightFilter = ref(localStorage.getItem('vrestro_night_filter') === 'true');
@@ -16,6 +22,11 @@ export const useSettingsStore = defineStore('settings', () => {
         logo_url: localStorage.getItem('vrestro_brand_logo') || '',
         primary_color: localStorage.getItem('vrestro_brand_color') || '#4f46e5',
     });
+
+    // Raw flat key-value settings exactly as returned by GET/POST /api/settings.
+    // Components read fields like restaurant_name, tax_rate, receipt_header, etc.
+    // directly off this object, so it must mirror the backend response 1:1.
+    const rawSettings = ref({});
 
     // 2. Dictionary Translations for UZ / RU / EN
     const translations = {
@@ -120,13 +131,13 @@ export const useSettingsStore = defineStore('settings', () => {
     const applySettings = () => {
         const root = document.documentElement;
 
-        // Theme (light / dark)
+        // Theme (light / dark) — .light-theme is the class app.css actually styles
         if (theme.value === 'dark') {
+            root.classList.remove('light-theme');
             root.classList.add('dark');
-            root.classList.remove('light');
         } else {
+            root.classList.add('light-theme');
             root.classList.remove('dark');
-            root.classList.add('light');
         }
 
         // Night filter (eye protection sepia overlay)
@@ -197,6 +208,8 @@ export const useSettingsStore = defineStore('settings', () => {
             });
             if (res.ok) {
                 const data = await res.json();
+                rawSettings.value = data;
+
                 if (data.system_language) setLanguage(data.system_language);
                 if (data.theme_mode) setTheme(data.theme_mode);
                 if (data.night_filter !== undefined) setNightFilter(data.night_filter);
@@ -207,7 +220,7 @@ export const useSettingsStore = defineStore('settings', () => {
                         name: data.restaurant_name || branding.value.name,
                         phone: data.restaurant_phone || branding.value.phone,
                         address: data.restaurant_address || branding.value.address,
-                        working_hours: data.operating_hours || branding.value.working_hours,
+                        working_hours: data.restaurant_hours || branding.value.working_hours,
                         logo_url: data.restaurant_logo || branding.value.logo_url,
                         primary_color: data.primary_color || branding.value.primary_color,
                     });
@@ -224,7 +237,7 @@ export const useSettingsStore = defineStore('settings', () => {
         nightFilter,
         fontSize,
         branding,
-        settings: branding, // Alias for legacy components expecting settingStore.settings
+        settings: rawSettings, // Raw flat key-value settings (restaurant_name, tax_rate, receipt_header, ...)
         t,
         applySettings,
         setTheme,
@@ -251,10 +264,21 @@ export const useSettingsStore = defineStore('settings', () => {
             if (!res.ok) throw new Error(data.message || 'Saqlashda xatolik');
 
             if (data.settings) {
+                rawSettings.value = { ...rawSettings.value, ...data.settings };
+
                 if (data.settings.system_language) setLanguage(data.settings.system_language);
                 if (data.settings.theme_mode) setTheme(data.settings.theme_mode);
                 if (data.settings.night_filter !== undefined) setNightFilter(data.settings.night_filter === 'true' || data.settings.night_filter === true);
                 if (data.settings.font_size) setFontSize(data.settings.font_size);
+
+                updateBranding({
+                    name: data.settings.restaurant_name || branding.value.name,
+                    phone: data.settings.restaurant_phone || branding.value.phone,
+                    address: data.settings.restaurant_address || branding.value.address,
+                    working_hours: data.settings.restaurant_hours || branding.value.working_hours,
+                    logo_url: data.settings.restaurant_logo || branding.value.logo_url,
+                    primary_color: data.settings.primary_color || branding.value.primary_color,
+                });
             }
 
             return data.message;

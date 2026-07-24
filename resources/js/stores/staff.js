@@ -76,7 +76,9 @@ export const useStaffStore = defineStore('staff', () => {
 
             if (!response.ok) {
                 handleAuthError(response.status);
-                throw new Error(data.message || 'Xodim qo\'shishda xatolik yuz berdi.');
+                const err = new Error(data.message || 'Xodim qo\'shishda xatolik yuz berdi.');
+                err.errors = data.errors;
+                throw err;
             }
 
             await fetchStaff({ page: 1 });
@@ -99,7 +101,9 @@ export const useStaffStore = defineStore('staff', () => {
 
             if (!response.ok) {
                 handleAuthError(response.status);
-                throw new Error(data.message || 'Xodim ma\'lumotlarini yangilashda xatolik yuz berdi.');
+                const err = new Error(data.message || 'Xodim ma\'lumotlarini yangilashda xatolik yuz berdi.');
+                err.errors = data.errors;
+                throw err;
             }
 
             await fetchStaff({ page: pagination.value.current_page });
@@ -121,7 +125,9 @@ export const useStaffStore = defineStore('staff', () => {
 
             if (!response.ok) {
                 handleAuthError(response.status);
-                throw new Error(data.message || 'Xodim holatini o\'zgartirishda xatolik yuz berdi.');
+                const err = new Error(data.message || 'Xodim holatini o\'zgartirishda xatolik yuz berdi.');
+                err.errors = data.errors;
+                throw err;
             }
 
             // Sync immediately on local list item
@@ -147,7 +153,9 @@ export const useStaffStore = defineStore('staff', () => {
 
             if (!response.ok) {
                 handleAuthError(response.status);
-                throw new Error(data.message || 'Xodimni o\'chirishda xatolik yuz berdi.');
+                const err = new Error(data.message || 'Xodimni o\'chirishda xatolik yuz berdi.');
+                err.errors = data.errors;
+                throw err;
             }
 
             await fetchStaff({ page: pagination.value.current_page });
