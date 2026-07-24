@@ -34,18 +34,18 @@
       <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 rounded-full bg-indigo-600/5 blur-[120px] pointer-events-none"></div>
 
       <!-- Sub-navigation tabs to merge Boshqaruv & Tahlillar -->
-      <div class="flex items-center space-x-1 bg-white border border-slate-200 rounded-xl p-1 mb-8 shrink-0 w-max shadow-sm">
+      <div class="flex items-center space-x-1 bg-white border border-slate-200/80 rounded-2xl p-1 mb-8 shrink-0 w-max shadow-sm">
         <button 
           @click="switchTab('overview')"
-          class="px-5 py-2.5 rounded-lg text-xs font-extrabold transition duration-200"
-          :class="activeTab === 'overview' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+          class="px-5 py-2.5 rounded-xl text-xs font-extrabold transition duration-200"
+          :class="activeTab === 'overview' ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'"
         >
           Umumiy Boshqaruv
         </button>
         <button 
           @click="switchTab('analytics')"
-          class="px-5 py-2.5 rounded-lg text-xs font-extrabold transition duration-200"
-          :class="activeTab === 'analytics' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+          class="px-5 py-2.5 rounded-xl text-xs font-extrabold transition duration-200"
+          :class="activeTab === 'analytics' ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'"
         >
           Tahlillar va Hisobotlar (BI Suite)
         </button>
@@ -55,7 +55,7 @@
       <div v-if="activeTab === 'overview'">
         <!-- Loading / Error States -->
         <div v-if="dashboardStore.loading" class="flex flex-col items-center justify-center py-40 space-y-4">
-          <Loader2 class="w-12 h-12 text-slate-900 animate-spin" />
+          <Loader2 class="w-12 h-12 text-indigo-600 animate-spin" />
           <p class="text-slate-600 text-sm font-bold animate-pulse">Tahliliy ma'lumotlar yuklanmoqda...</p>
         </div>
 
@@ -63,7 +63,7 @@
           <AlertTriangle class="w-12 h-12 text-red-500 mx-auto" />
           <h3 class="text-lg font-bold text-slate-900">Xatolik yuz berdi</h3>
           <p class="text-sm text-red-600 font-semibold">{{ dashboardStore.error }}</p>
-          <button @click="dashboardStore.fetchAnalytics" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition duration-200">
+          <button @click="dashboardStore.fetchAnalytics" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition duration-200 shadow-md">
             Qayta urinish
           </button>
         </div>
@@ -73,10 +73,10 @@
           <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             
             <!-- Widget 1: Revenue -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-all duration-300">
+            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(16,185,129,0.12)] transition-all duration-300">
               <div class="flex items-center justify-between mb-4">
                 <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">Bugungi Tushum</span>
-                <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-500/20">
                   <DollarSign class="w-5 h-5" />
                 </div>
               </div>
@@ -86,8 +86,8 @@
                 </h3>
                 <div class="flex items-center space-x-2">
                   <span 
-                    class="inline-flex items-center text-xs font-extrabold px-2 py-0.5 rounded-full border"
-                    :class="dashboardStore.metrics.widgets.revenue.is_increase ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'"
+                    class="inline-flex items-center text-xs font-extrabold px-2.5 py-0.5 rounded-full border shadow-xs"
+                    :class="dashboardStore.metrics.widgets.revenue.is_increase ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-rose-50 border-rose-200 text-rose-700'"
                   >
                     <TrendingUp v-if="dashboardStore.metrics.widgets.revenue.is_increase" class="w-3.5 h-3.5 mr-1" />
                     <TrendingDown v-else class="w-3.5 h-3.5 mr-1" />
@@ -99,10 +99,10 @@
             </div>
 
             <!-- Widget 2: Total Orders -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-all duration-300">
+            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(99,102,241,0.12)] transition-all duration-300">
               <div class="flex items-center justify-between mb-4">
                 <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">Buyurtmalar</span>
-                <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-900 font-bold">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20">
                   <ShoppingBag class="w-5 h-5" />
                 </div>
               </div>
@@ -111,35 +111,35 @@
                   {{ dashboardStore.metrics.widgets.orders.total }} ta
                 </h3>
                 <p class="text-xs text-slate-500 font-bold flex items-center space-x-2">
-                  <span class="text-slate-900 font-extrabold">{{ dashboardStore.metrics.widgets.orders.active }} faol</span>
-                  <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                  <span class="text-emerald-700 font-extrabold">{{ dashboardStore.metrics.widgets.orders.completed }} yopilgan</span>
+                  <span class="text-indigo-600 font-extrabold">{{ dashboardStore.metrics.widgets.orders.active }} faol</span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                  <span class="text-emerald-600 font-extrabold">{{ dashboardStore.metrics.widgets.orders.completed }} yopilgan</span>
                 </p>
               </div>
             </div>
 
             <!-- Widget 3: Kitchen Load -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-all duration-300">
+            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(245,158,11,0.12)] transition-all duration-300">
               <div class="flex items-center justify-between mb-4">
                 <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">Oshxona Yuklamasi</span>
-                <div class="w-10 h-10 rounded-xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-700 font-bold">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-bold shadow-md shadow-amber-500/20">
                   <ChefHat class="w-5 h-5" />
                 </div>
               </div>
               <div class="space-y-2">
                 <h3 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
                   <span>{{ dashboardStore.metrics.widgets.kitchen_load }} ta</span>
-                  <span v-if="dashboardStore.metrics.widgets.kitchen_load > 0" class="inline-flex w-2.5 h-2.5 rounded-full bg-cyan-500 animate-ping"></span>
+                  <span v-if="dashboardStore.metrics.widgets.kitchen_load > 0" class="inline-flex w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
                 </h3>
                 <p class="text-xs text-slate-500 font-bold">tayyorlanayotgan buyurtmalar</p>
               </div>
             </div>
 
             <!-- Widget 4: Daily Expenses -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-all duration-300">
+            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(244,63,94,0.12)] transition-all duration-300">
               <div class="flex items-center justify-between mb-4">
                 <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">Bugungi Xarajatlar</span>
-                <div class="w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center text-red-700 font-bold">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-bold shadow-md shadow-rose-500/20">
                   <TrendingDown class="w-5 h-5" />
                 </div>
               </div>

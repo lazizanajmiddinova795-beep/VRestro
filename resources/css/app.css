@@ -198,28 +198,36 @@ html.night-filter {
   border-color: rgba(226, 232, 240, 0.9) !important;
 }
 
-/* Minimalist Design System Helpers */
-.minimal-card {
+/* Vibrant Modern Light Theme Helpers */
+.vibrant-card {
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 1rem;
-  padding: 1.25rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.minimal-input {
+.vibrant-card:hover {
+  box-shadow: 0 20px 30px -10px rgba(99, 102, 241, 0.12), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+.vibrant-input {
   background-color: #ffffff;
   border: 2px solid #e2e8f0;
-  border-radius: 0.75rem;
+  border-radius: 0.875rem;
   padding: 0.625rem 1rem;
   font-size: 0.875rem;
+  font-weight: 600;
   color: #0f172a;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.minimal-input:focus {
-  border-color: #0f172a;
+.vibrant-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
 }
 
 

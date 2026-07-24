@@ -1,12 +1,12 @@
 <template>
-  <div class="h-screen w-screen bg-slate-50 text-slate-900 flex font-sans overflow-hidden">
+  <div class="h-screen w-screen bg-[#F8FAFC] text-slate-900 flex font-sans overflow-hidden">
     
     <!-- Left Sidebar -->
-    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 sticky top-0 h-screen z-40 overflow-y-auto">
+    <aside class="w-64 bg-white border-r border-slate-200/80 shadow-[2px_0_15px_rgba(0,0,0,0.02)] flex flex-col justify-between shrink-0 sticky top-0 h-screen z-40 overflow-y-auto">
       <div class="p-6 space-y-8">
         <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-3 group">
-          <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-sm overflow-hidden">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300 overflow-hidden">
             <img v-if="settingStore.settings.restaurant_logo" :src="settingStore.settings.restaurant_logo" class="w-full h-full object-cover" />
             <ChefHat v-else class="w-6 h-6 text-white" />
           </div>
@@ -20,70 +20,70 @@
           <!-- Dashboard -->
           <router-link 
             to="/admin/dashboard" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/admin/dashboard') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/admin/dashboard') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <LayoutDashboard class="w-5 h-5" :class="isActiveRoute('/admin/dashboard') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <LayoutDashboard class="w-5 h-5" :class="isActiveRoute('/admin/dashboard') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Boshqaruv paneli</span>
           </router-link>
 
           <!-- Orders (All Roles) -->
           <router-link 
             to="/orders" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/orders') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/orders') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <ShoppingBag class="w-5 h-5" :class="isActiveRoute('/orders') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <ShoppingBag class="w-5 h-5" :class="isActiveRoute('/orders') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Buyurtmalar</span>
           </router-link>
 
           <!-- Menu (All Roles) -->
           <router-link 
             to="/menu" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/menu') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/menu') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <BookOpen class="w-5 h-5" :class="isActiveRoute('/menu') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <BookOpen class="w-5 h-5" :class="isActiveRoute('/menu') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Menyu</span>
           </router-link>
 
           <!-- Ingredients (All Roles) -->
           <router-link 
             to="/ingredients" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/ingredients') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/ingredients') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <Database class="w-5 h-5" :class="isActiveRoute('/ingredients') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <Database class="w-5 h-5" :class="isActiveRoute('/ingredients') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Ta'minot</span>
           </router-link>
 
           <!-- Recipes (All Roles) -->
           <router-link 
             to="/recipes" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/recipes') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/recipes') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <Sparkles class="w-5 h-5" :class="isActiveRoute('/recipes') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <Sparkles class="w-5 h-5" :class="isActiveRoute('/recipes') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Retseptlar</span>
           </router-link>
 
           <!-- Warehouse (All Roles) -->
           <router-link 
             to="/warehouse" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/warehouse') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/warehouse') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <Package class="w-5 h-5" :class="isActiveRoute('/warehouse') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <Package class="w-5 h-5" :class="isActiveRoute('/warehouse') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Ombor</span>
           </router-link>
 
           <!-- Tables (All Roles) -->
           <router-link 
             to="/tables" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/tables') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/tables') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <Layers class="w-5 h-5" :class="isActiveRoute('/tables') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <Layers class="w-5 h-5" :class="isActiveRoute('/tables') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Stollar</span>
           </router-link>
 
@@ -91,20 +91,20 @@
           <router-link 
             v-if="authStore.user?.roles?.[0] === 'Admin'"
             to="/staff" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/staff') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/staff') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <Users class="w-5 h-5" :class="isActiveRoute('/staff') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <Users class="w-5 h-5" :class="isActiveRoute('/staff') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Xodimlar</span>
           </router-link>
 
           <!-- Customers (All Roles) -->
           <router-link 
             to="/customers" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/customers') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/customers') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <Smile class="w-5 h-5" :class="isActiveRoute('/customers') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <Smile class="w-5 h-5" :class="isActiveRoute('/customers') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Mijozlar</span>
           </router-link>
 
@@ -112,10 +112,10 @@
           <router-link 
             v-if="['Admin', 'Cashier'].includes(authStore.user?.roles?.[0])"
             to="/payments" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/payments') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/payments') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <DollarSign class="w-5 h-5" :class="isActiveRoute('/payments') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <DollarSign class="w-5 h-5" :class="isActiveRoute('/payments') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>To'lovlar</span>
           </router-link>
 
@@ -123,10 +123,10 @@
           <router-link 
             v-if="['Admin', 'Cashier'].includes(authStore.user?.roles?.[0])"
             to="/discounts" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/discounts') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/discounts') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <Tag class="w-5 h-5" :class="isActiveRoute('/discounts') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <Tag class="w-5 h-5" :class="isActiveRoute('/discounts') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Chegirmalar</span>
           </router-link>
 
@@ -134,10 +134,10 @@
           <router-link 
             v-if="authStore.user?.roles?.[0] === 'Admin'"
             to="/settings" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition duration-200 group"
-            :class="isActiveRoute('/settings') ? 'bg-slate-900 text-white font-extrabold shadow-sm' : 'text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100'"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            :class="isActiveRoute('/settings') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
-            <Settings class="w-5 h-5" :class="isActiveRoute('/settings') ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'" />
+            <Settings class="w-5 h-5" :class="isActiveRoute('/settings') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
             <span>Sozlamalar</span>
           </router-link>
         </nav>
