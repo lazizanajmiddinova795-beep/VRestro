@@ -80,13 +80,13 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 const mouseX = ref(0);
 const mouseY = ref(0);
-const isDark = ref(true);
+const isDark = ref(false);
 
 let observer = null;
 
 const checkTheme = () => {
   const html = document.documentElement;
-  isDark.value = html.classList.contains('dark') || !html.classList.contains('light-theme');
+  isDark.value = html.classList.contains('dark') && !html.classList.contains('light-theme');
 };
 
 const handleMouseMove = (e) => {
