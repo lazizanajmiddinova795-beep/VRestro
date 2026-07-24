@@ -133,6 +133,50 @@
             <p class="text-sm text-slate-400 leading-relaxed">Sistemaga Face ID va simulyatsiyali biometrik tekshiruv yordamida kirish imkoniyati.</p>
           </div>
         </div>
+
+        <!-- Mobile App Downloads Section (Task 15) -->
+        <div class="mt-20 w-full bg-gradient-to-r from-slate-900/90 to-indigo-950/80 border border-indigo-500/20 rounded-3xl p-8 backdrop-blur-xl shadow-2xl text-center space-y-6">
+          <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-bold uppercase tracking-wider">
+            <Smartphone class="w-4 h-4" />
+            <span>VRestro Mobile App</span>
+          </div>
+          
+          <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+            Oshxona va Kassani Smartfoningizdan Boshqaring
+          </h2>
+          
+          <p class="text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+            Ofitsiantlar, kassa va shef-povar panellari uchun moslashtirilgan iOS va Android rasmiy ilovalarini yuklab oling.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            <!-- App Store (iOS) -->
+            <a 
+              href="https://apps.apple.com" 
+              target="_blank"
+              class="w-full sm:w-auto px-6 py-3.5 bg-slate-950 hover:bg-slate-900 border border-white/15 rounded-2xl flex items-center justify-center space-x-3 text-white transition hover:scale-105 shadow-lg group"
+            >
+              <Apple class="w-8 h-8 text-white group-hover:text-indigo-400 transition" />
+              <div class="text-left">
+                <span class="block text-4xs uppercase tracking-wider text-slate-400 font-bold">Yuklab olish</span>
+                <span class="block text-sm font-black">App Store (iOS)</span>
+              </div>
+            </a>
+
+            <!-- Google Play (Android) -->
+            <a 
+              href="https://play.google.com" 
+              target="_blank"
+              class="w-full sm:w-auto px-6 py-3.5 bg-slate-950 hover:bg-slate-900 border border-white/15 rounded-2xl flex items-center justify-center space-x-3 text-white transition hover:scale-105 shadow-lg group"
+            >
+              <Play class="w-8 h-8 text-emerald-400 group-hover:text-emerald-300 transition" />
+              <div class="text-left">
+                <span class="block text-4xs uppercase tracking-wider text-slate-400 font-bold">Yuklab olish</span>
+                <span class="block text-sm font-black">Google Play (Android)</span>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -146,7 +190,7 @@
 </template>
 
 <script setup>
-import { ChefHat, Layers, DollarSign, Lock } from 'lucide-vue-next';
+import { ChefHat, Layers, DollarSign, Lock, Smartphone, Apple, Play } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();

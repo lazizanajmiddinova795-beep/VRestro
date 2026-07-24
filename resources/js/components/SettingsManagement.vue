@@ -59,15 +59,15 @@
                   <Globe class="w-5.5 h-5.5 stroke-[1.8]" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-white">Tizim tili</h3>
-                  <p class="text-xs text-slate-400">Dastur interfeysi tilini tanlang</p>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Tizim tili</h3>
+                  <p class="text-xs text-slate-500">Dastur interfeysi tilini tanlang</p>
                 </div>
               </div>
               <div class="relative">
                 <select 
-                  v-model="cashierStore.localSettings.language"
-                  @change="onLanguageChange"
-                  class="px-4 py-2.5 bg-slate-950/80 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-indigo-500 transition cursor-pointer min-w-[150px]"
+                  :value="settingsStore.language"
+                  @change="settingsStore.setLanguage($event.target.value)"
+                  class="px-4 py-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition cursor-pointer min-w-[150px]"
                 >
                   <option value="uz">O'zbek (UZ)</option>
                   <option value="ru">Русский (RU)</option>
@@ -83,26 +83,26 @@
                   <Moon class="w-5.5 h-5.5 stroke-[1.8]" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-white">Ranglar mavzusi</h3>
-                  <p class="text-xs text-slate-400">Yorug' yoki qorong'i rejimni tanlang</p>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Ranglar mavzusi</h3>
+                  <p class="text-xs text-slate-500">Yorug' yoki qorong'i rejimni tanlang</p>
                 </div>
               </div>
-              <div class="flex items-center p-1 bg-slate-950/80 border border-slate-800 rounded-xl">
+              <div class="flex items-center p-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl">
                 <button 
-                  @click="cashierStore.localSettings.theme = 'light'; cashierStore.playNotificationBeep()"
+                  @click="settingsStore.setTheme('light')"
                   class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200"
-                  :class="cashierStore.localSettings.theme === 'light'
-                    ? 'bg-slate-800 text-white shadow-md'
-                    : 'text-slate-400 hover:text-slate-200'"
+                  :class="settingsStore.theme === 'light'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
                 >
                   Yorug' (Oq)
                 </button>
                 <button 
-                  @click="cashierStore.localSettings.theme = 'dark'; cashierStore.playNotificationBeep()"
+                  @click="settingsStore.setTheme('dark')"
                   class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200"
-                  :class="cashierStore.localSettings.theme === 'dark'
-                    ? 'bg-slate-800 text-white shadow-md'
-                    : 'text-slate-400 hover:text-slate-200'"
+                  :class="settingsStore.theme === 'dark'
+                    ? 'bg-slate-900 text-white shadow-md'
+                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
                 >
                   Qorong'i (Tungi)
                 </button>
@@ -116,19 +116,19 @@
                   <Eye class="w-5.5 h-5.5 stroke-[1.8]" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-white">Ko'z himoyasi (Tungi Filtr)</h3>
-                  <p class="text-xs text-slate-400">Moviy nurlarni kamaytirish rejimi</p>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Ko'z himoyasi (Tungi Filtr)</h3>
+                  <p class="text-xs text-slate-500">Moviy nurlarni kamaytirish rejimi</p>
                 </div>
               </div>
               <!-- Toggle Switch -->
               <button 
-                @click="cashierStore.localSettings.nightFilter = !cashierStore.localSettings.nightFilter; cashierStore.playNotificationBeep()"
+                @click="settingsStore.setNightFilter(!settingsStore.nightFilter)"
                 class="w-13 h-7 rounded-full transition duration-300 relative p-1 focus:outline-none"
-                :class="cashierStore.localSettings.nightFilter ? 'bg-amber-500 shadow-lg shadow-amber-500/20' : 'bg-slate-800'"
+                :class="settingsStore.nightFilter ? 'bg-amber-500 shadow-lg shadow-amber-500/20' : 'bg-slate-300 dark:bg-slate-800'"
               >
                 <div 
                   class="w-5 h-5 rounded-full bg-white transition duration-300 shadow-md transform"
-                  :class="cashierStore.localSettings.nightFilter ? 'translate-x-6' : 'translate-x-0'"
+                  :class="settingsStore.nightFilter ? 'translate-x-6' : 'translate-x-0'"
                 ></div>
               </button>
             </div>
@@ -140,35 +140,35 @@
                   <Type class="w-5.5 h-5.5 stroke-[1.8]" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-white">Matn o'lchami</h3>
-                  <p class="text-xs text-slate-400">Interfeysdagi harflar hajmini o'zgartirish</p>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Matn o'lchami</h3>
+                  <p class="text-xs text-slate-500">Interfeysdagi harflar hajmini o'zgartirish</p>
                 </div>
               </div>
-              <div class="flex items-center p-1 bg-slate-950/80 border border-slate-800 rounded-xl">
+              <div class="flex items-center p-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl">
                 <button 
-                  @click="cashierStore.localSettings.fontSize = 'small'; cashierStore.playNotificationBeep()"
+                  @click="settingsStore.setFontSize('small')"
                   class="px-3.5 py-2 text-xs font-bold rounded-lg transition duration-200"
-                  :class="cashierStore.localSettings.fontSize === 'small'
-                    ? 'bg-slate-800 text-white shadow-md'
-                    : 'text-slate-400 hover:text-slate-200'"
+                  :class="settingsStore.fontSize === 'small'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
                 >
                   Kichik
                 </button>
                 <button 
-                  @click="cashierStore.localSettings.fontSize = 'normal'; cashierStore.playNotificationBeep()"
+                  @click="settingsStore.setFontSize('medium')"
                   class="px-3.5 py-2 text-xs font-bold rounded-lg transition duration-200"
-                  :class="cashierStore.localSettings.fontSize === 'normal'
-                    ? 'bg-slate-800 text-white shadow-md'
-                    : 'text-slate-400 hover:text-slate-200'"
+                  :class="settingsStore.fontSize === 'medium'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
                 >
                   O'rtacha
                 </button>
                 <button 
-                  @click="cashierStore.localSettings.fontSize = 'large'; cashierStore.playNotificationBeep()"
+                  @click="settingsStore.setFontSize('large')"
                   class="px-3.5 py-2 text-xs font-bold rounded-lg transition duration-200"
-                  :class="cashierStore.localSettings.fontSize === 'large'
-                    ? 'bg-slate-800 text-white shadow-md'
-                    : 'text-slate-400 hover:text-slate-200'"
+                  :class="settingsStore.fontSize === 'large'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
                 >
                   Katta
                 </button>
@@ -465,11 +465,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { Save, UploadCloud, Loader2, KeyRound, Trash2, Send, Settings, Globe, Moon, Eye, Type } from 'lucide-vue-next';
-import { useSettingStore } from '@/stores/settings';
+import { useSettingStore, useSettingsStore } from '@/stores/settings';
 import { useAuthStore } from '@/stores/auth';
 import { useCashierStore } from '@/stores/cashier';
 
 const settingStore = useSettingStore();
+const settingsStore = useSettingsStore();
 const authStore = useAuthStore();
 const cashierStore = useCashierStore();
 

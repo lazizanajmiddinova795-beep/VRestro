@@ -12,6 +12,10 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+html.night-filter {
+  filter: sepia(0.28) hue-rotate(-15deg) contrast(0.96) !important;
+}
+
 /* ==========================================================================
    DESIGN STYLES SYSTEM (Glassmorphism, Neomorphism, Claymorphism, Skeuomorphism, Spatial UI)
    ========================================================================== */
