@@ -234,7 +234,12 @@ export const useSettingsStore = defineStore('settings', () => {
         updateBranding,
         fetchSettings,
         updateSettings: async (formData) => {
-            // Helper for SettingsManagement
+            if (!formData.has('system_language')) formData.append('system_language', language.value);
+            if (!formData.has('theme_mode')) formData.append('theme_mode', theme.value);
+            if (!formData.has('night_filter')) formData.append('night_filter', nightFilter.value ? 'true' : 'false');
+            if (!formData.has('font_size')) formData.append('font_size', fontSize.value);
+            if (!formData.has('primary_color')) formData.append('primary_color', branding.value.primary_color || '#4f46e5');
+
             const res = await fetch('/api/settings', {
                 method: 'POST',
                 headers: {
@@ -244,6 +249,14 @@ export const useSettingsStore = defineStore('settings', () => {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || 'Saqlashda xatolik');
+
+            if (data.settings) {
+                if (data.settings.system_language) setLanguage(data.settings.system_language);
+                if (data.settings.theme_mode) setTheme(data.settings.theme_mode);
+                if (data.settings.night_filter !== undefined) setNightFilter(data.settings.night_filter === 'true' || data.settings.night_filter === true);
+                if (data.settings.font_size) setFontSize(data.settings.font_size);
+            }
+
             return data.message;
         }
     };

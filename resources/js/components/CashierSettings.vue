@@ -31,8 +31,8 @@
           </div>
           <div class="relative">
             <select 
-              v-model="cashierStore.localSettings.language"
-              @change="cashierStore.playNotificationBeep()"
+              :value="settingsStore.language"
+              @change="settingsStore.setLanguage($event.target.value)"
               class="px-4 py-2.5 bg-slate-950/80 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-indigo-500 transition cursor-pointer min-w-[150px]"
             >
               <option value="uz">O'zbek (UZ)</option>
@@ -57,8 +57,8 @@
             <button 
               @click="setTheme('light')"
               class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200"
-              :class="cashierStore.localSettings.theme === 'light'
-                ? 'bg-slate-800 text-white shadow-md'
+              :class="settingsStore.theme === 'light'
+                ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'"
             >
               Yorug' (Oq)
@@ -66,7 +66,7 @@
             <button 
               @click="setTheme('dark')"
               class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200"
-              :class="cashierStore.localSettings.theme === 'dark'
+              :class="settingsStore.theme === 'dark'
                 ? 'bg-slate-800 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'"
             >
@@ -90,11 +90,11 @@
           <button 
             @click="toggleNightFilter"
             class="w-13 h-7 rounded-full transition duration-300 relative p-1 focus:outline-none"
-            :class="cashierStore.localSettings.nightFilter ? 'bg-amber-500 shadow-lg shadow-amber-500/20' : 'bg-slate-800'"
+            :class="settingsStore.nightFilter ? 'bg-amber-500 shadow-lg shadow-amber-500/20' : 'bg-slate-800'"
           >
             <div 
               class="w-5 h-5 rounded-full bg-white transition duration-300 shadow-md transform"
-              :class="cashierStore.localSettings.nightFilter ? 'translate-x-6' : 'translate-x-0'"
+              :class="settingsStore.nightFilter ? 'translate-x-6' : 'translate-x-0'"
             ></div>
           </button>
         </div>
@@ -114,17 +114,17 @@
             <button 
               @click="setFontSize('small')"
               class="px-3.5 py-2 text-xs font-bold rounded-lg transition duration-200"
-              :class="cashierStore.localSettings.fontSize === 'small'
-                ? 'bg-slate-800 text-white shadow-md'
+              :class="settingsStore.fontSize === 'small'
+                ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'"
             >
               Kichik
             </button>
             <button 
-              @click="setFontSize('normal')"
+              @click="setFontSize('medium')"
               class="px-3.5 py-2 text-xs font-bold rounded-lg transition duration-200"
-              :class="cashierStore.localSettings.fontSize === 'normal'
-                ? 'bg-slate-800 text-white shadow-md'
+              :class="settingsStore.fontSize === 'medium' || settingsStore.fontSize === 'normal'
+                ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'"
             >
               O'rtacha
@@ -132,8 +132,8 @@
             <button 
               @click="setFontSize('large')"
               class="px-3.5 py-2 text-xs font-bold rounded-lg transition duration-200"
-              :class="cashierStore.localSettings.fontSize === 'large'
-                ? 'bg-slate-800 text-white shadow-md'
+              :class="settingsStore.fontSize === 'large'
+                ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'"
             >
               Katta
@@ -257,22 +257,21 @@
 <script setup>
 import { Settings, Globe, Moon, Eye, Type, Printer, Volume2 } from 'lucide-vue-next';
 import { useCashierStore } from '@/stores/cashier';
+import { useSettingsStore } from '@/stores/settings';
 
 const cashierStore = useCashierStore();
+const settingsStore = useSettingsStore();
 
 const setTheme = (theme) => {
-  cashierStore.localSettings.theme = theme;
-  cashierStore.playNotificationBeep();
+  settingsStore.setTheme(theme);
 };
 
 const toggleNightFilter = () => {
-  cashierStore.localSettings.nightFilter = !cashierStore.localSettings.nightFilter;
-  cashierStore.playNotificationBeep();
+  settingsStore.setNightFilter(!settingsStore.nightFilter);
 };
 
 const setFontSize = (size) => {
-  cashierStore.localSettings.fontSize = size;
-  cashierStore.playNotificationBeep();
+  settingsStore.setFontSize(size);
 };
 
 const toggleSound = () => {
