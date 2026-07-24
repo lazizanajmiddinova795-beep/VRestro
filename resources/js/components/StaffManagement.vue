@@ -308,7 +308,7 @@
                         <span>Rasm yuklash</span>
                         <input type="file" @change="handleAvatarUpload" accept="image/*" class="hidden" />
                       </label>
-                      <button v-if="staffForm.avatar_url" type="button" @click="staffForm.avatar_url = ''" class="text-xs font-bold text-rose-500 hover:underline">O'chirish</button>
+                      <button v-if="staffForm.avatar_url" type="button" @click="staffForm.avatar_url = ''; avatarFile.value = null" class="text-xs font-bold text-rose-500 hover:underline">O'chirish</button>
                     </div>
 
                     <!-- Presets -->
@@ -317,7 +317,7 @@
                         type="button"
                         v-for="(preset, i) in avatarPresets"
                         :key="i"
-                        @click="staffForm.avatar_url = preset"
+                        @click="staffForm.avatar_url = preset; avatarFile.value = null"
                         class="w-9 h-9 rounded-full overflow-hidden border-2 transition active:scale-90"
                         :class="staffForm.avatar_url === preset ? 'border-indigo-500 ring-2 ring-indigo-500/40' : 'border-slate-200 hover:border-slate-400'"
                       >
@@ -403,15 +403,17 @@ const avatarPresets = [
   'https://api.dicebear.com/7.x/adventurer/svg?seed=Emmy'
 ];
 
+// The actual uploaded file is kept separate from staffForm.avatar_url and
+// sent as a real multipart upload — sending it as a base64 data URL in JSON
+// blew past the backend's string length limit and produced a raw 500 error.
+const avatarFile = ref(null);
+
 const handleAvatarUpload = (event) => {
   const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      staffForm.value.avatar_url = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
+  if (!file) return;
+
+  avatarFile.value = file;
+  staffForm.value.avatar_url = URL.createObjectURL(file);
 };
 
 // Lifecycle
@@ -431,6 +433,7 @@ const triggerFetch = async () => {
 
 const openAddEditModal = (member = null) => {
   editingStaff.value = member;
+  avatarFile.value = null;
   staffForm.value = member ? {
     name: member.name,
     phone: member.phone || '',
@@ -471,11 +474,32 @@ const submitForm = async () => {
     return;
   }
 
+  const formData = new FormData();
+  formData.append('name', staffForm.value.name);
+  formData.append('phone', staffForm.value.phone);
+  formData.append('login', staffForm.value.login);
+  if (staffForm.value.password) formData.append('password', staffForm.value.password);
+  formData.append('role', staffForm.value.role);
+  formData.append('shift_hours', staffForm.value.shift_hours || '');
+  formData.append('status', staffForm.value.status);
+  formData.append('email', staffForm.value.email || '');
+  formData.append('passport_number', staffForm.value.passport_number || '');
+  formData.append('birth_date', staffForm.value.birth_date || '');
+  formData.append('address', staffForm.value.address || '');
+
+  if (avatarFile.value) {
+    // A real file upload takes precedence; the backend derives avatar_url from it.
+    formData.append('avatar', avatarFile.value);
+  } else {
+    formData.append('avatar_url', staffForm.value.avatar_url || '');
+  }
+
   try {
     if (editingStaff.value) {
-      await staffStore.updateStaff(editingStaff.value.id, staffForm.value);
+      formData.append('_method', 'PUT');
+      await staffStore.updateStaff(editingStaff.value.id, formData);
     } else {
-      await staffStore.createStaff(staffForm.value);
+      await staffStore.createStaff(formData);
     }
     showModal.value = false;
   } catch (err) {

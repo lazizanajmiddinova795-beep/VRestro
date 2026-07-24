@@ -64,12 +64,15 @@ export const useStaffStore = defineStore('staff', () => {
         }
     };
 
-    const createStaff = async (payload) => {
+    const createStaff = async (formData) => {
         try {
             const response = await fetch('/api/staff', {
                 method: 'POST',
-                headers: getHeaders(),
-                body: JSON.stringify(payload)
+                headers: {
+                    'Authorization': `Bearer ${authStore.token}`,
+                    'Accept': 'application/json'
+                },
+                body: formData
             });
 
             const data = await response.json();
@@ -89,12 +92,17 @@ export const useStaffStore = defineStore('staff', () => {
         }
     };
 
-    const updateStaff = async (id, payload) => {
+    const updateStaff = async (id, formData) => {
         try {
+            // Uses POST + _method=PUT so the browser can set the multipart
+            // boundary correctly for the optional avatar file upload.
             const response = await fetch(`/api/staff/${id}`, {
-                method: 'PUT',
-                headers: getHeaders(),
-                body: JSON.stringify(payload)
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${authStore.token}`,
+                    'Accept': 'application/json'
+                },
+                body: formData
             });
 
             const data = await response.json();

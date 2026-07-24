@@ -6,6 +6,7 @@ use App\Services\StaffService;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class StaffController extends Controller
 {
@@ -62,8 +63,14 @@ class StaffController extends Controller
             'passport_number' => ['nullable', 'string', 'max:30'],
             'birth_date' => ['nullable', 'date'],
             'address' => ['nullable', 'string', 'max:255'],
-            'avatar_url' => ['nullable', 'string', 'max:255'],
+            'avatar_url' => ['nullable', 'string', 'max:500'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
         ]);
+
+        unset($data['avatar']);
+        if ($request->hasFile('avatar')) {
+            $data['avatar_url'] = asset(Storage::url($request->file('avatar')->store('avatars', 'public')));
+        }
 
         $data['name'] = strip_tags($data['name']);
         $data['login'] = strip_tags($data['login']);
@@ -99,8 +106,14 @@ class StaffController extends Controller
             'passport_number' => ['nullable', 'string', 'max:30'],
             'birth_date' => ['nullable', 'date'],
             'address' => ['nullable', 'string', 'max:255'],
-            'avatar_url' => ['nullable', 'string', 'max:255'],
+            'avatar_url' => ['nullable', 'string', 'max:500'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
         ]);
+
+        unset($data['avatar']);
+        if ($request->hasFile('avatar')) {
+            $data['avatar_url'] = asset(Storage::url($request->file('avatar')->store('avatars', 'public')));
+        }
 
         $data['name'] = strip_tags($data['name']);
         $data['login'] = strip_tags($data['login']);
