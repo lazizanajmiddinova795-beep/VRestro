@@ -18,8 +18,8 @@
         <!-- Menu Navigation -->
         <nav class="space-y-1.5">
           <!-- Dashboard -->
-          <router-link 
-            to="/admin/dashboard" 
+          <router-link
+            to="/admin/dashboard"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
             :class="isActiveRoute('/admin/dashboard') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
@@ -28,8 +28,8 @@
           </router-link>
 
           <!-- Orders (All Roles) -->
-          <router-link 
-            to="/orders" 
+          <router-link
+            to="/orders"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
             :class="isActiveRoute('/orders') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
@@ -37,104 +37,39 @@
             <span>Buyurtmalar</span>
           </router-link>
 
-          <!-- Menu (All Roles) -->
-          <router-link 
-            to="/menu" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
-            :class="isActiveRoute('/menu') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
-          >
-            <BookOpen class="w-5 h-5" :class="isActiveRoute('/menu') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Menyu</span>
-          </router-link>
+          <!-- Grouped sections -->
+          <div v-for="group in visibleNavGroups" :key="group.key" class="pt-1">
+            <button
+              @click="toggleGroup(group.key)"
+              class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200"
+              :class="isGroupActive(group) ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'"
+            >
+              <span class="flex items-center space-x-2.5">
+                <component :is="group.icon" class="w-4 h-4" />
+                <span>{{ group.label }}</span>
+              </span>
+              <ChevronDown class="w-3.5 h-3.5 transition-transform duration-200" :class="expandedGroups[group.key] ? 'rotate-180' : ''" />
+            </button>
 
-          <!-- Ingredients (All Roles) -->
-          <router-link 
-            to="/ingredients" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
-            :class="isActiveRoute('/ingredients') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
-          >
-            <Database class="w-5 h-5" :class="isActiveRoute('/ingredients') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Ta'minot</span>
-          </router-link>
-
-          <!-- Recipes (All Roles) -->
-          <router-link 
-            to="/recipes" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
-            :class="isActiveRoute('/recipes') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
-          >
-            <Sparkles class="w-5 h-5" :class="isActiveRoute('/recipes') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Retseptlar</span>
-          </router-link>
-
-          <!-- Warehouse (All Roles) -->
-          <router-link 
-            to="/warehouse" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
-            :class="isActiveRoute('/warehouse') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
-          >
-            <Package class="w-5 h-5" :class="isActiveRoute('/warehouse') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Ombor</span>
-          </router-link>
-
-          <!-- Tables (All Roles) -->
-          <router-link 
-            to="/tables" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
-            :class="isActiveRoute('/tables') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
-          >
-            <Layers class="w-5 h-5" :class="isActiveRoute('/tables') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Stollar</span>
-          </router-link>
-
-          <!-- Staff (Admin only) -->
-          <router-link 
-            v-if="authStore.user?.roles?.[0] === 'Admin'"
-            to="/staff" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
-            :class="isActiveRoute('/staff') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
-          >
-            <Users class="w-5 h-5" :class="isActiveRoute('/staff') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Xodimlar</span>
-          </router-link>
-
-          <!-- Customers (All Roles) -->
-          <router-link 
-            to="/customers" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
-            :class="isActiveRoute('/customers') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
-          >
-            <Smile class="w-5 h-5" :class="isActiveRoute('/customers') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Mijozlar</span>
-          </router-link>
-
-          <!-- Payments / To'lovlar (Admin and Cashier only) -->
-          <router-link 
-            v-if="['Admin', 'Cashier'].includes(authStore.user?.roles?.[0])"
-            to="/payments" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
-            :class="isActiveRoute('/payments') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
-          >
-            <DollarSign class="w-5 h-5" :class="isActiveRoute('/payments') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>To'lovlar</span>
-          </router-link>
-
-          <!-- Chegirmalar / Discounts (Admin and Cashier only) -->
-          <router-link 
-            v-if="['Admin', 'Cashier'].includes(authStore.user?.roles?.[0])"
-            to="/discounts" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
-            :class="isActiveRoute('/discounts') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
-          >
-            <Tag class="w-5 h-5" :class="isActiveRoute('/discounts') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Chegirmalar</span>
-          </router-link>
+            <div v-show="expandedGroups[group.key]" class="mt-1 space-y-1.5 pl-2">
+              <router-link
+                v-for="item in group.items"
+                :key="item.path"
+                :to="item.path"
+                class="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200 group"
+                :class="isActiveRoute(item.path) ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
+              >
+                <component :is="item.icon" class="w-4.5 h-4.5" :class="isActiveRoute(item.path) ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
+                <span>{{ item.label }}</span>
+              </router-link>
+            </div>
+          </div>
 
           <!-- Settings (Admin only) -->
-          <router-link 
+          <router-link
             v-if="authStore.user?.roles?.[0] === 'Admin'"
-            to="/settings" 
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group"
+            to="/settings"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group mt-1"
             :class="isActiveRoute('/settings') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
             <Settings class="w-5 h-5" :class="isActiveRoute('/settings') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
@@ -275,7 +210,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ChefHat, LayoutDashboard, ShoppingBag, LogOut, BookOpen, Database, Sparkles, Package, Layers, Users, Smile, DollarSign, Tag, BarChart3, Bell, Info, X, Settings } from 'lucide-vue-next';
+import { ChefHat, LayoutDashboard, ShoppingBag, LogOut, BookOpen, Database, Sparkles, Package, Layers, Users, Smile, DollarSign, Tag, BarChart3, Bell, Info, X, Settings, ChevronDown, Folder, Wallet } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationStore } from '@/stores/notifications';
 import { useSettingStore } from '@/stores/settings';
@@ -285,6 +220,72 @@ const notificationStore = useNotificationStore();
 const settingStore = useSettingStore();
 const router = useRouter();
 const route = useRoute();
+
+// Sidebar nav grouped into collapsible sections so the long flat list is
+// easier to scan. Dashboard/Orders stay outside any group since they're the
+// most frequently used pages.
+const navGroups = [
+  {
+    key: 'menu',
+    label: 'Menyu boshqaruvi',
+    icon: Folder,
+    items: [
+      { path: '/menu', label: 'Menyu', icon: BookOpen },
+      { path: '/ingredients', label: "Ta'minot", icon: Database },
+      { path: '/recipes', label: 'Retseptlar', icon: Sparkles },
+      { path: '/warehouse', label: 'Ombor', icon: Package },
+    ]
+  },
+  {
+    key: 'service',
+    label: 'Xizmat',
+    icon: Users,
+    items: [
+      { path: '/tables', label: 'Stollar', icon: Layers },
+      { path: '/staff', label: 'Xodimlar', icon: Users, roles: ['Admin'] },
+      { path: '/customers', label: 'Mijozlar', icon: Smile },
+    ]
+  },
+  {
+    key: 'finance',
+    label: 'Moliya',
+    icon: Wallet,
+    items: [
+      { path: '/payments', label: "To'lovlar", icon: DollarSign, roles: ['Admin', 'Cashier'] },
+      { path: '/discounts', label: 'Chegirmalar', icon: Tag, roles: ['Admin', 'Cashier'] },
+    ]
+  }
+];
+
+const visibleNavGroups = computed(() => {
+  const role = authStore.user?.roles?.[0];
+  return navGroups
+    .map(group => ({
+      ...group,
+      items: group.items.filter(item => !item.roles || item.roles.includes(role))
+    }))
+    .filter(group => group.items.length > 0);
+});
+
+const expandedGroups = ref({});
+
+const toggleGroup = (key) => {
+  expandedGroups.value[key] = !expandedGroups.value[key];
+};
+
+const isGroupActive = (group) => {
+  return group.items.some(item => isActiveRoute(item.path));
+};
+
+// Auto-expand whichever group contains the current page
+const expandActiveGroup = () => {
+  const group = navGroups.find(g => g.items.some(item => item.path === route.path));
+  if (group) {
+    expandedGroups.value[group.key] = true;
+  }
+};
+
+watch(() => route.path, expandActiveGroup, { immediate: true });
 
 const showDropdown = ref(false);
 const activeToasts = ref([]);
