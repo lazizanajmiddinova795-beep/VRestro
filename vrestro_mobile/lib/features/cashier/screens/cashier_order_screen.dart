@@ -213,7 +213,7 @@ class _CashierOrderScreenState extends State<CashierOrderScreen> {
                             const SizedBox(width: 10),
                             _buildPaymentOption('Karta', 'card', Icons.credit_card_rounded),
                             const SizedBox(width: 10),
-                            _buildPaymentOption('Click', 'click', Icons.phone_android_rounded),
+                            _buildPaymentOption('QR/Click', 'qr', Icons.phone_android_rounded),
                           ],
                         ),
                         const SizedBox(height: 20),

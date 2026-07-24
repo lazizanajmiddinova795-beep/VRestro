@@ -14,10 +14,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController =
-      TextEditingController(text: 'waiter@vrestro.uz');
-  final TextEditingController _passwordController =
-      TextEditingController(text: 'password123');
+  final TextEditingController _loginController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -97,37 +96,69 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 32),
 
                       // Input fields
-                      NeumorphicTextField(
-                        controller: _emailController,
-                        label: 'Email / Logu-In',
-                        hint: 'masalan: waiter@vrestro.uz',
-                        prefixIcon: Icons.person_outline_rounded,
-                      ),
-                      const SizedBox(height: 20),
+                      if (state is OtpRequired) ...[
+                        Text(
+                          '${state.name}, Telegram orqali yuborilgan 8 xonali kodni kiriting.',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        NeumorphicTextField(
+                          controller: _otpController,
+                          label: 'Tasdiqlash kodi',
+                          hint: '8 xonali kod',
+                          prefixIcon: Icons.password_rounded,
+                        ),
+                        const SizedBox(height: 32),
+                        NeumorphicButton(
+                          text: 'Tasdiqlash',
+                          isLoading: state is AuthLoading,
+                          icon: Icons.check_circle_outline_rounded,
+                          onPressed: () {
+                            context.read<AuthBloc>().add(
+                                  OtpSubmitted(
+                                    userId: state.userId,
+                                    otp: _otpController.text.trim(),
+                                  ),
+                                );
+                          },
+                        ),
+                      ] else ...[
+                        NeumorphicTextField(
+                          controller: _loginController,
+                          label: 'Login',
+                          hint: 'masalan: waiter1',
+                          prefixIcon: Icons.person_outline_rounded,
+                        ),
+                        const SizedBox(height: 20),
 
-                      NeumorphicTextField(
-                        controller: _passwordController,
-                        label: 'Parol',
-                        hint: '••••••••',
-                        prefixIcon: Icons.lock_outline_rounded,
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 32),
+                        NeumorphicTextField(
+                          controller: _passwordController,
+                          label: 'Parol',
+                          hint: '••••••••',
+                          prefixIcon: Icons.lock_outline_rounded,
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 32),
 
-                      // Submit button
-                      NeumorphicButton(
-                        text: 'Tizimga Kirish',
-                        isLoading: state is AuthLoading,
-                        icon: Icons.login_rounded,
-                        onPressed: () {
-                          context.read<AuthBloc>().add(
-                                LoginRequested(
-                                  email: _emailController.text.trim(),
-                                  password: _passwordController.text.trim(),
-                                ),
-                              );
-                        },
-                      ),
+                        // Submit button
+                        NeumorphicButton(
+                          text: 'Tizimga Kirish',
+                          isLoading: state is AuthLoading,
+                          icon: Icons.login_rounded,
+                          onPressed: () {
+                            context.read<AuthBloc>().add(
+                                  LoginRequested(
+                                    login: _loginController.text.trim(),
+                                    password: _passwordController.text.trim(),
+                                  ),
+                                );
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ),

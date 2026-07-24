@@ -15,13 +15,24 @@ abstract class AuthEvent extends Equatable {
 }
 
 class LoginRequested extends AuthEvent {
-  final String email;
+  final String login;
   final String password;
 
-  const LoginRequested({required this.email, required this.password});
+  const LoginRequested({required this.login, required this.password});
 
   @override
-  List<Object?> get props => [email, password];
+  List<Object?> get props => [login, password];
+}
+
+// Step 2 of the Admin login flow: the 8-digit code sent to Telegram.
+class OtpSubmitted extends AuthEvent {
+  final int userId;
+  final String otp;
+
+  const OtpSubmitted({required this.userId, required this.otp});
+
+  @override
+  List<Object?> get props => [userId, otp];
 }
 
 class CheckAuthStatus extends AuthEvent {}
@@ -49,6 +60,17 @@ class Authenticated extends AuthState {
   List<Object?> get props => [user, token];
 }
 
+// Admin accounts require an 8-digit Telegram OTP before a token is issued.
+class OtpRequired extends AuthState {
+  final int userId;
+  final String name;
+
+  const OtpRequired({required this.userId, required this.name});
+
+  @override
+  List<Object?> get props => [userId, name];
+}
+
 class Unauthenticated extends AuthState {}
 
 class AuthFailure extends AuthState {
@@ -67,6 +89,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthInitial()) {
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<LoginRequested>(_onLoginRequested);
+    on<OtpSubmitted>(_onOtpSubmitted);
     on<LogoutRequested>(_onLogoutRequested);
   }
 
@@ -95,26 +118,59 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final response = await _dio.post(
         ApiConstants.login,
         data: {
-          'email': event.email,
+          'login': event.login,
           'password': event.password,
         },
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = response.data;
-        final token = data['token'] ?? data['access_token'] ?? '';
+      final data = response.data;
+
+      if (data['requires_otp'] == true) {
         final userData = data['user'];
-        final user = UserModel.fromJson(userData);
-
-        await StorageService.saveToken(token);
-        await StorageService.saveUserData(jsonEncode(user.toJson()), user.role);
-
-        emit(Authenticated(user: user, token: token));
-      } else {
-        emit(const AuthFailure(errorMessage: 'Login failed. Please check credentials.'));
+        emit(OtpRequired(
+          userId: userData['id'] is int ? userData['id'] : int.parse(userData['id'].toString()),
+          name: userData['name'] ?? '',
+        ));
+        return;
       }
+
+      final token = data['token'] ?? '';
+      final user = UserModel.fromJson(data['user']);
+
+      await StorageService.saveToken(token);
+      await StorageService.saveUserData(jsonEncode(user.toJson()), user.role);
+
+      emit(Authenticated(user: user, token: token));
     } on DioException catch (e) {
       final msg = e.response?.data['message'] ?? 'Login failed. Network or server error.';
+      emit(AuthFailure(errorMessage: msg));
+    } catch (e) {
+      emit(AuthFailure(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _onOtpSubmitted(
+      OtpSubmitted event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final response = await _dio.post(
+        ApiConstants.verifyOtp,
+        data: {
+          'user_id': event.userId,
+          'otp': event.otp,
+        },
+      );
+
+      final data = response.data;
+      final token = data['token'] ?? '';
+      final user = UserModel.fromJson(data['user']);
+
+      await StorageService.saveToken(token);
+      await StorageService.saveUserData(jsonEncode(user.toJson()), user.role);
+
+      emit(Authenticated(user: user, token: token));
+    } on DioException catch (e) {
+      final msg = e.response?.data['message'] ?? 'Tasdiqlash kodi noto\'g\'ri yoki eskirgan.';
       emit(AuthFailure(errorMessage: msg));
     } catch (e) {
       emit(AuthFailure(errorMessage: e.toString()));

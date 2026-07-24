@@ -1,9 +1,12 @@
 class ApiConstants {
-  // Base URL configuration (Default for Android emulator local server)
-  static const String baseUrl = 'http://10.0.2.2:8000/api';
+  // Base URL configuration — points at the live production API.
+  // (DioClient.updateBaseUrl can override this for local emulator testing,
+  // e.g. 'http://10.0.2.2:8000/api' on Android or 'http://localhost:8000/api' on iOS.)
+  static const String baseUrl = 'https://obsidian-os.uz/api';
 
   // Auth endpoints
   static const String login = '/auth/login';
+  static const String verifyOtp = '/auth/verify-face';
   static const String userProfile = '/user';
 
   // Waiter endpoints

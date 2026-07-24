@@ -117,13 +117,27 @@ class CashierBloc extends Bloc<CashierEvent, CashierState> {
       ProcessPaymentRequested event, Emitter<CashierState> emit) async {
     emit(CashierLoading());
     try {
+      // Backend expects payment_method (cash|card|qr|mixed) plus the
+      // matching *_amount field — there is no generic "amount" field.
+      final Map<String, dynamic> data = {
+        'order_id': event.orderId,
+        'payment_method': event.paymentType,
+      };
+      switch (event.paymentType) {
+        case 'cash':
+          data['cash_amount'] = event.amount;
+          break;
+        case 'card':
+          data['card_amount'] = event.amount;
+          break;
+        case 'qr':
+          data['qr_amount'] = event.amount;
+          break;
+      }
+
       final response = await _dio.post(
         ApiConstants.payments,
-        data: {
-          'order_id': event.orderId,
-          'amount': event.amount,
-          'payment_type': event.paymentType,
-        },
+        data: data,
       );
       final paymentData = response.data['payment'] ?? response.data;
       final payment = PaymentModel.fromJson(paymentData);

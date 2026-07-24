@@ -288,9 +288,11 @@ class _WaiterOrderScreenState extends State<WaiterOrderScreen> {
                             onPressed: () {
                               final List<Map<String, dynamic>> itemsList = [];
                               _selectedQuantities.forEach((foodId, qty) {
+                                final food = state.foods.firstWhere((f) => f.id == foodId);
                                 itemsList.add({
                                   'food_id': foodId,
                                   'quantity': qty,
+                                  'price': food.price,
                                 });
                               });
 
