@@ -133,12 +133,7 @@ class AuthService
         $roles = $user->getRoleNames();
 
         return [
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'login' => $user->login,
-                'roles' => $roles,
-            ],
+            'user' => $this->presentUser($user, $roles),
             'token' => $token,
         ];
     }
