@@ -21,24 +21,30 @@ const routes = [
         path: '/kitchen',
         name: 'kitchen',
         component: () => import('@/components/KitchenMonitor.vue'),
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true, roles: ['Admin', 'Chef'] }
     },
     {
         path: '/kitchen/stop-list',
         name: 'kitchen-stop-list',
         component: () => import('@/components/KitchenStopList.vue'),
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true, roles: ['Admin', 'Chef'] }
+    },
+    {
+        path: '/kitchen/recipes',
+        name: 'kitchen-recipes',
+        component: () => import('@/components/KitchenRecipes.vue'),
+        meta: { requiresAuth: true, roles: ['Admin', 'Chef'] }
     },
     {
         path: '/kitchen/settings',
         name: 'kitchen-settings',
         component: () => import('@/components/KitchenSettings.vue'),
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true, roles: ['Admin', 'Chef'] }
     },
     {
         path: '/cashier',
         component: () => import('@/components/CashierLayout.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, roles: ['Admin', 'Cashier'] },
         children: [
             {
                 path: 'tables',
@@ -65,7 +71,7 @@ const routes = [
     {
         path: '/waiter',
         component: () => import('@/components/WaiterLayout.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, roles: ['Admin', 'Waiter'] },
         children: [
             {
                 path: 'tables',
@@ -97,12 +103,14 @@ const routes = [
             {
                 path: 'admin/dashboard',
                 name: 'admin-dashboard',
-                component: () => import('@/components/AdminDashboard.vue')
+                component: () => import('@/components/AdminDashboard.vue'),
+                meta: { roles: ['Admin'] }
             },
             {
                 path: 'analytics',
                 name: 'analytics',
-                component: () => import('@/components/AnalyticsDashboard.vue')
+                component: () => import('@/components/AnalyticsDashboard.vue'),
+                meta: { roles: ['Admin'] }
             },
             {
                 path: 'orders',
@@ -137,7 +145,8 @@ const routes = [
             {
                 path: 'staff',
                 name: 'staff',
-                component: () => import('@/components/StaffManagement.vue')
+                component: () => import('@/components/StaffManagement.vue'),
+                meta: { roles: ['Admin'] }
             },
             {
                 path: 'customers',
@@ -147,12 +156,14 @@ const routes = [
             {
                 path: 'payments',
                 name: 'payments',
-                component: () => import('@/components/PaymentsManagement.vue')
+                component: () => import('@/components/PaymentsManagement.vue'),
+                meta: { roles: ['Admin', 'Cashier'] }
             },
             {
                 path: 'discounts',
                 name: 'discounts',
-                component: () => import('@/components/DiscountsManagement.vue')
+                component: () => import('@/components/DiscountsManagement.vue'),
+                meta: { roles: ['Admin', 'Cashier'] }
             },
             {
                 path: 'notifications',
@@ -162,7 +173,8 @@ const routes = [
             {
                 path: 'settings',
                 name: 'settings',
-                component: () => import('@/components/SettingsManagement.vue')
+                component: () => import('@/components/SettingsManagement.vue'),
+                meta: { roles: ['Admin'] }
             }
         ]
     }
@@ -199,6 +211,20 @@ router.beforeEach((to, from, next) => {
     // 2. If route requires authentication and user is not logged in, force redirect to login
     if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
         return next({ name: 'login' });
+    }
+
+    // 3. Strict Role-based Authorization Guard
+    const userRole = authStore.user?.roles?.[0] || 'Waiter';
+    const matchedRoleRoute = to.matched.find(record => record.meta && record.meta.roles);
+    if (matchedRoleRoute && matchedRoleRoute.meta.roles) {
+        const allowedRoles = matchedRoleRoute.meta.roles;
+        if (!allowedRoles.includes(userRole)) {
+            let redirectName = 'admin-dashboard';
+            if (userRole === 'Cashier') redirectName = 'cashier-tables';
+            else if (userRole === 'Chef') redirectName = 'kitchen';
+            else if (userRole === 'Waiter') redirectName = 'waiter-tables';
+            return next({ name: redirectName });
+        }
     }
 
     next();

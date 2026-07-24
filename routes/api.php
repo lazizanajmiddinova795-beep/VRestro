@@ -78,6 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/warehouse/kirim', [WarehouseController::class, 'kirim']);
     Route::post('/warehouse/chiqim', [WarehouseController::class, 'chiqim']);
     Route::post('/warehouse/inventarizatsiya', [WarehouseController::class, 'inventarizatsiya']);
+    Route::post('/warehouse/sell-ingredient', [WarehouseController::class, 'sellIngredient']);
 
     // Tables
     Route::get('/tables', [TableController::class, 'index']);

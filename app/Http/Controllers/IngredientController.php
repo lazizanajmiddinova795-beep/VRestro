@@ -50,6 +50,7 @@ class IngredientController extends Controller
             'quantity' => ['required', 'numeric', 'min:0'],
             'unit' => ['required', 'string', 'in:kg,g,l,ml,dona,pachka'],
             'cost_price' => ['required', 'numeric', 'min:0'],
+            'sell_price' => ['nullable', 'numeric', 'min:0'],
             'low_stock_threshold' => ['required', 'numeric', 'min:0'],
         ]);
 
@@ -61,12 +62,6 @@ class IngredientController extends Controller
         ], 201);
     }
 
-    /**
-     * View specific ingredient details.
-     *
-     * @param int $id
-     * @return JsonResponse
-     */
     public function show(int $id): JsonResponse
     {
         $ingredient = $this->ingredientRepository->getIngredientById($id);
@@ -78,13 +73,6 @@ class IngredientController extends Controller
         return response()->json($ingredient);
     }
 
-    /**
-     * Update an ingredient.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $data = $request->validate([
@@ -92,6 +80,7 @@ class IngredientController extends Controller
             'sku' => ['required', 'string', 'max:50', 'unique:ingredients,sku,' . $id],
             'unit' => ['required', 'string', 'in:kg,g,l,ml,dona,pachka'],
             'cost_price' => ['required', 'numeric', 'min:0'],
+            'sell_price' => ['nullable', 'numeric', 'min:0'],
             'low_stock_threshold' => ['required', 'numeric', 'min:0'],
         ]);
 
@@ -103,13 +92,6 @@ class IngredientController extends Controller
         ]);
     }
 
-    /**
-     * Atomic stock level adjustments.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     */
     public function adjust(Request $request, int $id): JsonResponse
     {
         $data = $request->validate([
@@ -126,17 +108,38 @@ class IngredientController extends Controller
     }
 
     /**
-     * Delete an ingredient.
+     * Delete an ingredient with recipe constraint check.
      *
      * @param int $id
      * @return JsonResponse
      */
     public function destroy(int $id): JsonResponse
     {
-        $this->ingredientService->deleteIngredient($id);
+        $ingredient = \App\Models\Ingredient::find($id);
+        if (!$ingredient) {
+            return response()->json(['message' => 'Masalliq topilmadi.'], 404);
+        }
 
-        return response()->json([
-            'message' => 'Masalliq muvaffaqiyatli o\'chirildi.'
-        ]);
+        $usingRecipes = \App\Models\Recipe::where('ingredient_id', $id)
+            ->with('food')
+            ->get();
+
+        if ($usingRecipes->isNotEmpty()) {
+            $foodNames = $usingRecipes->pluck('food.name')->filter()->unique()->implode(', ');
+            return response()->json([
+                'message' => "Bu masalliq quyidagi taomlar retseptida ishlatilgan, avval ularni tahrirlang yoki o'chiring: " . ($foodNames ?: 'Retseptlar')
+            ], 422);
+        }
+
+        try {
+            $this->ingredientService->deleteIngredient($id);
+            return response()->json([
+                'message' => 'Masalliq muvaffaqiyatli o\'chirildi.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Masalliqni o\'chirishda xatolik yuz berdi: ' . $e->getMessage()
+            ], 422);
+        }
     }
 }

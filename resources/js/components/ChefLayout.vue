@@ -38,6 +38,13 @@
               Stop-List
             </router-link>
             <router-link 
+              to="/kitchen/recipes" 
+              class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
+              :class="route.path === '/kitchen/recipes' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+            >
+              Retseptlar
+            </router-link>
+            <router-link 
               to="/kitchen/settings" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
               :class="route.path === '/kitchen/settings' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"

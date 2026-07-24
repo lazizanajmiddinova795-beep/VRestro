@@ -53,12 +53,12 @@ class MenuController extends Controller
             'is_available' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'], // Max 2MB
             'sizes' => ['nullable'],
+            'ingredients' => ['nullable'],
         ]);
 
         $imageFile = $request->file('image');
 
-        // Extract image out of direct database updates
-        $itemData = collect($data)->except('image')->toArray();
+        $itemData = collect($data)->except(['image', 'ingredients'])->toArray();
         if ($request->has('is_available')) {
             $itemData['is_available'] = filter_var($data['is_available'], FILTER_VALIDATE_BOOLEAN);
         }
@@ -71,18 +71,32 @@ class MenuController extends Controller
 
         $food = $this->menuService->createFood($itemData, $imageFile);
 
+        // Sync inline recipe ingredients if provided
+        if ($request->has('ingredients')) {
+            $ingredients = is_string($request->input('ingredients')) 
+                ? json_decode($request->input('ingredients'), true) 
+                : $request->input('ingredients');
+
+            if (is_array($ingredients)) {
+                \App\Models\Recipe::where('food_id', $food->id)->delete();
+                foreach ($ingredients as $ing) {
+                    if (!empty($ing['ingredient_id']) && !empty($ing['quantity_required']) && floatval($ing['quantity_required']) > 0) {
+                        \App\Models\Recipe::create([
+                            'food_id' => $food->id,
+                            'ingredient_id' => intval($ing['ingredient_id']),
+                            'quantity_required' => floatval($ing['quantity_required']),
+                        ]);
+                    }
+                }
+            }
+        }
+
         return response()->json([
             'message' => 'Taom muvaffaqiyatli qo\'shildi.',
-            'food' => $food
+            'food' => $food->load('recipes.ingredient')
         ], 201);
     }
 
-    /**
-     * View specific food details.
-     *
-     * @param int $id
-     * @return JsonResponse
-     */
     public function show(int $id): JsonResponse
     {
         $food = $this->menuRepository->getFoodById($id);
@@ -94,14 +108,6 @@ class MenuController extends Controller
         return response()->json($food);
     }
 
-    /**
-     * Update an existing food item.
-     * Note: We use POST with _method=PUT to support image file uploads under PHP limitation.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $data = $request->validate([
@@ -112,11 +118,12 @@ class MenuController extends Controller
             'is_available' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'sizes' => ['nullable'],
+            'ingredients' => ['nullable'],
         ]);
 
         $imageFile = $request->file('image');
 
-        $itemData = collect($data)->except('image')->toArray();
+        $itemData = collect($data)->except(['image', 'ingredients'])->toArray();
         if ($request->has('is_available')) {
             $itemData['is_available'] = filter_var($data['is_available'], FILTER_VALIDATE_BOOLEAN);
         }
@@ -129,9 +136,29 @@ class MenuController extends Controller
 
         $food = $this->menuService->updateFood($id, $itemData, $imageFile);
 
+        // Sync inline recipe ingredients if provided
+        if ($request->has('ingredients')) {
+            $ingredients = is_string($request->input('ingredients')) 
+                ? json_decode($request->input('ingredients'), true) 
+                : $request->input('ingredients');
+
+            if (is_array($ingredients)) {
+                \App\Models\Recipe::where('food_id', $food->id)->delete();
+                foreach ($ingredients as $ing) {
+                    if (!empty($ing['ingredient_id']) && !empty($ing['quantity_required']) && floatval($ing['quantity_required']) > 0) {
+                        \App\Models\Recipe::create([
+                            'food_id' => $food->id,
+                            'ingredient_id' => intval($ing['ingredient_id']),
+                            'quantity_required' => floatval($ing['quantity_required']),
+                        ]);
+                    }
+                }
+            }
+        }
+
         return response()->json([
             'message' => 'Taom muvaffaqiyatli tahrirlandi.',
-            'food' => $food
+            'food' => $food->load('recipes.ingredient')
         ]);
     }
 

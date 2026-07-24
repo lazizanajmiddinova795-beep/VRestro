@@ -22,6 +22,10 @@ class PaymentRepository implements PaymentRepositoryInterface
             $query->where('status', $filters['status']);
         }
 
+        if (!empty($filters['payment_method'])) {
+            $query->where('payment_method', $filters['payment_method']);
+        }
+
         if (!empty($filters['date_from'])) {
             $query->whereDate('created_at', '>=', $filters['date_from']);
         }

@@ -31,6 +31,7 @@ class PaymentController extends Controller
     {
         $filters = $request->validate([
             'status' => ['nullable', 'string', 'in:completed,refunded'],
+            'payment_method' => ['nullable', 'string', 'in:cash,card,click,payme'],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date'],
         ]);

@@ -13,12 +13,14 @@ class Ingredient extends Model
         'quantity',
         'unit',
         'cost_price',
+        'sell_price',
         'low_stock_threshold',
     ];
 
     protected $casts = [
         'quantity' => 'float',
         'cost_price' => 'decimal:2',
+        'sell_price' => 'decimal:2',
         'low_stock_threshold' => 'float',
     ];
 

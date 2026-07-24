@@ -59,11 +59,34 @@ class StaffService
                 ]);
             }
 
+            $currentUser = User::find($currentUserId);
+
+            // Super-Admin protection: Only super-admin can edit super-admin
+            if ($user->is_superadmin && (!$currentUser || !$currentUser->is_superadmin)) {
+                throw ValidationException::withMessages([
+                    'user' => ['Bosh administrator ma\'lumotlarini faqat Bosh administrator tahrirlashi mumkin!'],
+                ]);
+            }
+
             // Prevent self-role modification if changing from Admin to something else
             if ($id === $currentUserId && $data['role'] !== 'Admin' && $user->hasRole('Admin')) {
                 throw ValidationException::withMessages([
                     'role' => ['O\'zingizning administratorlik rolingizni o\'zgartira olmaysiz.'],
                 ]);
+            }
+
+            // Last active admin safeguard
+            if ($user->hasRole('Admin') && ($data['role'] !== 'Admin' || $data['status'] === 'inactive')) {
+                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Admin'))
+                    ->where('status', 'active')
+                    ->where('id', '!=', $id)
+                    ->count();
+
+                if ($activeAdminsCount < 1) {
+                    throw ValidationException::withMessages([
+                        'status' => ['Tizimda kamida bitta faol administrator qolishi shart! Ularning rolini yoki faolligini o\'zgartirib bo\'lmaydi.'],
+                    ]);
+                }
             }
 
             // Handle password updating
@@ -82,14 +105,6 @@ class StaffService
         });
     }
 
-    /**
-     * Toggle staff active/inactive status.
-     *
-     * @param int $currentUserId
-     * @param int $id
-     * @return User
-     * @throws ValidationException
-     */
     public function toggleStatus(int $currentUserId, int $id): User
     {
         return DB::transaction(function () use ($currentUserId, $id) {
@@ -107,6 +122,29 @@ class StaffService
                 ]);
             }
 
+            $currentUser = User::find($currentUserId);
+
+            // Super-Admin protection
+            if ($user->is_superadmin && (!$currentUser || !$currentUser->is_superadmin)) {
+                throw ValidationException::withMessages([
+                    'user' => ['Bosh administrator faollik holatini faqat Bosh administrator o\'zgartirishi mumkin!'],
+                ]);
+            }
+
+            // Last active admin safeguard
+            if ($user->hasRole('Admin') && $user->status === 'active') {
+                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Admin'))
+                    ->where('status', 'active')
+                    ->where('id', '!=', $id)
+                    ->count();
+
+                if ($activeAdminsCount < 1) {
+                    throw ValidationException::withMessages([
+                        'status' => ['Tizimda kamida bitta faol administrator qolishi shart! Ularni faolsizlantirib bo\'lmaydi.'],
+                    ]);
+                }
+            }
+
             $newStatus = $user->status === 'active' ? 'inactive' : 'active';
             $user->update(['status' => $newStatus]);
 
@@ -119,14 +157,6 @@ class StaffService
         });
     }
 
-    /**
-     * Delete staff member safely.
-     *
-     * @param int $currentUserId
-     * @param int $id
-     * @return bool
-     * @throws ValidationException
-     */
     public function deleteStaff(int $currentUserId, int $id): bool
     {
         return DB::transaction(function () use ($currentUserId, $id) {
@@ -140,6 +170,29 @@ class StaffService
 
             if (!$user) {
                 return false;
+            }
+
+            $currentUser = User::find($currentUserId);
+
+            // Super-Admin protection
+            if ($user->is_superadmin && (!$currentUser || !$currentUser->is_superadmin)) {
+                throw ValidationException::withMessages([
+                    'user' => ['Bosh administratorni faqat Bosh administrator o\'chira oladi!'],
+                ]);
+            }
+
+            // Last active admin safeguard
+            if ($user->hasRole('Admin')) {
+                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Admin'))
+                    ->where('status', 'active')
+                    ->where('id', '!=', $id)
+                    ->count();
+
+                if ($activeAdminsCount < 1) {
+                    throw ValidationException::withMessages([
+                        'user' => ['Tizimda kamida bitta faol administrator qolishi shart! Ularni o\'chirib bo\'lmaydi.'],
+                    ]);
+                }
             }
 
             // Invalidate logins
