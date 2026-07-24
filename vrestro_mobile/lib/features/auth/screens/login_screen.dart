@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.all(32),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // VRestro Brand Icon
                       Center(

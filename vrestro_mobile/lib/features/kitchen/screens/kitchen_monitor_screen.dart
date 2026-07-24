@@ -83,7 +83,7 @@ class _KitchenMonitorScreenState extends State<KitchenMonitorScreen> {
                   child: NeumorphicContainer(
                     borderRadius: 20,
                     child: Column(
-                      crossAxisAlignment: CrossAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

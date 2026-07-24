@@ -158,11 +158,11 @@ class _WaiterOrderScreenState extends State<WaiterOrderScreen> {
                       return NeumorphicContainer(
                         borderRadius: 18,
                         child: Column(
-                          crossAxisAlignment: CrossAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     food.name,
@@ -261,7 +261,7 @@ class _WaiterOrderScreenState extends State<WaiterOrderScreen> {
                       child: Row(
                         children: [
                           Column(
-                            crossAxisAlignment: CrossAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(

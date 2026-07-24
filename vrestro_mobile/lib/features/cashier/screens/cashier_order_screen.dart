@@ -87,7 +87,7 @@ class _CashierOrderScreenState extends State<CashierOrderScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                              crossAxisAlignment: CrossAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   order.orderNumber,
@@ -180,7 +180,7 @@ class _CashierOrderScreenState extends State<CashierOrderScreen> {
                   padding: const EdgeInsets.all(20),
                   child: SafeArea(
                     child: Column(
-                      crossAxisAlignment: CrossAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(

@@ -71,13 +71,31 @@ class AuthService
 
         return [
             'requires_otp' => false,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'login' => $user->login,
-                'roles' => $roles,
-            ],
+            'user' => $this->presentUser($user, $roles),
             'token' => $token,
+        ];
+    }
+
+    /**
+     * Shape the profile fields returned to the frontend after login, so a
+     * staff member's own profile screen shows the same data the admin
+     * entered when creating their account (name/login/roles alone left
+     * phone, email, passport, birth date, address and avatar blank there).
+     */
+    protected function presentUser(User $user, $roles): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'login' => $user->login,
+            'phone' => $user->phone,
+            'email' => $user->email,
+            'passport_number' => $user->passport_number,
+            'birth_date' => $user->birth_date,
+            'address' => $user->address,
+            'avatar_url' => $user->avatar_url,
+            'shift_hours' => $user->shift_hours,
+            'roles' => $roles,
         ];
     }
 
