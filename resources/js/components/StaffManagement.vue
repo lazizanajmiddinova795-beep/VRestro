@@ -4,16 +4,16 @@
     <!-- Top Header -->
     <div class="flex items-center justify-between mb-6 shrink-0">
       <div>
-        <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400 tracking-wide">
+        <h1 class="text-2xl font-bold text-slate-900 tracking-wide">
           Xodimlar Tizimi
         </h1>
-        <p class="text-xs text-slate-400">Tizim xodimlarini ro'yxatga olish, rollarini Spatie orqali boshqarish va kirish ruxsatnomalarini nazorat qilish</p>
+        <p class="text-xs text-slate-500">Tizim xodimlarini ro'yxatga olish, rollarini Spatie orqali boshqarish va kirish ruxsatnomalarini nazorat qilish</p>
       </div>
 
       <!-- Add Staff button -->
-      <button 
+      <button
         @click="openAddEditModal()"
-        class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-semibold text-sm text-white shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
+        class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-semibold text-sm text-white shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
       >
         <UserPlus class="w-4.5 h-4.5" />
         <span>Yangi Xodim Qo'shish</span>
@@ -21,27 +21,27 @@
     </div>
 
     <!-- Filters Row -->
-    <div class="backdrop-blur-md bg-slate-900/40 border border-white/5 rounded-3xl p-5 mb-6 grid grid-cols-1 sm:grid-cols-4 gap-4 shrink-0">
+    <div class="bg-white border border-slate-200 shadow-sm rounded-3xl p-5 mb-6 grid grid-cols-1 sm:grid-cols-4 gap-4 shrink-0">
       <!-- Search Input -->
       <div class="relative">
-        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
           <Search class="w-4 h-4" />
         </span>
-        <input 
+        <input
           v-model="searchQuery"
-          type="text" 
+          type="text"
           placeholder="Ism, login yoki tel..."
           @input="triggerFetch"
-          class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-xs placeholder-slate-500 text-white focus:outline-none transition"
+          class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-xs placeholder-slate-400 text-slate-900 focus:outline-none transition"
         />
       </div>
 
       <!-- Role Filter -->
       <div>
-        <select 
-          v-model="filterRole" 
+        <select
+          v-model="filterRole"
           @change="triggerFetch"
-          class="w-full px-3.5 py-2 rounded-xl bg-slate-950/40 border border-white/10 text-xs text-white focus:outline-none focus:border-indigo-500 transition"
+          class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-indigo-500 transition"
         >
           <option value="">Barcha Rollar</option>
           <option value="Admin">Admin</option>
@@ -53,10 +53,10 @@
 
       <!-- Status Filter -->
       <div>
-        <select 
-          v-model="filterStatus" 
+        <select
+          v-model="filterStatus"
           @change="triggerFetch"
-          class="w-full px-3.5 py-2 rounded-xl bg-slate-950/40 border border-white/10 text-xs text-white focus:outline-none focus:border-indigo-500 transition"
+          class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-indigo-500 transition"
         >
           <option value="">Barcha Holatlar</option>
           <option value="active">Faol (Active)</option>
@@ -73,18 +73,18 @@
     <!-- Staff Cards Grid -->
     <div v-if="staffStore.loading && staffStore.staffMembers.length === 0" class="flex-grow flex flex-col items-center justify-center space-y-4">
       <Loader2 class="w-10 h-10 text-indigo-500 animate-spin" />
-      <p class="text-slate-400 text-xs font-medium animate-pulse">Xodimlar ro'yxati yuklanmoqda...</p>
+      <p class="text-slate-500 text-xs font-medium animate-pulse">Xodimlar ro'yxati yuklanmoqda...</p>
     </div>
 
     <div v-else class="flex-grow overflow-y-auto pr-1">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-24">
         
         <!-- Employee Card -->
-        <div 
-          v-for="member in staffStore.staffMembers" 
+        <div
+          v-for="member in staffStore.staffMembers"
           :key="member.id"
-          class="backdrop-blur-md bg-slate-900/30 border rounded-3xl p-5 flex flex-col justify-between h-56 transition-all duration-300 relative group"
-          :class="member.status === 'inactive' ? 'border-white/5 opacity-60' : 'border-indigo-500/10 hover:border-indigo-500/30'"
+          class="bg-white border shadow-sm rounded-3xl p-5 flex flex-col justify-between h-56 transition-all duration-300 relative group"
+          :class="member.status === 'inactive' ? 'border-slate-200 opacity-60' : 'border-indigo-100 hover:border-indigo-300'"
         >
           <div class="space-y-4">
             <!-- Header Row -->
@@ -106,9 +106,9 @@
 
               <!-- Name & Role -->
               <div class="overflow-hidden">
-                <h3 class="text-sm font-bold text-white tracking-wide truncate flex items-center gap-1.5">
+                <h3 class="text-sm font-bold text-slate-900 tracking-wide truncate flex items-center gap-1.5">
                   {{ member.name }}
-                  <ShieldCheck v-if="member.is_superadmin" class="w-3.5 h-3.5 text-amber-400 shrink-0" title="Bosh administrator" />
+                  <ShieldCheck v-if="member.is_superadmin" class="w-3.5 h-3.5 text-amber-500 shrink-0" title="Bosh administrator" />
                 </h3>
                 <span class="flex items-center gap-1 mt-1">
                   <span
@@ -117,7 +117,7 @@
                   >
                     {{ member.roles?.[0]?.name || 'Xodim' }}
                   </span>
-                  <span v-if="member.is_superadmin" class="px-2 py-0.5 rounded text-4xs font-bold uppercase tracking-wider border bg-amber-500/10 border-amber-500/20 text-amber-400 inline-block">
+                  <span v-if="member.is_superadmin" class="px-2 py-0.5 rounded text-4xs font-bold uppercase tracking-wider border bg-amber-50 border-amber-200 text-amber-600 inline-block">
                     Bosh admin
                   </span>
                 </span>
@@ -125,39 +125,39 @@
             </div>
 
             <!-- Details -->
-            <div class="space-y-2.5 text-xxs text-slate-400">
+            <div class="space-y-2.5 text-xxs text-slate-500">
               <div class="flex items-center space-x-2">
-                <Phone class="w-3.5 h-3.5 text-slate-500" />
+                <Phone class="w-3.5 h-3.5 text-slate-400" />
                 <span>Tel: {{ member.phone || 'Kiritilmagan' }}</span>
               </div>
               <div class="flex items-center space-x-2">
-                <Clock class="w-3.5 h-3.5 text-slate-500" />
+                <Clock class="w-3.5 h-3.5 text-slate-400" />
                 <span>Ish vaqti: {{ member.shift_hours || 'Smena kiritilmagan' }}</span>
               </div>
               <div class="flex items-center space-x-2 font-mono">
-                <KeyRound class="w-3.5 h-3.5 text-slate-500" />
+                <KeyRound class="w-3.5 h-3.5 text-slate-400" />
                 <span>Login: {{ member.login }}</span>
               </div>
             </div>
           </div>
 
           <!-- Footer Settings -->
-          <div class="border-t border-white/5 pt-3.5 mt-4 flex items-center justify-between">
+          <div class="border-t border-slate-100 pt-3.5 mt-4 flex items-center justify-between">
             <!-- Active switch -->
             <div class="flex items-center space-x-2">
               <button
                 @click="handleToggleStatus(member)"
                 :disabled="!canManage(member)"
                 class="w-8 h-4.5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none relative disabled:opacity-40 disabled:cursor-not-allowed"
-                :class="member.status === 'active' ? 'bg-indigo-600' : 'bg-slate-800'"
+                :class="member.status === 'active' ? 'bg-indigo-600' : 'bg-slate-300'"
                 :title="!canManage(member) ? 'Faqat Bosh administrator o\'zgartira oladi' : (member.status === 'active' ? 'Faol (Bloklash)' : 'Nofaol (Aktivlashtirish)')"
               >
-                <span 
+                <span
                   class="block w-3.5 h-3.5 rounded-full bg-white transition-transform duration-200"
                   :class="member.status === 'active' ? 'translate-x-3.5' : 'translate-x-0'"
                 ></span>
               </button>
-              <span class="text-4xs uppercase tracking-wider font-bold" :class="member.status === 'active' ? 'text-indigo-400' : 'text-slate-500'">
+              <span class="text-4xs uppercase tracking-wider font-bold" :class="member.status === 'active' ? 'text-indigo-600' : 'text-slate-400'">
                 {{ member.status === 'active' ? 'faol' : 'blok' }}
               </span>
             </div>
@@ -167,7 +167,7 @@
               <button
                 @click="openAddEditModal(member)"
                 :disabled="!canManage(member)"
-                class="p-1.5 rounded bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white/5 disabled:hover:text-slate-400"
+                class="p-1.5 rounded bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-slate-100 disabled:hover:text-slate-500"
                 :title="!canManage(member) ? 'Faqat Bosh administrator tahrirlay oladi' : 'Tahrirlash'"
               >
                 <Edit3 class="w-3.5 h-3.5" />
@@ -175,7 +175,7 @@
               <button
                 @click="handleDelete(member)"
                 :disabled="!canManage(member)"
-                class="p-1.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-red-500/10 disabled:hover:text-red-400"
+                class="p-1.5 rounded bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-red-50 disabled:hover:text-red-500"
                 :title="!canManage(member) ? 'Faqat Bosh administrator o\'chira oladi' : 'O\'chirish'"
               >
                 <Trash2 class="w-3.5 h-3.5" />
@@ -189,24 +189,24 @@
 
       <!-- Empty state -->
       <div v-if="staffStore.staffMembers.length === 0" class="flex flex-col items-center justify-center py-24 space-y-3">
-        <Users class="w-12 h-12 text-slate-600" />
-        <p class="text-slate-400 text-xs font-medium">Xodimlar topilmadi</p>
+        <Users class="w-12 h-12 text-slate-300" />
+        <p class="text-slate-500 text-xs font-medium">Xodimlar topilmadi</p>
       </div>
     </div>
 
     <!-- MODAL: Add / Edit Employee -->
-    <div 
-      v-if="showModal" 
-      class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+    <div
+      v-if="showModal"
+      class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
       @click.self="showModal = false"
     >
-      <div class="bg-slate-900 text-white w-full max-w-xl rounded-3xl p-6 shadow-2xl border border-white/10 my-auto max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
+      <div class="bg-white text-slate-900 w-full max-w-xl rounded-3xl p-6 shadow-2xl border border-slate-200 my-auto max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
         <!-- Header -->
-        <div class="flex justify-between items-center border-b border-white/10 pb-4 shrink-0">
-          <h3 class="text-white font-black text-xl tracking-tight">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-4 shrink-0">
+          <h3 class="text-slate-900 font-black text-xl tracking-tight">
             {{ editingStaff ? 'Xodimni Tahrirlash' : 'Yangi Xodim Qo\'shish' }}
           </h3>
-          <button @click="showModal = false" class="bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white p-2 rounded-full transition-colors">
+          <button @click="showModal = false" class="bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 p-2 rounded-full transition-colors">
             <X class="w-5 h-5" />
           </button>
         </div>
@@ -217,38 +217,38 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
                 
                 <div class="sm:col-span-2 flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">To'liq Ism-Familiyasi *</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">To'liq Ism-Familiyasi *</label>
                     <input type="text" v-model="staffForm.name" required placeholder="Masalan: Asilbek Povar" 
-                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Telefon Raqami *</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Telefon Raqami *</label>
                     <input type="text" v-model="staffForm.phone" required placeholder="+998 90 123 45 67" 
-                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tizimga kirish logini *</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tizimga kirish logini *</label>
                     <input type="text" v-model="staffForm.login" required placeholder="Masalan: chef123" 
-                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Ish vaqti / Smena</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Ish vaqti / Smena</label>
                     <input type="text" v-model="staffForm.shift_hours" placeholder="08:00 - 20:00" 
-                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tizimdagi Lavozimi (Role) *</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tizimdagi Lavozimi (Role) *</label>
                     <div class="relative">
                         <select v-model="staffForm.role" required 
-                                class="w-full bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all appearance-none">
-                            <option value="Admin" class="bg-slate-900 text-white">Administrator</option>
-                            <option value="Chef" class="bg-slate-900 text-white">Chef (Oshpaz)</option>
-                            <option value="Waiter" class="bg-slate-900 text-white">Waiter (Ofitsiant)</option>
-                            <option value="Cashier" class="bg-slate-900 text-white">Cashier (Kassir)</option>
+                                class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all appearance-none">
+                            <option value="Admin" class="bg-white text-slate-900">Administrator</option>
+                            <option value="Chef" class="bg-white text-slate-900">Chef (Oshpaz)</option>
+                            <option value="Waiter" class="bg-white text-slate-900">Waiter (Ofitsiant)</option>
+                            <option value="Cashier" class="bg-white text-slate-900">Cashier (Kassir)</option>
                         </select>
                         <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
@@ -257,12 +257,12 @@
                 </div>
 
                 <div class="flex flex-col" v-if="!editingStaff">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Faollik holati *</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Faollik holati *</label>
                     <div class="relative">
                         <select v-model="staffForm.status" required 
-                                class="w-full bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all appearance-none">
-                            <option value="active" class="bg-slate-900 text-white">Faol (Active)</option>
-                            <option value="inactive" class="bg-slate-900 text-white">Nofaol (Inactive)</option>
+                                class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all appearance-none">
+                            <option value="active" class="bg-white text-slate-900">Faol (Active)</option>
+                            <option value="inactive" class="bg-white text-slate-900">Nofaol (Inactive)</option>
                         </select>
                         <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
@@ -271,55 +271,55 @@
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Email Manzili</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Email Manzili</label>
                     <input type="email" v-model="staffForm.email" placeholder="example@mail.com" 
-                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Pasport Ma'lumotlari</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Pasport Ma'lumotlari</label>
                     <input type="text" v-model="staffForm.passport_number" placeholder="AA1234567" 
-                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tug'ilgan Sanasi</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tug'ilgan Sanasi</label>
                     <input type="date" v-model="staffForm.birth_date" 
-                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all" />
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all" />
                 </div>
 
                 <div class="sm:col-span-2 flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Yashash Manzili</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Yashash Manzili</label>
                     <input type="text" v-model="staffForm.address" placeholder="Toshkent sh., Chilonzor tumani..." 
-                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
                 </div>
 
                 <div class="sm:col-span-2 flex flex-col space-y-3">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase">Avatar tanlash yoki yuklash</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">Avatar tanlash yoki yuklash</label>
                     <!-- Custom file uploader -->
                     <div class="flex items-center space-x-4">
                       <div class="relative shrink-0">
                         <img v-if="staffForm.avatar_url" :src="staffForm.avatar_url" class="w-14 h-14 rounded-full object-cover border-2 border-indigo-500 shadow-sm animate-in fade-in" />
-                        <div v-else class="w-14 h-14 rounded-full bg-slate-800 border-2 border-dashed border-white/10 flex items-center justify-center text-slate-400">
+                        <div v-else class="w-14 h-14 rounded-full bg-slate-100 border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-400">
                           <Camera class="w-5 h-5" />
                         </div>
                       </div>
-                      <label class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/10 rounded-xl cursor-pointer font-bold text-xs transition duration-200">
+                      <label class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-xl cursor-pointer font-bold text-xs transition duration-200">
                         <span>Rasm yuklash</span>
                         <input type="file" @change="handleAvatarUpload" accept="image/*" class="hidden" />
                       </label>
-                      <button v-if="staffForm.avatar_url" type="button" @click="staffForm.avatar_url = ''" class="text-xs font-bold text-rose-400 hover:underline">O'chirish</button>
+                      <button v-if="staffForm.avatar_url" type="button" @click="staffForm.avatar_url = ''" class="text-xs font-bold text-rose-500 hover:underline">O'chirish</button>
                     </div>
 
                     <!-- Presets -->
                     <div class="grid grid-cols-6 gap-2 pt-1">
-                      <button 
+                      <button
                         type="button"
-                        v-for="(preset, i) in avatarPresets" 
+                        v-for="(preset, i) in avatarPresets"
                         :key="i"
                         @click="staffForm.avatar_url = preset"
                         class="w-9 h-9 rounded-full overflow-hidden border-2 transition active:scale-90"
-                        :class="staffForm.avatar_url === preset ? 'border-indigo-500 ring-2 ring-indigo-500/40' : 'border-white/10 hover:border-white/30'"
+                        :class="staffForm.avatar_url === preset ? 'border-indigo-500 ring-2 ring-indigo-500/40' : 'border-slate-200 hover:border-slate-400'"
                       >
                         <img :src="preset" class="w-full h-full object-cover" />
                       </button>
@@ -327,18 +327,18 @@
                 </div>
 
                 <div class="sm:col-span-2 flex flex-col">
-                    <label class="text-slate-400 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tizim Paroli (Bo'sh qolsa o'zgarmaydi)</label>
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">Tizim Paroli (Bo'sh qolsa o'zgarmaydi)</label>
                     <input type="password" v-model="staffForm.password" placeholder="Kamida 4 belgili yangi parol..." 
-                           class="bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-600" />
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
                 </div>
 
             </div>
           </div>
 
           <!-- Actions Footer (Sticky) -->
-          <div class="flex items-center justify-end gap-3 pt-4 mt-2 border-t border-white/10 shrink-0">
-              <button type="button" @click="showModal = false" 
-                      class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 font-extrabold text-xs transition-all active:scale-95">
+          <div class="flex items-center justify-end gap-3 pt-4 mt-2 border-t border-slate-100 shrink-0">
+              <button type="button" @click="showModal = false"
+                      class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs transition-all active:scale-95">
                   Bekor qilish
               </button>
               <button type="submit" 
