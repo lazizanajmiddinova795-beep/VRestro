@@ -82,16 +82,16 @@
               </div>
               <div class="space-y-2">
                 <h3 class="text-2xl font-black text-slate-900 tracking-tight">
-                  {{ formatCurrency(dashboardStore.metrics.widgets.revenue.value) }}
+                  {{ formatCurrency(dashboardStore.metrics?.widgets?.revenue?.value || 0) }}
                 </h3>
                 <div class="flex items-center space-x-2">
                   <span 
                     class="inline-flex items-center text-xs font-extrabold px-2.5 py-0.5 rounded-full border shadow-xs"
-                    :class="dashboardStore.metrics.widgets.revenue.is_increase ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-rose-50 border-rose-200 text-rose-700'"
+                    :class="dashboardStore.metrics?.widgets?.revenue?.is_increase ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-rose-50 border-rose-200 text-rose-700'"
                   >
-                    <TrendingUp v-if="dashboardStore.metrics.widgets.revenue.is_increase" class="w-3.5 h-3.5 mr-1" />
+                    <TrendingUp v-if="dashboardStore.metrics?.widgets?.revenue?.is_increase" class="w-3.5 h-3.5 mr-1" />
                     <TrendingDown v-else class="w-3.5 h-3.5 mr-1" />
-                    {{ Math.abs(dashboardStore.metrics.widgets.revenue.change_percent) }}%
+                    {{ Math.abs(dashboardStore.metrics?.widgets?.revenue?.change_percent || 0) }}%
                   </span>
                   <span class="text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.vs_yesterday') }}</span>
                 </div>
@@ -108,12 +108,12 @@
               </div>
               <div class="space-y-2">
                 <h3 class="text-2xl font-black text-slate-900 tracking-tight">
-                  {{ dashboardStore.metrics.widgets.orders.total }} ta
+                  {{ dashboardStore.metrics?.widgets?.orders?.total || 0 }} ta
                 </h3>
                 <p class="text-xs text-slate-500 font-bold flex items-center space-x-2">
-                  <span class="text-indigo-600 font-extrabold">{{ dashboardStore.metrics.widgets.orders.active }} {{ settingsStore.t('dashboard.active_short') }}</span>
+                  <span class="text-indigo-600 font-extrabold">{{ dashboardStore.metrics?.widgets?.orders?.active || 0 }} {{ settingsStore.t('dashboard.active_short') }}</span>
                   <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
-                  <span class="text-emerald-600 font-extrabold">{{ dashboardStore.metrics.widgets.orders.completed }} {{ settingsStore.t('dashboard.completed_short') }}</span>
+                  <span class="text-emerald-600 font-extrabold">{{ dashboardStore.metrics?.widgets?.orders?.completed || 0 }} {{ settingsStore.t('dashboard.completed_short') }}</span>
                 </p>
               </div>
             </div>
@@ -128,8 +128,8 @@
               </div>
               <div class="space-y-2">
                 <h3 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
-                  <span>{{ dashboardStore.metrics.widgets.kitchen_load }} ta</span>
-                  <span v-if="dashboardStore.metrics.widgets.kitchen_load > 0" class="inline-flex w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+                  <span>{{ dashboardStore.metrics?.widgets?.kitchen_load || 0 }} ta</span>
+                  <span v-if="dashboardStore.metrics?.widgets?.kitchen_load || 0 > 0" class="inline-flex w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
                 </h3>
                 <p class="text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.kitchen_load_desc') }}</p>
               </div>
@@ -145,7 +145,7 @@
               </div>
               <div class="space-y-2">
                 <h3 class="text-2xl font-black text-slate-900 tracking-tight">
-                  {{ formatCurrency(dashboardStore.metrics.widgets.expenses) }}
+                  {{ formatCurrency(dashboardStore.metrics?.widgets?.expenses || 0) }}
                 </h3>
                 <p class="text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.expenses_desc') }}</p>
               </div>
@@ -222,7 +222,7 @@
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-200/80 dark:divide-white/5">
-                    <tr v-for="order in dashboardStore.metrics.tables.live_orders" :key="order.id" class="hover:bg-slate-100/60 dark:hover:bg-white/5 transition-colors duration-150">
+                    <tr v-for="order in dashboardStore.metrics?.tables?.live_orders" :key="order.id" class="hover:bg-slate-100/60 dark:hover:bg-white/5 transition-colors duration-150">
                       <td class="py-3 font-black text-slate-900 dark:text-white text-sm">#{{ order.id }}</td>
                       <td class="py-3">
                         <span class="block text-slate-900 dark:text-slate-200 font-bold text-sm">{{ order.table_id }}-stol</span>
@@ -239,7 +239,7 @@
                       <td class="py-3 text-right font-black text-indigo-600 dark:text-indigo-400 text-sm">{{ formatCurrency(order.total_amount) }}</td>
                       <td class="py-3 text-right text-xs text-slate-500 font-bold">{{ order.created_at }}</td>
                     </tr>
-                    <tr v-if="dashboardStore.metrics.tables.live_orders.length === 0">
+                    <tr v-if="dashboardStore.metrics?.tables?.live_orders.length === 0">
                       <td colspan="5" class="py-8 text-center text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.no_active_orders') }}</td>
                     </tr>
                   </tbody>
@@ -584,13 +584,13 @@ watch(() => dashboardStore.metrics, () => {
 
 // Chart.js initialization for Overview
 const initChart = () => {
-  if (!chartCanvas.value || !dashboardStore.metrics) return;
+  if (!chartCanvas.value || !dashboardStore.metrics || !dashboardStore.metrics.charts || !dashboardStore.metrics.charts.weekly) return;
 
   if (chartInstance) {
     chartInstance.destroy();
   }
 
-  const weeklyData = dashboardStore.metrics.charts.weekly;
+  const weeklyData = dashboardStore.metrics.charts.weekly || [];
   const labels = weeklyData.map(d => d.day_name);
   const sales = weeklyData.map(d => d.sales);
   const expenses = weeklyData.map(d => d.expenses);
@@ -683,7 +683,7 @@ const initChart = () => {
 
 // Chart.js initialization for BI Suite reports
 const renderSalesChart = () => {
-  if (!salesChartRef.value || !reportsStore.salesReport) return;
+  if (!salesChartRef.value || !reportsStore.salesReport || !reportsStore.salesReport.daily_charts) return;
   
   if (salesChartInstance) {
     salesChartInstance.destroy();

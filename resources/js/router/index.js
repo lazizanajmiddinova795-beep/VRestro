@@ -213,16 +213,27 @@ router.beforeEach((to, from, next) => {
         return next({ name: 'login' });
     }
 
-    // 3. Strict Role-based Authorization Guard
-    const userRole = authStore.user?.roles?.[0] || 'Waiter';
+    // 3. Robust Role-based Authorization Guard
+    const user = authStore.user;
+    let userRole = 'Admin';
+    if (user) {
+        if (Array.isArray(user.roles) && user.roles.length > 0) {
+            userRole = user.roles[0];
+        } else if (user.role) {
+            userRole = user.role;
+        }
+    }
+
     const matchedRoleRoute = to.matched.find(record => record.meta && record.meta.roles);
     if (matchedRoleRoute && matchedRoleRoute.meta.roles) {
         const allowedRoles = matchedRoleRoute.meta.roles;
-        if (!allowedRoles.includes(userRole)) {
+        const hasAccess = allowedRoles.some(r => r.toLowerCase() === userRole.toLowerCase());
+        if (!hasAccess) {
             let redirectName = 'admin-dashboard';
-            if (userRole === 'Cashier') redirectName = 'cashier-tables';
-            else if (userRole === 'Chef') redirectName = 'kitchen';
-            else if (userRole === 'Waiter') redirectName = 'waiter-tables';
+            const normalizedRole = userRole.toLowerCase();
+            if (normalizedRole === 'cashier') redirectName = 'cashier-tables';
+            else if (normalizedRole === 'chef') redirectName = 'kitchen';
+            else if (normalizedRole === 'waiter') redirectName = 'waiter-tables';
             return next({ name: redirectName });
         }
     }
