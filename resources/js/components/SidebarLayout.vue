@@ -235,6 +235,7 @@ import { useSettingStore } from '@/stores/settings';
 const authStore = useAuthStore();
 const notificationStore = useNotificationStore();
 const settingStore = useSettingStore();
+const settingsStore = settingStore;
 const router = useRouter();
 const route = useRoute();
 
@@ -244,32 +245,32 @@ const route = useRoute();
 const navGroups = computed(() => [
   {
     key: 'menu_mgmt',
-    label: settingStore.t('nav.menu_mgmt'),
+    label: settingsStore.t('nav.menu_mgmt'),
     icon: Utensils,
     items: [
-      { path: '/menu', label: settingStore.t('nav.menu'), icon: BookOpen },
-      { path: '/ingredients', label: settingStore.t('nav.ingredients'), icon: Database },
-      { path: '/recipes', label: settingStore.t('nav.recipes'), icon: Sparkles },
-      { path: '/warehouse', label: settingStore.t('nav.warehouse'), icon: Package },
+      { path: '/menu', label: settingsStore.t('nav.menu'), icon: BookOpen },
+      { path: '/ingredients', label: settingsStore.t('nav.ingredients'), icon: Database },
+      { path: '/recipes', label: settingsStore.t('nav.recipes'), icon: Sparkles },
+      { path: '/warehouse', label: settingsStore.t('nav.warehouse'), icon: Package },
     ]
   },
   {
     key: 'service',
-    label: settingStore.t('nav.service'),
+    label: settingsStore.t('nav.service'),
     icon: Users,
     items: [
-      { path: '/tables', label: settingStore.t('nav.tables'), icon: Layers },
-      { path: '/staff', label: settingStore.t('nav.staff'), icon: Users, roles: ['Admin'] },
-      { path: '/customers', label: settingStore.t('nav.customers'), icon: Smile },
+      { path: '/tables', label: settingsStore.t('nav.tables'), icon: Layers },
+      { path: '/staff', label: settingsStore.t('nav.staff'), icon: Users, roles: ['Admin'] },
+      { path: '/customers', label: settingsStore.t('nav.customers'), icon: Smile },
     ]
   },
   {
     key: 'finance',
-    label: settingStore.t('nav.finance'),
+    label: settingsStore.t('nav.finance'),
     icon: Wallet,
     items: [
-      { path: '/payments', label: settingStore.t('nav.payments'), icon: DollarSign, roles: ['Admin', 'Cashier'] },
-      { path: '/discounts', label: settingStore.t('nav.discounts'), icon: Tag, roles: ['Admin', 'Cashier'] },
+      { path: '/payments', label: settingsStore.t('nav.payments'), icon: DollarSign, roles: ['Admin', 'Cashier'] },
+      { path: '/discounts', label: settingsStore.t('nav.discounts'), icon: Tag, roles: ['Admin', 'Cashier'] },
     ]
   }
 ]);
