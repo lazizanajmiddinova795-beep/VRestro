@@ -14,7 +14,9 @@ import { useSettingsStore } from '@/stores/settings';
 onMounted(() => {
   try {
     const settingsStore = useSettingsStore();
-    settingsStore.applySettings();
+    if (settingsStore && settingsStore.applyDOMTheme) {
+      settingsStore.applyDOMTheme();
+    }
     settingsStore.fetchSettings();
 
     const cashierStore = useCashierStore();

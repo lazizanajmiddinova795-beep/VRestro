@@ -1766,8 +1766,11 @@ export const useSettingsStore = defineStore('settings', () => {
     };
 
     const t = (key) => {
+        if (!key) return '';
         const langDict = translations[language.value] || translations['uz'];
-        return langDict[key] || key;
+        if (langDict && langDict[key]) return langDict[key];
+        if (translations['uz'] && translations['uz'][key]) return translations['uz'][key];
+        return key;
     };
 
     const applyDOMTheme = () => {
