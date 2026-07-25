@@ -62,7 +62,7 @@
       <div class="w-full max-w-md bg-white border-t-2 border-slate-300 rounded-t-3xl p-6 space-y-6 shadow-2xl animate-slideUp text-slate-900">
         <div class="flex items-center justify-between border-b border-slate-200 pb-3">
           <div>
-            <h3 class="text-lg font-black text-slate-900">{{ selectedTable?.table_number }}</h3>
+            <h3 class="text-lg font-black text-slate-900">{{ settingsStore.t('app_title') }} - {{ selectedTable?.table_number }}</h3>
             <p class="text-xs text-slate-650 font-bold">{{ t('capacity') }}: {{ selectedTable?.capacity }} {{ t('persons') }}</p>
           </div>
           <button @click="closeDrawer" class="p-2 rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900 transition">
@@ -92,6 +92,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useWaiterStore } from '@/stores/waiter';

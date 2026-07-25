@@ -10,7 +10,7 @@
           <Settings class="w-6 h-6 stroke-[2]" />
         </div>
         <div>
-          <h2 class="text-xl font-bold text-white tracking-tight">Sozlamalar</h2>
+          <h2 class="text-xl font-bold text-white tracking-tight">{{ settingsStore.t('app_title') }} - Sozlamalar</h2>
           <p class="text-xs text-slate-400 mt-0.5">Interfeys tili, ranglar mavzusi, yozuv hajmi va xodimlar huquqlarini boshqarish</p>
         </div>
       </div>
@@ -18,14 +18,14 @@
       <!-- Settings Rows List -->
       <div class="divide-y divide-slate-800/60">
         
-        <!-- 1. Tizim tili -->
+        <!-- 1. {{ settingsStore.t('settings.sys_lang') }} -->
         <div class="py-4 flex items-center justify-between gap-4">
           <div class="flex items-center space-x-3.5">
             <div class="w-11 h-11 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
               <Globe class="w-5.5 h-5.5 stroke-[1.8]" />
             </div>
             <div>
-              <h3 class="text-sm font-bold text-white">Tizim tili</h3>
+              <h3 class="text-sm font-bold text-white">{{ settingsStore.t('settings.sys_lang') }}</h3>
               <p class="text-xs text-slate-400">Dastur interfeysi tilini tanlang</p>
             </div>
           </div>
@@ -42,14 +42,14 @@
           </div>
         </div>
 
-        <!-- 2. Ranglar mavzusi -->
+        <!-- 2. {{ settingsStore.t('settings.theme_mode') }} -->
         <div class="py-4 flex items-center justify-between gap-4">
           <div class="flex items-center space-x-3.5">
             <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
               <Moon class="w-5.5 h-5.5 stroke-[1.8]" />
             </div>
             <div>
-              <h3 class="text-sm font-bold text-white">Ranglar mavzusi</h3>
+              <h3 class="text-sm font-bold text-white">{{ settingsStore.t('settings.theme_mode') }}</h3>
               <p class="text-xs text-slate-400">Dastur minimalist oq dizaynda ishlaydi</p>
             </div>
           </div>

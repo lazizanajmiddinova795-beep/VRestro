@@ -99,7 +99,7 @@
 
     <div v-else-if="ingredientsStore.error" class="flex-grow flex flex-col items-center justify-center p-6 text-center space-y-4">
       <AlertTriangle class="w-12 h-12 text-red-400" />
-      <h3 class="text-base font-bold text-slate-900">Yuklashda xatolik</h3>
+      <h3 class="text-base font-bold text-slate-900">{{ settingsStore.t('app_title') }} - Yuklashda xatolik</h3>
       <p class="text-xs text-red-500">{{ ingredientsStore.error }}</p>
       <button @click="ingredientsStore.fetchIngredients()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition">
         Qayta yuklash
@@ -337,7 +337,7 @@
               :class="adjustForm.type === 'add' ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-900'"
             >
               <Plus class="w-3.5 h-3.5" />
-              <span>Qo'shish</span>
+              <span>{{ settingsStore.t('add') }}</span>
             </button>
             <button
               @click="adjustForm.type = 'subtract'"

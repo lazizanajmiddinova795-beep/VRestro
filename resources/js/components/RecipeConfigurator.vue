@@ -6,7 +6,7 @@
       <div class="space-y-4 flex flex-col h-full overflow-hidden">
         <!-- Header -->
         <div class="shrink-0">
-          <h2 class="text-lg font-bold text-slate-900 tracking-wide">Taomlar Ro'yxati</h2>
+          <h2 class="text-lg font-bold text-slate-900 tracking-wide">{{ settingsStore.t('app_title') }} - Taomlar Ro'yxati</h2>
           <p class="text-3xs text-slate-500">Retsept kiritish uchun taomni tanlang</p>
         </div>
 
@@ -192,6 +192,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted, computed, watch } from 'vue';
 import {
   Search, ChefHat, BookOpen, Trash2, Plus, Sparkles, Loader2, Save

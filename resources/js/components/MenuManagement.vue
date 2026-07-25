@@ -7,7 +7,7 @@
         <!-- Header -->
         <div class="flex justify-between items-center shrink-0">
           <div>
-            <h2 class="text-lg font-bold text-slate-900 tracking-wide">Kategoriyalar</h2>
+            <h2 class="text-lg font-bold text-slate-900 tracking-wide">{{ settingsStore.t('app_title') }} - Kategoriyalar</h2>
             <p class="text-3xs text-slate-500">Menyu bo'limlarini boshqarish</p>
           </div>
           <button
@@ -101,7 +101,7 @@
           class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-semibold text-sm text-white shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
         >
           <Plus class="w-4.5 h-4.5" />
-          <span>Yangi Taom Qo'shish</span>
+          <span>{{ settingsStore.t('menu.add_food') }}</span>
         </button>
       </div>
 

@@ -89,7 +89,7 @@
           <div class="space-y-3 relative z-10">
             <!-- Header Row -->
             <div class="flex justify-between items-start">
-              <h3 class="text-sm font-black text-slate-900 dark:text-white tracking-wide truncate pr-2">{{ table.table_number }}</h3>
+              <h3 class="text-sm font-black text-slate-900 dark:text-white tracking-wide truncate pr-2">{{ settingsStore.t('app_title') }} - {{ table.table_number }}</h3>
               
               <!-- Quick State badge -->
               <span 
@@ -239,6 +239,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted, computed } from 'vue';
 import { 
   Plus, Edit3, Trash2, X, Loader2, Layers, CheckCircle2, Users, CalendarHeart, User2, ChevronDown

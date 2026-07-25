@@ -3,7 +3,7 @@
     <!-- View Title & Actions -->
     <div class="flex justify-between items-center">
       <div>
-        <h2 class="text-xl md:text-2xl font-black text-slate-900 tracking-wide">{{ cashierStore.t('stollar_xaritasi') }}</h2>
+        <h2 class="text-xl md:text-2xl font-black text-slate-900 tracking-wide">{{ settingsStore.t('app_title') }} - {{ cashierStore.t('stollar_xaritasi') }}</h2>
         <p class="text-sm text-slate-700 font-bold mt-1">Stollar holati real vaqt rejimida avtomatik ravishda yangilanadi (har 5s)</p>
       </div>
       <div class="flex items-center space-x-3 shrink-0">
@@ -151,6 +151,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted, onUnmounted, markRaw } from 'vue';
 import { RotateCw, Users as UsersIcon, HelpCircle, CheckCircle, Play, Plus } from 'lucide-vue-next';
 import { useCashierTablesStore } from '@/stores/cashierTables';

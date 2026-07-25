@@ -3,7 +3,7 @@
     <!-- Top Header & Breadcrumbs -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-white">Hisobotlar va Tahlillar (BI Suite)</h1>
+        <h1 class="text-2xl font-bold tracking-tight text-white">{{ settingsStore.t('app_title') }} - Hisobotlar va Tahlillar (BI Suite)</h1>
         <p class="text-sm text-slate-400">Restoranning moliyaviy oqimlari, menyu tahlili, ombor sarfi va xodimlar samaradorligi monitoringi.</p>
       </div>
       
@@ -264,6 +264,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted, watch } from 'vue';
 import { 
   Loader2, RefreshCw, DollarSign, Tag, Coins, TrendingUp, TrendingDown, 

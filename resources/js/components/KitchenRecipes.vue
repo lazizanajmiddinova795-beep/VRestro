@@ -46,7 +46,7 @@
               <Utensils v-else class="w-6 h-6 text-slate-400" />
             </div>
             <div class="overflow-hidden flex-grow">
-              <h3 class="text-base font-black text-slate-900 truncate">{{ food.name }}</h3>
+              <h3 class="text-base font-black text-slate-900 truncate">{{ settingsStore.t('app_title') }} - {{ food.name }}</h3>
               <span class="text-xs font-bold text-slate-500 block">{{ food.category?.name || 'Kategoriya' }}</span>
             </div>
             <button
@@ -154,6 +154,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, computed, onMounted } from 'vue';
 import ChefLayout from '@/components/ChefLayout.vue';
 import { useAuthStore } from '@/stores/auth';

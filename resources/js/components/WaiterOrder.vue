@@ -149,7 +149,7 @@
         <!-- FIXED HEADER (Does not shrink or scroll) -->
         <div class="p-4 border-b border-slate-150 flex justify-between items-center bg-white shrink-0">
           <div>
-            <h3 class="text-slate-900 font-black text-lg tracking-tight">{{ t('cart_title') }}</h3>
+            <h3 class="text-slate-900 font-black text-lg tracking-tight">{{ settingsStore.t('app_title') }} - {{ t('cart_title') }}</h3>
             <p class="text-slate-500 font-bold text-xs mt-0.5">{{ t('table_label') }}: {{ tableNumber }}</p>
           </div>
           <button @click="closeCartDrawer" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 rounded-full transition-colors">
@@ -226,6 +226,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMenuStore } from '@/stores/menu';

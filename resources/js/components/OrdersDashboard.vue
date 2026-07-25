@@ -49,7 +49,7 @@
 
     <div v-else-if="error" class="flex-grow flex flex-col items-center justify-center p-6 text-center space-y-4">
       <AlertTriangle class="w-12 h-12 text-red-400" />
-      <h3 class="text-base font-bold text-slate-900">Yuklashda xatolik</h3>
+      <h3 class="text-base font-bold text-slate-900">{{ settingsStore.t('app_title') }} - Yuklashda xatolik</h3>
       <p class="text-xs text-red-500">{{ error }}</p>
       <button @click="loadAllOrders" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition">
         Qayta yuklash
@@ -254,6 +254,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { 
   Loader2, AlertTriangle, Eye, Trash2, X, ChefHat, ShoppingBag 

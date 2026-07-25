@@ -24,7 +24,7 @@
           {{ avatarInitials }}
         </div>
         <div>
-          <h2 class="text-slate-900 font-black text-lg tracking-tight">{{ waiterName }}</h2>
+          <h2 class="text-slate-900 font-black text-lg tracking-tight">{{ settingsStore.t('app_title') }} - {{ waiterName }}</h2>
           <span class="inline-flex items-center text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full mt-0.5 border border-emerald-200">
             <span class="w-2 h-2 rounded-full bg-emerald-600 mr-1.5 animate-pulse"></span>
             {{ t('active_badge') }}

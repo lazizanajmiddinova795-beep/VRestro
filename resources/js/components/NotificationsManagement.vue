@@ -3,7 +3,7 @@
     <!-- Top Header -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Bildirishnomalar tarixi</h1>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ settingsStore.t('app_title') }} - Bildirishnomalar tarixi</h1>
         <p class="text-sm text-slate-500">Tizimdagi ombor qoldiqlari, yangi va bekor qilingan buyurtmalar haqidagi real vaqt ogohlantirishlari.</p>
       </div>
       <div>
@@ -87,6 +87,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { onMounted } from 'vue';
 import {
   CheckCheck, BellOff, Trash2, Check, AlertTriangle, ShoppingBag,

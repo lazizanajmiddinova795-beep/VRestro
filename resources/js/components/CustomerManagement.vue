@@ -230,7 +230,7 @@
       <div class="w-full max-w-sm bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
           <div>
-            <h3 class="text-base font-bold text-slate-900">Bonus Balansini Tuzatish</h3>
+            <h3 class="text-base font-bold text-slate-900">{{ settingsStore.t('app_title') }} - Bonus Balansini Tuzatish</h3>
             <p class="text-xxs text-slate-500 mt-0.5">{{ selectedCustomer?.name }}</p>
           </div>
           <button @click="showAdjustModal = false" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 transition">
@@ -275,6 +275,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted } from 'vue';
 import {
   UserPlus, Search, Edit3, Trash2, X, Loader2, Users, Coins, Crown

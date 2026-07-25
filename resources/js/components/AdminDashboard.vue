@@ -61,7 +61,7 @@
 
         <div v-else-if="dashboardStore.error" class="max-w-md mx-auto my-20 p-6 rounded-2xl bg-red-50 border border-red-200 text-center space-y-4 shadow-sm">
           <AlertTriangle class="w-12 h-12 text-red-500 mx-auto" />
-          <h3 class="text-lg font-bold text-slate-900">Xatolik yuz berdi</h3>
+          <h3 class="text-lg font-bold text-slate-900">{{ settingsStore.t('app_title') }} - Xatolik yuz berdi</h3>
           <p class="text-sm text-red-600 font-semibold">{{ dashboardStore.error }}</p>
           <button @click="dashboardStore.fetchAnalytics" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition duration-200 shadow-md">
             Qayta urinish
@@ -207,7 +207,7 @@
             <!-- Live Orders Stream (Grid 3 cols width) -->
             <div class="lg:col-span-3 bg-white dark:bg-slate-900/60 border-2 border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
               <div class="mb-4">
-                <h2 class="text-slate-900 dark:text-white font-black text-lg tracking-tight">Jonli Buyurtmalar Oqimi</h2>
+                <h2 class="text-slate-900 dark:text-white font-black text-lg tracking-tight">{{ settingsStore.t('dashboard.live_orders') }}</h2>
                 <p class="text-slate-500 dark:text-slate-400 font-extrabold text-xs mt-0.5">Tizimga kirib kelayotgan oxirgi 5 ta buyurtmalar monitoringi</p>
               </div>
               <div class="overflow-x-auto flex-grow">

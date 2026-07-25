@@ -308,7 +308,7 @@
                         <span>Rasm yuklash</span>
                         <input type="file" @change="handleAvatarUpload" accept="image/*" class="hidden" />
                       </label>
-                      <button v-if="staffForm.avatar_url" type="button" @click="staffForm.avatar_url = ''; avatarFile.value = null" class="text-xs font-bold text-rose-500 hover:underline">O'chirish</button>
+                      <button v-if="staffForm.avatar_url" type="button" @click="staffForm.avatar_url = ''; avatarFile.value = null" class="text-xs font-bold text-rose-500 hover:underline">{{ settingsStore.t('delete') }}</button>
                     </div>
 
                     <!-- Presets -->

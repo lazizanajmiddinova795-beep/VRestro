@@ -102,7 +102,7 @@
             <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center border border-violet-500/20 text-violet-400 mb-5 group-hover:bg-violet-500 group-hover:text-white transition-all duration-300">
               <Layers class="w-6 h-6" />
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Barchasi Bir Oynada</h3>
+            <h3 class="text-lg font-bold text-white mb-2">{{ settingsStore.t('app_title') }} - Barchasi Bir Oynada</h3>
             <p class="text-sm text-slate-400 leading-relaxed">Buyurtmalar, stollar joylashuvi va xizmatchilar navbati hammasi real vaqtda yangilanadi.</p>
           </div>
 

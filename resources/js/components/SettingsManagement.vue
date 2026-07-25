@@ -3,7 +3,7 @@
     <!-- Top Header -->
     <div class="flex items-center justify-between shrink-0">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-white">Tizim Sozlamalari</h1>
+        <h1 class="text-2xl font-bold tracking-tight text-white">{{ settingsStore.t('app_title') }} - {{ settingsStore.t('settings.title') }}</h1>
         <p class="text-sm text-slate-400">Restoranning global branding, moliyaviy me'yorlari va xavfsizlik konfiguratsiyalari.</p>
       </div>
     </div>

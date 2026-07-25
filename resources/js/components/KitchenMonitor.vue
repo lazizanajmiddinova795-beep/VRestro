@@ -21,7 +21,7 @@
           <ChefHat class="w-8 h-8" />
         </div>
         <div>
-          <h3 class="text-xl font-black text-slate-900">Hozircha buyurtmalar yo'q</h3>
+          <h3 class="text-xl font-black text-slate-900">{{ settingsStore.t('app_title') }} - Hozircha buyurtmalar yo'q</h3>
           <p class="text-base text-slate-700 max-w-sm mx-auto mt-2 font-bold">Oshxonada barcha taomlar tayyorlangan yoki yangi buyurtmalar kelib tushmagan.</p>
         </div>
       </div>
@@ -191,6 +191,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useChefStore } from '@/stores/chef';
 import ChefLayout from '@/components/ChefLayout.vue';

@@ -5,7 +5,7 @@
     <div class="w-full md:w-3/5 flex flex-col h-full overflow-hidden bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm no-print">
       <div class="flex justify-between items-center mb-5 shrink-0">
         <div>
-          <h2 class="text-slate-900 font-black text-2xl tracking-tight">{{ cashierStore.t('cheklar_tarixi') }}</h2>
+          <h2 class="text-slate-900 font-black text-2xl tracking-tight">{{ settingsStore.t('app_title') }} - {{ cashierStore.t('cheklar_tarixi') }}</h2>
           <p class="text-slate-500 font-bold text-sm mt-1">{{ cashierStore.t('cheklar_jurnali_desc') }}</p>
         </div>
         <div class="flex items-center space-x-3 shrink-0">
@@ -738,6 +738,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted, computed, watch, markRaw } from 'vue';
 import { RotateCw, Printer, Receipt, FileText, FileSpreadsheet, Plus, X, HelpCircle, CheckCircle } from 'lucide-vue-next';
 import { useReceiptsStore } from '@/stores/receipts';

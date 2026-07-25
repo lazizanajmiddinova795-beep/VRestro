@@ -1,4 +1,5 @@
 <template>
+  <!-- {{ settingsStore.t('app_title') }} -->
   <div class="h-screen w-screen bg-slate-50 text-slate-900 flex flex-col font-sans overflow-hidden relative">
 
     <!-- Top Adaptive Navbar -->

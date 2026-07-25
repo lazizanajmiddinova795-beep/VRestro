@@ -2,7 +2,7 @@
   <ChefLayout>
     <div class="max-w-3xl mx-auto space-y-6">
       <div class="text-left space-y-2">
-        <h2 class="text-slate-900 font-black text-2xl tracking-tight">Oshxona Ichki Sozlamalari</h2>
+        <h2 class="text-slate-900 font-black text-2xl tracking-tight">{{ settingsStore.t('app_title') }} - Oshxona Ichki Sozlamalari</h2>
         <p class="text-slate-500 font-bold text-sm mt-1">Ishchi terminal displeyi va ovozli xabarnomalarni sozlang.</p>
       </div>
 
@@ -345,6 +345,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useChefStore } from '@/stores/chef';

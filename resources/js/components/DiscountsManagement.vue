@@ -3,7 +3,7 @@
     <!-- Top Header & Breadcrumbs -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Chegirmalar va Promo-kodlar</h1>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ settingsStore.t('app_title') }} - Chegirmalar va Promo-kodlar</h1>
         <p class="text-sm text-slate-500">Promokampaniyalar, foizli va summali vaucherlar hamda sotuv chegirmalari boshqaruvi.</p>
       </div>
       <div>
@@ -403,7 +403,7 @@
               class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition duration-200 flex items-center space-x-2"
             >
               <span v-if="discountStore.loading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-              <span>Saqlash</span>
+              <span>{{ settingsStore.t('save') }}</span>
             </button>
           </div>
         </form>
@@ -413,6 +413,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted, computed } from 'vue';
 import {
   Plus, Search, Tag, Percent, DollarSign, Calendar, Edit3, Trash2,

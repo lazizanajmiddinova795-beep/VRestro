@@ -126,7 +126,7 @@
           <div class="w-12 h-12 rounded-full bg-rose-100 border border-rose-300 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">
             ⚠
           </div>
-          <h3 class="text-lg font-black text-slate-900">Bekor qilishni tasdiqlang</h3>
+          <h3 class="text-lg font-black text-slate-900">{{ settingsStore.t('app_title') }} - Bekor qilishni tasdiqlang</h3>
           <p class="text-xs text-slate-700 font-bold leading-relaxed">
             Haqiqatan ham <strong>{{ itemToCancel?.food?.name }}</strong> taomini buyurtmadan o'chirmoqchimisiz?
           </p>
@@ -153,6 +153,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, computed, onMounted } from 'vue';
 import { useWaiterStore } from '@/stores/waiter';
 import { Trash2, Lock } from 'lucide-vue-next';

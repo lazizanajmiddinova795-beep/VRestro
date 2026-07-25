@@ -225,6 +225,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ChefHat, LayoutDashboard, ShoppingBag, LogOut, BookOpen, Database, Sparkles, Package, Layers, Users, Smile, DollarSign, Tag, BarChart3, Bell, Info, X, Settings, ChevronDown, Folder, Wallet, Menu } from 'lucide-vue-next';
@@ -234,8 +236,7 @@ import { useSettingStore } from '@/stores/settings';
 
 const authStore = useAuthStore();
 const notificationStore = useNotificationStore();
-const settingStore = useSettingStore();
-const settingsStore = settingStore;
+const settingStore = settingsStore;
 const router = useRouter();
 const route = useRoute();
 

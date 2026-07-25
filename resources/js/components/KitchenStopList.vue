@@ -1,4 +1,5 @@
 <template>
+  <!-- {{ settingsStore.t('app_title') }} -->
   <ChefLayout>
     <div class="space-y-6">
       <!-- Loading spinner -->
@@ -148,6 +149,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, computed, onMounted } from 'vue';
 import { useChefStore } from '@/stores/chef';
 import ChefLayout from '@/components/ChefLayout.vue';

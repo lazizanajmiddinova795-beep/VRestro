@@ -24,7 +24,7 @@
         <!-- STEP 1: Credentials Form -->
         <div v-if="authStore.loginStep === 'credentials'" class="space-y-6">
           <div class="space-y-1">
-            <h2 class="text-xl font-bold text-white">Xush kelibsiz</h2>
+            <h2 class="text-xl font-bold text-white">{{ settingsStore.t('app_title') }} - Xush kelibsiz</h2>
             <p class="text-xs text-slate-400">Davom etish uchun login va parolingizni kiriting</p>
           </div>
 

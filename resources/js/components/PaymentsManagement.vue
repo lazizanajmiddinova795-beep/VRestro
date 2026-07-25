@@ -3,7 +3,7 @@
     <!-- Top Header & Breadcrumbs -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">To'lovlar va Kassirlik</h1>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ settingsStore.t('app_title') }} - To'lovlar va Kassirlik</h1>
         <p class="text-sm text-slate-500">Buyurtmalar hisob-kitobi, kassa operatsiyalari va mijozlar keshbeki tizimi.</p>
       </div>
     </div>
@@ -249,7 +249,7 @@
                 <div v-if="linkedCustomer" class="rounded-xl border border-indigo-100 bg-indigo-50/50 p-3 flex flex-col justify-between">
                   <div class="flex justify-between items-center text-xs">
                     <span class="font-bold text-slate-900">{{ linkedCustomer.name }}</span>
-                    <button @click="unlinkCustomer" class="text-red-500 hover:underline text-xxs">O'chirish</button>
+                    <button @click="unlinkCustomer" class="text-red-500 hover:underline text-xxs">{{ settingsStore.t('delete') }}</button>
                   </div>
                   <div class="flex justify-between items-center text-xxs text-slate-500 mt-1">
                     <span>Mavjud bonus: {{ formatCurrency(linkedCustomer.bonus_balance) }}</span>
@@ -456,6 +456,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, onMounted, computed } from 'vue';
 import {
   DollarSign, Banknote, CreditCard, QrCode, Layers,

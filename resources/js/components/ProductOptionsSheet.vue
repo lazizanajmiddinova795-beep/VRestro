@@ -12,7 +12,7 @@
             <ChefHat v-else class="w-6 h-6 text-slate-600 stroke-[1.2]" />
           </div>
           <div>
-            <h3 class="text-base font-bold text-white leading-snug">{{ food.name }}</h3>
+            <h3 class="text-base font-bold text-white leading-snug">{{ settingsStore.t('app_title') }} - {{ food.name }}</h3>
             <p class="text-xs text-slate-400 mt-0.5">{{ food.description || t('food_desc_fallback') }}</p>
           </div>
         </div>
@@ -76,6 +76,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, computed } from 'vue';
 import { ChefHat, X } from 'lucide-vue-next';
 

@@ -7,7 +7,7 @@
         {{ avatarInitials }}
       </div>
       <div>
-        <h3 class="text-slate-900 font-black text-xl text-center">{{ waiterName }}</h3>
+        <h3 class="text-slate-900 font-black text-xl text-center">{{ settingsStore.t('app_title') }} - {{ waiterName }}</h3>
         <span class="inline-block bg-slate-100 border border-slate-200 text-slate-700 text-xs font-black px-3 py-1 rounded-full mt-1.5">
           {{ t('waiter_title') }}
         </span>
@@ -207,6 +207,8 @@
 </template>
 
 <script setup>
+import { useSettingsStore } from '@/stores/settings';
+const settingsStore = useSettingsStore();
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
