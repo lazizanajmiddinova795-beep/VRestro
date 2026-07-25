@@ -70,8 +70,8 @@
                   class="px-4 py-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition cursor-pointer min-w-[150px]"
                 >
                   <option value="uz">O'zbek (UZ)</option>
-                  <option value="ru">Русский (RU)</option>
-                  <option value="en">English (EN)</option>
+                  <option value="ru" disabled>Русский (tez orada)</option>
+                  <option value="en" disabled>English (tez orada)</option>
                 </select>
               </div>
             </div>
@@ -84,29 +84,12 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-bold text-slate-900 dark:text-white">Ranglar mavzusi</h3>
-                  <p class="text-xs text-slate-500">Yorug' yoki qorong'i rejimni tanlang</p>
+                  <p class="text-xs text-slate-500">Dastur minimalist oq dizaynda ishlaydi</p>
                 </div>
               </div>
-              <div class="flex items-center p-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl">
-                <button 
-                  @click="settingsStore.setTheme('light')"
-                  class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200"
-                  :class="settingsStore.theme === 'light'
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
-                >
-                  Yorug' (Oq)
-                </button>
-                <button 
-                  @click="settingsStore.setTheme('dark')"
-                  class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200"
-                  :class="settingsStore.theme === 'dark'
-                    ? 'bg-slate-900 text-white shadow-md'
-                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
-                >
-                  Qorong'i (Tungi)
-                </button>
-              </div>
+              <span class="px-4 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-md">
+                Yorug' (Oq)
+              </span>
             </div>
 
             <!-- 3. Ko'z himoyasi (Tungi Filtr) -->

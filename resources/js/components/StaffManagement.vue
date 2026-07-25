@@ -83,7 +83,7 @@
         <div
           v-for="member in staffStore.staffMembers"
           :key="member.id"
-          class="bg-white border shadow-sm rounded-3xl p-5 flex flex-col justify-between h-56 transition-all duration-300 relative group"
+          class="bg-white border shadow-sm rounded-3xl p-5 flex flex-col justify-between min-h-[240px] transition-all duration-300 relative group overflow-hidden"
           :class="member.status === 'inactive' ? 'border-slate-200 opacity-60' : 'border-indigo-100 hover:border-indigo-300'"
         >
           <div class="space-y-4">

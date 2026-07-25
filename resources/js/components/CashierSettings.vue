@@ -36,8 +36,8 @@
               class="px-4 py-2.5 bg-slate-950/80 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-indigo-500 transition cursor-pointer min-w-[150px]"
             >
               <option value="uz">O'zbek (UZ)</option>
-              <option value="ru">Русский (RU)</option>
-              <option value="en">English (EN)</option>
+              <option value="ru" disabled>Русский (tez orada)</option>
+              <option value="en" disabled>English (tez orada)</option>
             </select>
           </div>
         </div>
@@ -50,29 +50,12 @@
             </div>
             <div>
               <h3 class="text-sm font-bold text-white">Ranglar mavzusi</h3>
-              <p class="text-xs text-slate-400">Yorug' yoki qorong'i rejimni tanlang</p>
+              <p class="text-xs text-slate-400">Dastur minimalist oq dizaynda ishlaydi</p>
             </div>
           </div>
-          <div class="flex items-center p-1 bg-slate-950/80 border border-slate-800 rounded-xl">
-            <button 
-              @click="setTheme('light')"
-              class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200"
-              :class="settingsStore.theme === 'light'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-slate-200'"
-            >
-              Yorug' (Oq)
-            </button>
-            <button 
-              @click="setTheme('dark')"
-              class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200"
-              :class="settingsStore.theme === 'dark'
-                ? 'bg-slate-800 text-white shadow-md'
-                : 'text-slate-400 hover:text-slate-200'"
-            >
-              Qorong'i (Tungi)
-            </button>
-          </div>
+          <span class="px-4 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-md">
+            Yorug' (Oq)
+          </span>
         </div>
 
         <!-- 3. Ko'z himoyasi (Tungi Filtr) -->
