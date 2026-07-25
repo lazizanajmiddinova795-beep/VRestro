@@ -391,8 +391,10 @@ import {
   Plus, Edit3, Trash2, Search, X, Loader2, AlertTriangle, Database, Coins, SlidersHorizontal, Minus
 } from 'lucide-vue-next';
 import { useIngredientsStore } from '@/stores/ingredients';
+import { useSettingsStore } from '@/stores/settings';
 
 const ingredientsStore = useIngredientsStore();
+const settingsStore = useSettingsStore();
 
 // States
 const searchQuery = ref('');

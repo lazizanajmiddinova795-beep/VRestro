@@ -36,8 +36,8 @@
               class="px-4 py-2.5 bg-slate-950/80 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-indigo-500 transition cursor-pointer min-w-[150px]"
             >
               <option value="uz">O'zbek (UZ)</option>
-              <option value="ru" disabled>Русский (tez orada)</option>
-              <option value="en" disabled>English (tez orada)</option>
+              <option value="ru">Русский (RU)</option>
+              <option value="en">English (EN)</option>
             </select>
           </div>
         </div>

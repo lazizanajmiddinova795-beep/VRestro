@@ -172,8 +172,10 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ChefHat, User, Lock, ArrowRight, KeyRound, CheckCircle } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
+import { useSettingsStore } from '@/stores/settings';
 
 const authStore = useAuthStore();
+const settingsStore = useSettingsStore();
 const router = useRouter();
 
 // State

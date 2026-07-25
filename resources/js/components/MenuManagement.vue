@@ -497,10 +497,12 @@ import {
 import { useMenuStore } from '@/stores/menu';
 import { useIngredientsStore } from '@/stores/ingredients';
 import { useRecipesStore } from '@/stores/recipes';
+import { useSettingsStore } from '@/stores/settings';
 
 const menuStore = useMenuStore();
 const ingredientsStore = useIngredientsStore();
 const recipesStore = useRecipesStore();
+const settingsStore = useSettingsStore();
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB, matches the backend limit
 

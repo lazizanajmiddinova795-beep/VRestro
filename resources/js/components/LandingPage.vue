@@ -192,8 +192,10 @@
 <script setup>
 import { ChefHat, Layers, DollarSign, Lock, Smartphone, Apple, Play } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
+import { useSettingsStore } from '@/stores/settings';
 
 const authStore = useAuthStore();
+const settingsStore = useSettingsStore();
 
 const handleLogout = () => {
   authStore.logout();

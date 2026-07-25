@@ -520,11 +520,13 @@ import {
 import { useAuthStore } from '@/stores/auth';
 import { useDashboardStore } from '@/stores/dashboard';
 import { useReportsStore } from '@/stores/reports';
+import { useSettingsStore } from '@/stores/settings';
 import Chart from 'chart.js/auto';
 
 const authStore = useAuthStore();
 const dashboardStore = useDashboardStore();
 const reportsStore = useReportsStore();
+const settingsStore = useSettingsStore();
 const router = useRouter();
 
 // Active tab tab definition

@@ -5,9 +5,9 @@
     <div class="flex items-center justify-between mb-6 shrink-0">
       <div>
         <h1 class="text-2xl font-bold text-slate-900 tracking-wide">
-          Ombor Boshqaruvi
+          {{ settingsStore.t('warehouse.title') }}
         </h1>
-        <p class="text-xs text-slate-500">Kirim, chiqim va inventarizatsiya hujjatlarini rasmiylashtirish hamda tarixiy o'zgarishlar oqimi</p>
+        <p class="text-xs text-slate-500">{{ settingsStore.t('warehouse.subtitle') }}</p>
       </div>
 
       <!-- Navigation tabs -->
@@ -449,9 +449,11 @@ import {
 } from 'lucide-vue-next';
 import { useIngredientsStore } from '@/stores/ingredients';
 import { useWarehouseStore } from '@/stores/warehouse';
+import { useSettingsStore } from '@/stores/settings';
 
 const ingredientsStore = useIngredientsStore();
 const warehouseStore = useWarehouseStore();
+const settingsStore = useSettingsStore();
 
 // Navigation tab
 const activeTab = ref('summary');

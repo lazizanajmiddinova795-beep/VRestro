@@ -90,10 +90,12 @@ import { computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useWaiterStore } from '@/stores/waiter';
+import { useSettingsStore } from '@/stores/settings';
 import { LayoutGrid, Plus, ClipboardList, User, LogOut, BellRing, X } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const waiterStore = useWaiterStore();
+const settingsStore = useSettingsStore();
 const router = useRouter();
 
 onMounted(() => {

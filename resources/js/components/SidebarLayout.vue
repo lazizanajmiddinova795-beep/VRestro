@@ -34,7 +34,7 @@
             :class="isActiveRoute('/admin/dashboard') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
             <LayoutDashboard class="w-5 h-5" :class="isActiveRoute('/admin/dashboard') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Boshqaruv paneli</span>
+            <span>{{ settingsStore.t('nav.dashboard') }}</span>
           </router-link>
 
           <!-- Orders (All Roles) -->
@@ -44,7 +44,7 @@
             :class="isActiveRoute('/orders') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
             <ShoppingBag class="w-5 h-5" :class="isActiveRoute('/orders') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Buyurtmalar</span>
+            <span>{{ settingsStore.t('orders') }}</span>
           </router-link>
 
           <!-- Grouped sections -->
@@ -83,7 +83,7 @@
             :class="isActiveRoute('/settings') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
           >
             <Settings class="w-5 h-5" :class="isActiveRoute('/settings') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
-            <span>Sozlamalar</span>
+            <span>{{ settingsStore.t('nav.settings') }}</span>
           </router-link>
         </nav>
       </div>
@@ -106,7 +106,7 @@
           class="w-full py-2.5 rounded-xl bg-slate-100 border border-slate-200 hover:bg-red-50 hover:border-red-200 text-slate-700 hover:text-red-600 text-xs font-bold transition duration-200 flex items-center justify-center space-x-2"
         >
           <LogOut class="w-4 h-4" />
-          <span>Tizimdan chiqish</span>
+          <span>{{ settingsStore.t('nav.logout') }}</span>
         </button>
       </div>
     </aside>
@@ -241,42 +241,42 @@ const route = useRoute();
 // Sidebar nav grouped into collapsible sections so the long flat list is
 // easier to scan. Dashboard/Orders stay outside any group since they're the
 // most frequently used pages.
-const navGroups = [
+const navGroups = computed(() => [
   {
-    key: 'menu',
-    label: 'Menyu boshqaruvi',
-    icon: Folder,
+    key: 'menu_mgmt',
+    label: settingStore.t('nav.menu_mgmt'),
+    icon: Utensils,
     items: [
-      { path: '/menu', label: 'Menyu', icon: BookOpen },
-      { path: '/ingredients', label: "Ta'minot", icon: Database },
-      { path: '/recipes', label: 'Retseptlar', icon: Sparkles },
-      { path: '/warehouse', label: 'Ombor', icon: Package },
+      { path: '/menu', label: settingStore.t('nav.menu'), icon: BookOpen },
+      { path: '/ingredients', label: settingStore.t('nav.ingredients'), icon: Database },
+      { path: '/recipes', label: settingStore.t('nav.recipes'), icon: Sparkles },
+      { path: '/warehouse', label: settingStore.t('nav.warehouse'), icon: Package },
     ]
   },
   {
     key: 'service',
-    label: 'Xizmat',
+    label: settingStore.t('nav.service'),
     icon: Users,
     items: [
-      { path: '/tables', label: 'Stollar', icon: Layers },
-      { path: '/staff', label: 'Xodimlar', icon: Users, roles: ['Admin'] },
-      { path: '/customers', label: 'Mijozlar', icon: Smile },
+      { path: '/tables', label: settingStore.t('nav.tables'), icon: Layers },
+      { path: '/staff', label: settingStore.t('nav.staff'), icon: Users, roles: ['Admin'] },
+      { path: '/customers', label: settingStore.t('nav.customers'), icon: Smile },
     ]
   },
   {
     key: 'finance',
-    label: 'Moliya',
+    label: settingStore.t('nav.finance'),
     icon: Wallet,
     items: [
-      { path: '/payments', label: "To'lovlar", icon: DollarSign, roles: ['Admin', 'Cashier'] },
-      { path: '/discounts', label: 'Chegirmalar', icon: Tag, roles: ['Admin', 'Cashier'] },
+      { path: '/payments', label: settingStore.t('nav.payments'), icon: DollarSign, roles: ['Admin', 'Cashier'] },
+      { path: '/discounts', label: settingStore.t('nav.discounts'), icon: Tag, roles: ['Admin', 'Cashier'] },
     ]
   }
-];
+]);
 
 const visibleNavGroups = computed(() => {
   const role = authStore.user?.roles?.[0];
-  return navGroups
+  return navGroups.value
     .map(group => ({
       ...group,
       items: group.items.filter(item => !item.roles || item.roles.includes(role))
@@ -296,7 +296,7 @@ const isGroupActive = (group) => {
 
 // Auto-expand whichever group contains the current page
 const expandActiveGroup = () => {
-  const group = navGroups.find(g => g.items.some(item => item.path === route.path));
+  const group = navGroups.value.find(g => g.items.some(item => item.path === route.path));
   if (group) {
     expandedGroups.value[group.key] = true;
   }

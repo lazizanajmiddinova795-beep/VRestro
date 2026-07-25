@@ -12,11 +12,11 @@
             </div>
             <div>
               <h1 class="text-lg font-black text-slate-900 tracking-tight">
-                Oshpaz Monitori
+                {{ settingsStore.t('kitchen.monitor_title') }}
               </h1>
               <div class="flex items-center space-x-2 text-xs text-slate-500 font-bold">
                 <User class="w-3.5 h-3.5 text-slate-700" />
-                <span>{{ authStore.user?.name || 'Asilbek Povar' }}</span>
+                <span>{{ authStore.user?.name || 'Chef' }}</span>
               </div>
             </div>
           </div>
@@ -28,28 +28,28 @@
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
               :class="route.path === '/kitchen' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
             >
-              Buyurtmalar
+              {{ settingsStore.t('orders') }}
             </router-link>
             <router-link 
               to="/kitchen/stop-list" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
               :class="route.path === '/kitchen/stop-list' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
             >
-              Stop-List
+              {{ settingsStore.t('nav.stop_list') }}
             </router-link>
             <router-link 
               to="/kitchen/recipes" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
               :class="route.path === '/kitchen/recipes' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
             >
-              Retseptlar
+              {{ settingsStore.t('nav.recipes') }}
             </router-link>
             <router-link 
               to="/kitchen/settings" 
               class="px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
               :class="route.path === '/kitchen/settings' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'"
             >
-              Sozlamalar
+              {{ settingsStore.t('nav.settings') }}
             </router-link>
           </div>
 
@@ -67,7 +67,7 @@
               :class="pendingCount > 0 ? 'border-red-300 bg-red-50 text-red-800 animate-pulse' : 'border-slate-200 text-slate-700'"
             >
               <span class="w-2.5 h-2.5 rounded-full bg-red-600" :class="{ 'animate-ping': pendingCount > 0 }"></span>
-              <span class="text-xs font-bold">Kutilmoqda:</span>
+              <span class="text-xs font-bold">{{ settingsStore.t('kitchen.pending') }}:</span>
               <span class="font-black text-sm">{{ pendingCount }}</span>
             </div>
 
@@ -108,11 +108,13 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useChefStore } from '@/stores/chef';
+import { useSettingsStore } from '@/stores/settings';
 import AnimatedBackground from '@/components/AnimatedBackground.vue';
 import { ChefHat, Clock, User, LogOut } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const chefStore = useChefStore();
+const settingsStore = useSettingsStore();
 const route = useRoute();
 const router = useRouter();
 

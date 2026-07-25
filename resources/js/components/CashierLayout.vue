@@ -209,11 +209,13 @@ import { useAuthStore } from '@/stores/auth';
 import { useCashierTablesStore } from '@/stores/cashierTables';
 import { useCashierStore } from '@/stores/cashier';
 import { useReceiptsStore } from '@/stores/receipts';
+import { useSettingsStore } from '@/stores/settings';
 
 const authStore = useAuthStore();
 const cashierTablesStore = useCashierTablesStore();
 const cashierStore = useCashierStore();
 const receiptsStore = useReceiptsStore();
+const settingsStore = useSettingsStore();
 const router = useRouter();
 const route = useRoute();
 

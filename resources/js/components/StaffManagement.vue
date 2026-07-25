@@ -5,9 +5,9 @@
     <div class="flex items-center justify-between mb-6 shrink-0">
       <div>
         <h1 class="text-2xl font-bold text-slate-900 tracking-wide">
-          Xodimlar Tizimi
+          {{ settingsStore.t('staff.title') }}
         </h1>
-        <p class="text-xs text-slate-500">Tizim xodimlarini ro'yxatga olish, rollarini Spatie orqali boshqarish va kirish ruxsatnomalarini nazorat qilish</p>
+        <p class="text-xs text-slate-500">{{ settingsStore.t('staff.subtitle') }}</p>
       </div>
 
       <!-- Add Staff button -->
@@ -16,7 +16,7 @@
         class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-semibold text-sm text-white shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
       >
         <UserPlus class="w-4.5 h-4.5" />
-        <span>Yangi Xodim Qo'shish</span>
+        <span>{{ settingsStore.t('staff.add_button') }}</span>
       </button>
     </div>
 
@@ -360,9 +360,11 @@ import {
 } from 'lucide-vue-next';
 import { useStaffStore } from '@/stores/staff';
 import { useAuthStore } from '@/stores/auth';
+import { useSettingsStore } from '@/stores/settings';
 
 const staffStore = useStaffStore();
 const authStore = useAuthStore();
+const settingsStore = useSettingsStore();
 
 // Whether the currently logged-in user is allowed to edit/deactivate/delete a
 // given staff member. Only a super-admin may touch another super-admin's account.
