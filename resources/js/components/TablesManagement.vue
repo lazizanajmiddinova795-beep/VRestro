@@ -131,7 +131,7 @@
             <div class="flex items-center space-x-1">
               <button 
                 @click="openAddEditModal(table)"
-                class="p-1 rounded bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition"
+                class="p-1 rounded bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition"
                 title="Tahrirlash"
               >
                 <Edit3 class="w-3.5 h-3.5" />
@@ -152,23 +152,23 @@
 
       <!-- Empty state -->
       <div v-if="tablesStore.tables.length === 0" class="flex flex-col items-center justify-center py-24 space-y-3">
-        <Layers class="w-12 h-12 text-slate-600" />
-        <p class="text-slate-400 text-xs font-medium">Stollar topilmadi</p>
+        <Layers class="w-12 h-12 text-slate-300" />
+        <p class="text-slate-500 text-xs font-medium">Stollar topilmadi</p>
       </div>
     </div>
 
     <!-- MODAL: Add / Edit Table -->
-    <div 
-      v-if="showModal" 
-      class="fixed inset-0 z-50 backdrop-blur-md bg-black/60 flex items-center justify-center p-6"
+    <div
+      v-if="showModal"
+      class="fixed inset-0 z-50 backdrop-blur-sm bg-slate-900/30 flex items-center justify-center p-6"
       @click.self="showModal = false"
     >
-      <div class="w-full max-w-sm backdrop-blur-xl bg-slate-900/80 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn">
-        <div class="flex justify-between items-center border-b border-white/5 pb-3">
-          <h3 class="text-base font-bold text-white">
+      <div class="w-full max-w-sm bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h3 class="text-base font-bold text-slate-900">
             {{ editingTable ? 'Stolni Tahrirlash' : 'Yangi Stol' }}
           </h3>
-          <button @click="showModal = false" class="p-1 rounded-lg bg-white/5 text-slate-400 hover:text-white transition">
+          <button @click="showModal = false" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 transition">
             <X class="w-4 h-4" />
           </button>
         </div>
@@ -176,43 +176,43 @@
         <div class="space-y-4">
           <!-- Table number/name -->
           <div class="space-y-1.5">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Stol raqami / Nomi *</label>
-            <input 
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Stol raqami / Nomi *</label>
+            <input
               v-model="tableForm.table_number"
-              type="text" 
+              type="text"
               placeholder="Masalan, Stol 12, VIP 4..."
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+              class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
             />
           </div>
 
           <!-- Capacity -->
           <div class="space-y-1.5">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Maksimal odam sig'imi *</label>
-            <input 
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Maksimal odam sig'imi *</label>
+            <input
               v-model.number="tableForm.capacity"
-              type="number" 
+              type="number"
               placeholder="Masalan, 4 kishi..."
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+              class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
             />
           </div>
 
           <!-- QR Token -->
           <div class="space-y-1.5">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">QR Code Token (Ixtiyoriy)</label>
-            <input 
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">QR Code Token (Ixtiyoriy)</label>
+            <input
               v-model="tableForm.qr_code_token"
-              type="text" 
+              type="text"
               placeholder="Avtomatik generatsiya"
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+              class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
             />
           </div>
 
           <!-- Initial Status (only on Create) -->
           <div class="space-y-1.5" v-if="!editingTable">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Dastlabki holati *</label>
-            <select 
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Dastlabki holati *</label>
+            <select
               v-model="tableForm.status"
-              class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+              class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
             >
               <option value="empty">Bo'sh (Empty)</option>
               <option value="occupied">Band (Occupied)</option>
@@ -222,10 +222,10 @@
         </div>
 
         <div class="flex justify-end space-x-2 pt-2">
-          <button @click="showModal = false" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-semibold text-slate-300 transition">
+          <button @click="showModal = false" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition">
             Bekor qilish
           </button>
-          <button 
+          <button
             @click="submitForm"
             class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition"
           >

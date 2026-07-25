@@ -4,14 +4,14 @@
     <!-- Top Dashboard Navigation / Header -->
     <div class="flex items-center justify-between mb-6 shrink-0">
       <div>
-        <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400 tracking-wide">
+        <h1 class="text-2xl font-bold text-slate-900 tracking-wide">
           Buyurtmalar Boshqaruvi
         </h1>
-        <p class="text-xs text-slate-400">Restoran buyurtmalari oqimini real vaqtda nazorat qilish oynasi</p>
+        <p class="text-xs text-slate-500">Restoran buyurtmalari oqimini real vaqtda nazorat qilish oynasi</p>
       </div>
 
       <!-- Real-time Indicator -->
-      <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-300">
+      <div class="flex items-center space-x-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-700">
         <span class="relative flex h-2 w-2">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -21,13 +21,13 @@
     </div>
 
     <!-- Status Navigation Tabs -->
-    <div class="flex items-center space-x-2 border-b border-white/5 pb-px mb-6 shrink-0 overflow-x-auto">
-      <button 
-        v-for="tab in statusTabs" 
+    <div class="flex items-center space-x-2 border-b border-slate-200 pb-px mb-6 shrink-0 overflow-x-auto">
+      <button
+        v-for="tab in statusTabs"
         :key="tab.status"
         @click="activeTab = tab.status"
         class="relative px-5 py-3 text-sm font-semibold tracking-wide transition-all duration-200 focus:outline-none whitespace-nowrap"
-        :class="activeTab === tab.status ? 'text-white border-b-2 border-indigo-500' : 'text-slate-400 hover:text-slate-200'"
+        :class="activeTab === tab.status ? 'text-indigo-600 border-b-2 border-indigo-500' : 'text-slate-500 hover:text-slate-800'"
       >
         <div class="flex items-center space-x-2">
           <span>{{ tab.label }}</span>
@@ -44,13 +44,13 @@
     <!-- Loading / Error States inside container -->
     <div v-if="loading && allOrders.length === 0" class="flex-grow flex flex-col items-center justify-center space-y-4">
       <Loader2 class="w-10 h-10 text-indigo-500 animate-spin" />
-      <p class="text-slate-400 text-xs font-medium animate-pulse">Buyurtmalar yuklanmoqda...</p>
+      <p class="text-slate-500 text-xs font-medium animate-pulse">Buyurtmalar yuklanmoqda...</p>
     </div>
 
     <div v-else-if="error" class="flex-grow flex flex-col items-center justify-center p-6 text-center space-y-4">
       <AlertTriangle class="w-12 h-12 text-red-400" />
-      <h3 class="text-base font-bold text-white">Yuklashda xatolik</h3>
-      <p class="text-xs text-red-300/80">{{ error }}</p>
+      <h3 class="text-base font-bold text-slate-900">Yuklashda xatolik</h3>
+      <p class="text-xs text-red-500">{{ error }}</p>
       <button @click="loadAllOrders" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition">
         Qayta yuklash
       </button>
@@ -64,45 +64,45 @@
         <div 
           v-for="order in activeTabOrders" 
           :key="order.id"
-          class="backdrop-blur-md bg-slate-900/40 border border-white/5 rounded-2xl p-5 shadow-2xl flex flex-col justify-between hover:border-white/10 transition-all duration-300 relative group"
+          class="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 flex flex-col justify-between hover:border-slate-300 transition-all duration-300 relative group"
         >
           <!-- Elapsed Time Badge -->
-          <div class="absolute right-4 top-4 text-xxs font-medium text-slate-500">
+          <div class="absolute right-4 top-4 text-xxs font-medium text-slate-400">
             {{ getElapsedTime(order.created_at) }}
           </div>
 
           <!-- Header -->
           <div class="space-y-1 mb-4 pr-16">
             <div class="flex items-center space-x-2">
-              <span class="text-sm font-bold text-white tracking-wider group-hover:text-indigo-400 transition-colors">
+              <span class="text-sm font-bold text-slate-900 tracking-wider group-hover:text-indigo-600 transition-colors">
                 {{ order.order_number }}
               </span>
-              <span 
+              <span
                 class="px-2 py-0.5 rounded-full text-3xs font-bold border"
                 :class="getStatusBadgeClass(order.status)"
               >
                 {{ getStatusLabel(order.status) }}
               </span>
             </div>
-            <div class="flex items-center text-xs text-slate-400 font-medium">
-              <span class="text-indigo-300 font-semibold">{{ order.table?.number || 'Olib ketish' }}</span>
-              <span class="mx-1.5 w-1 h-1 rounded-full bg-slate-600"></span>
+            <div class="flex items-center text-xs text-slate-500 font-medium">
+              <span class="text-indigo-600 font-semibold">{{ order.table?.number || 'Olib ketish' }}</span>
+              <span class="mx-1.5 w-1 h-1 rounded-full bg-slate-300"></span>
               <span>{{ order.waiter?.name || 'Noma\'lum' }}</span>
             </div>
           </div>
 
           <!-- Content: Brief Items List -->
-          <div class="border-t border-b border-white/5 py-3 mb-4 flex-grow space-y-1.5 text-xs text-slate-300">
+          <div class="border-t border-b border-slate-100 py-3 mb-4 flex-grow space-y-1.5 text-xs text-slate-600">
             <div v-for="item in order.items.slice(0, 3)" :key="item.id" class="flex justify-between">
               <span>
                 {{ item.food?.name }}
-                <span v-if="item.size_name" class="text-4xs text-indigo-400 bg-indigo-500/5 px-1 py-0.5 rounded ml-1">
+                <span v-if="item.size_name" class="text-4xs text-indigo-600 bg-indigo-50 px-1 py-0.5 rounded ml-1">
                   {{ item.size_name }}
                 </span>
               </span>
-              <span class="text-slate-400 font-medium">x{{ item.quantity }}</span>
+              <span class="text-slate-500 font-medium">x{{ item.quantity }}</span>
             </div>
-            <div v-if="order.items.length > 3" class="text-slate-500 text-xxs italic">
+            <div v-if="order.items.length > 3" class="text-slate-400 text-xxs italic">
               yana {{ order.items.length - 3 }} ta taom...
             </div>
           </div>
@@ -111,14 +111,14 @@
           <div class="flex items-center justify-between mt-auto">
             <div>
               <span class="block text-3xs text-slate-500 font-semibold uppercase tracking-wider">Jami summa</span>
-              <span class="text-base font-bold text-white tracking-tight">{{ formatCurrency(order.total_amount) }}</span>
+              <span class="text-base font-bold text-slate-900 tracking-tight">{{ formatCurrency(order.total_amount) }}</span>
             </div>
 
             <!-- Context Actions -->
             <div class="flex items-center space-x-2">
-              <button 
+              <button
                 @click="openDetails(order)"
-                class="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 transition duration-200"
+                class="p-2 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-600 transition duration-200"
                 title="Batafsil ko'rish"
               >
                 <Eye class="w-4 h-4" />
@@ -149,70 +149,70 @@
 
       <!-- Empty State -->
       <div v-if="activeTabOrders.length === 0" class="flex flex-col items-center justify-center py-24 space-y-3">
-        <ShoppingBag class="w-12 h-12 text-slate-600" />
-        <p class="text-slate-400 text-xs font-medium">Bu statusda buyurtmalar mavjud emas</p>
+        <ShoppingBag class="w-12 h-12 text-slate-300" />
+        <p class="text-slate-500 text-xs font-medium">Bu statusda buyurtmalar mavjud emas</p>
       </div>
     </div>
 
     <!-- Order Detail Modal -->
-    <div 
-      v-if="selectedOrder" 
-      class="fixed inset-0 z-50 backdrop-blur-md bg-black/60 flex items-center justify-center p-6"
+    <div
+      v-if="selectedOrder"
+      class="fixed inset-0 z-50 backdrop-blur-sm bg-slate-900/30 flex items-center justify-center p-6"
       @click.self="closeDetails"
     >
-      <div class="w-full max-w-lg backdrop-blur-xl bg-slate-900/80 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6 animate-scaleIn">
+      <div class="w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-6 animate-scaleIn">
         <!-- Modal Header -->
-        <div class="flex justify-between items-start border-b border-white/5 pb-4">
+        <div class="flex justify-between items-start border-b border-slate-100 pb-4">
           <div>
             <div class="flex items-center space-x-2">
-              <h3 class="text-lg font-bold text-white tracking-wider">{{ selectedOrder.order_number }}</h3>
-              <span 
+              <h3 class="text-lg font-bold text-slate-900 tracking-wider">{{ selectedOrder.order_number }}</h3>
+              <span
                 class="px-2 py-0.5 rounded-full text-xxs font-bold border"
                 :class="getStatusBadgeClass(selectedOrder.status)"
               >
                 {{ getStatusLabel(selectedOrder.status) }}
               </span>
             </div>
-            <p class="text-xs text-slate-400 mt-1">
+            <p class="text-xs text-slate-500 mt-1">
               Yaratilgan vaqt: {{ formatFullTime(selectedOrder.created_at) }}
             </p>
           </div>
-          <button @click="closeDetails" class="p-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-400 transition">
+          <button @click="closeDetails" class="p-1 rounded-lg bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-500 transition">
             <X class="w-5 h-5" />
           </button>
         </div>
 
         <!-- Metadata -->
         <div class="grid grid-cols-2 gap-4 text-xs">
-          <div class="p-3 bg-white/5 rounded-xl border border-white/5 space-y-1">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
             <span class="text-slate-500 font-semibold block uppercase">Stol</span>
-            <span class="text-white font-bold text-sm">{{ selectedOrder.table?.number || 'Olib ketish' }}</span>
+            <span class="text-slate-900 font-bold text-sm">{{ selectedOrder.table?.number || 'Olib ketish' }}</span>
           </div>
-          <div class="p-3 bg-white/5 rounded-xl border border-white/5 space-y-1">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
             <span class="text-slate-500 font-semibold block uppercase">Xizmatchi Ofitsiant</span>
-            <span class="text-white font-bold text-sm">{{ selectedOrder.waiter?.name || 'Noma\'lum' }}</span>
+            <span class="text-slate-900 font-bold text-sm">{{ selectedOrder.waiter?.name || 'Noma\'lum' }}</span>
           </div>
         </div>
 
         <!-- Items Breakdown -->
         <div class="space-y-3">
-          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Buyurtma tarkibi</span>
-          <div class="max-h-48 overflow-y-auto divide-y divide-white/5 pr-1">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Buyurtma tarkibi</span>
+          <div class="max-h-48 overflow-y-auto divide-y divide-slate-100 pr-1">
             <div v-for="item in selectedOrder.items" :key="item.id" class="py-3 flex flex-col space-y-1">
               <div class="flex justify-between text-sm">
-                <span class="text-white font-medium">
+                <span class="text-slate-900 font-medium">
                   {{ item.food?.name }}
-                  <span v-if="item.size_name" class="text-3xs text-indigo-400 font-bold bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.5 rounded-md ml-1">
+                  <span v-if="item.size_name" class="text-3xs text-indigo-600 font-bold bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 rounded-md ml-1">
                     {{ item.size_name }}
                   </span>
                 </span>
-                <span class="text-slate-400 font-medium">x{{ item.quantity }}</span>
+                <span class="text-slate-500 font-medium">x{{ item.quantity }}</span>
               </div>
               <div class="flex justify-between text-xs text-slate-500">
                 <span class="font-medium">{{ formatCurrency(item.price) }}</span>
-                <span class="font-bold text-slate-400">{{ formatCurrency(item.price * item.quantity) }}</span>
+                <span class="font-bold text-slate-500">{{ formatCurrency(item.price * item.quantity) }}</span>
               </div>
-              <div v-if="item.notes" class="text-xxs text-amber-400/80 bg-amber-500/5 border border-amber-500/10 px-2.5 py-1 rounded-lg mt-1 inline-block w-fit font-medium">
+              <div v-if="item.notes" class="text-xxs text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg mt-1 inline-block w-fit font-medium">
                 Izoh: {{ item.notes }}
               </div>
             </div>
@@ -220,10 +220,10 @@
         </div>
 
         <!-- Total Sum -->
-        <div class="border-t border-white/5 pt-4 flex justify-between items-center">
+        <div class="border-t border-slate-100 pt-4 flex justify-between items-center">
           <div>
             <span class="text-xxs text-slate-500 font-bold block uppercase tracking-wider">Umumiy summa</span>
-            <span class="text-2xl font-extrabold text-white tracking-tight">
+            <span class="text-2xl font-extrabold text-slate-900 tracking-tight">
               {{ formatCurrency(selectedOrder.total_amount) }}
             </span>
           </div>

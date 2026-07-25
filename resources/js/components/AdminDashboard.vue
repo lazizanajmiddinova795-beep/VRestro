@@ -454,45 +454,45 @@
             </div>
           </div>
 
-          <div class="rounded-2xl border border-white/5 bg-slate-950/40 p-6 backdrop-blur-xl shadow-xl space-y-5">
-            <h2 class="text-lg font-bold text-white flex items-center space-x-2">
-              <Users class="w-5 h-5 text-violet-400" />
+          <div class="rounded-2xl border-2 border-slate-200/80 bg-white p-6 shadow-sm space-y-5">
+            <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+              <Users class="w-5 h-5 text-violet-600" />
               <span>Xodimlar KPIs</span>
             </h2>
 
             <div class="space-y-3">
-              <h3 class="text-xs text-slate-400 uppercase tracking-wider font-bold">Buyurtma olgan ofitsiantlar</h3>
+              <h3 class="text-xs text-slate-500 uppercase tracking-wider font-bold">Buyurtma olgan ofitsiantlar</h3>
               <div v-if="!reportsStore.staffReport?.waiters?.length" class="text-xs text-slate-500 italic">
                 Ofitsiantlar faolligi topilmadi
               </div>
               <div v-else class="space-y-2">
-                <div 
-                  v-for="waiter in reportsStore.staffReport.waiters" 
-                  :key="waiter.id" 
-                  class="flex justify-between items-center p-2 bg-white/5 rounded-lg border border-white/5"
+                <div
+                  v-for="waiter in reportsStore.staffReport.waiters"
+                  :key="waiter.id"
+                  class="flex justify-between items-center p-2 bg-slate-50 rounded-lg border border-slate-200"
                 >
                   <div>
-                    <span class="text-xs font-semibold text-white block">{{ waiter.name }}</span>
-                    <span class="text-xxs text-slate-400">{{ waiter.total_orders_taken }} ta buyurtma</span>
+                    <span class="text-xs font-semibold text-slate-900 block">{{ waiter.name }}</span>
+                    <span class="text-xxs text-slate-500">{{ waiter.total_orders_taken }} ta buyurtma</span>
                   </div>
-                  <span class="text-xs text-indigo-300 font-bold">{{ formatCurrencyBI(waiter.total_revenue_generated) }}</span>
+                  <span class="text-xs text-indigo-600 font-bold">{{ formatCurrencyBI(waiter.total_revenue_generated) }}</span>
                 </div>
               </div>
             </div>
 
-            <div class="space-y-3 border-t border-white/5 pt-4">
-              <h3 class="text-xs text-slate-400 uppercase tracking-wider font-bold">Faol Oshpazlar</h3>
+            <div class="space-y-3 border-t border-slate-100 pt-4">
+              <h3 class="text-xs text-slate-500 uppercase tracking-wider font-bold">Faol Oshpazlar</h3>
               <div v-if="!reportsStore.staffReport?.chefs?.length" class="text-xs text-slate-500 italic">
                 Oshpazlar faolligi topilmadi
               </div>
               <div v-else class="space-y-2">
-                <div 
-                  v-for="chef in reportsStore.staffReport.chefs" 
-                  :key="chef.id" 
-                  class="flex justify-between items-center p-2 bg-white/5 rounded-lg border border-white/5"
+                <div
+                  v-for="chef in reportsStore.staffReport.chefs"
+                  :key="chef.id"
+                  class="flex justify-between items-center p-2 bg-slate-50 rounded-lg border border-slate-200"
                 >
-                  <span class="text-xs font-semibold text-white">{{ chef.name }}</span>
-                  <span class="text-xs text-emerald-400 font-bold">{{ chef.total_dishes_prepared }} ta taom</span>
+                  <span class="text-xs font-semibold text-slate-900">{{ chef.name }}</span>
+                  <span class="text-xs text-emerald-600 font-bold">{{ chef.total_dishes_prepared }} ta taom</span>
                 </div>
               </div>
             </div>
@@ -502,7 +502,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-white/5 py-8 text-center text-xs text-slate-500 mt-12 bg-slate-950/20">
+    <footer class="border-t border-slate-200 py-8 text-center text-xs text-slate-500 mt-12 bg-slate-50">
       <div class="max-w-7xl mx-auto px-6">
         &copy; 2026 VRestro. Barcha huquqlar himoyalangan. Boshqaruv Panel Platformasi.
       </div>
