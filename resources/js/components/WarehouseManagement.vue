@@ -35,13 +35,13 @@
           <input
             v-model="summarySearch"
             type="text"
-            placeholder="Masalliq nomi yoki SKU..."
+            :placeholder="settingsStore.t('warehouse.search_placeholder')"
             class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm placeholder-slate-400 text-slate-900 focus:outline-none transition"
           />
         </div>
         <div class="flex items-center space-x-2.5 bg-red-50 border border-red-200 rounded-2xl px-4 py-2.5" v-if="lowStockCount > 0">
           <AlertTriangle class="w-4.5 h-4.5 text-red-500 animate-pulse" />
-          <span class="text-xs font-bold text-red-500">{{ lowStockCount }} ta masalliq minimal chegaradan kam!</span>
+          <span class="text-xs font-bold text-red-500">{{ lowStockCount }} {{ settingsStore.t('warehouse.low_stock_suffix') }}</span>
         </div>
       </div>
 
@@ -52,13 +52,13 @@
             <table class="w-full border-collapse text-left">
               <thead>
                 <tr class="border-b border-slate-200 text-slate-500 text-3xs font-bold uppercase tracking-wider bg-slate-50">
-                  <th class="px-6 py-4">Masalliq</th>
-                  <th class="px-6 py-4">SKU</th>
-                  <th class="px-6 py-4">Miqdori</th>
-                  <th class="px-6 py-4">Birlik narxi (Avg)</th>
-                  <th class="px-6 py-4">Umumiy Qiymati</th>
-                  <th class="px-6 py-4">Holat</th>
-                  <th class="px-6 py-4 text-right">Harakat</th>
+                  <th class="px-6 py-4">{{ settingsStore.t('warehouse.col_ingredient') }}</th>
+                  <th class="px-6 py-4">{{ settingsStore.t('warehouse.col_sku') }}</th>
+                  <th class="px-6 py-4">{{ settingsStore.t('quantity') }}</th>
+                  <th class="px-6 py-4">{{ settingsStore.t('warehouse.col_unit_price') }}</th>
+                  <th class="px-6 py-4">{{ settingsStore.t('warehouse.col_total_value') }}</th>
+                  <th class="px-6 py-4">{{ settingsStore.t('status') }}</th>
+                  <th class="px-6 py-4 text-right">{{ settingsStore.t('action') }}</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 text-sm">
@@ -80,7 +80,7 @@
                       class="px-2.5 py-0.5 rounded-full text-3xs font-bold border"
                       :class="ing.is_low_stock ? 'bg-red-50 border-red-200 text-red-600' : 'bg-emerald-50 border-emerald-200 text-emerald-600'"
                     >
-                      {{ ing.is_low_stock ? 'Kam qolgan' : 'Yetarli' }}
+                      {{ ing.is_low_stock ? settingsStore.t('warehouse.low_stock_badge') : settingsStore.t('warehouse.sufficient_badge') }}
                     </span>
                   </td>
                   <td class="px-6 py-4 text-right">
@@ -88,7 +88,7 @@
                       @click="openTimelineModal(ing)"
                       class="px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white text-3xs font-bold transition duration-200"
                     >
-                      Tarix
+                      {{ settingsStore.t('warehouse.history_button') }}
                     </button>
                   </td>
                 </tr>
@@ -104,20 +104,20 @@
       <!-- Search parameters -->
       <div class="bg-white border border-slate-200 shadow-sm rounded-3xl p-5 mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 shrink-0">
         <div>
-          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider mb-1.5 block">Hujjat turi</label>
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider mb-1.5 block">{{ settingsStore.t('warehouse.doc_type') }}</label>
           <select
             v-model="historyType"
             @change="triggerHistoryFetch"
             class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none transition"
           >
-            <option value="">Barchasi</option>
-            <option value="kirim">Kirim (Stock In)</option>
-            <option value="chiqim">Chiqim (Stock Out)</option>
-            <option value="inventarizatsiya">Inventarizatsiya</option>
+            <option value="">{{ settingsStore.t('warehouse.all') }}</option>
+            <option value="kirim">{{ settingsStore.t('warehouse.stock_in') }}</option>
+            <option value="chiqim">{{ settingsStore.t('warehouse.stock_out') }}</option>
+            <option value="inventarizatsiya">{{ settingsStore.t('warehouse.audit') }}</option>
           </select>
         </div>
         <div>
-          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider mb-1.5 block">Boshlanish sanasi</label>
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider mb-1.5 block">{{ settingsStore.t('warehouse.start_date') }}</label>
           <input
             v-model="startDate"
             type="date"
@@ -126,7 +126,7 @@
           />
         </div>
         <div>
-          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider mb-1.5 block">Tugash sanasi</label>
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider mb-1.5 block">{{ settingsStore.t('warehouse.end_date') }}</label>
           <input
             v-model="endDate"
             type="date"
@@ -139,16 +139,16 @@
       <!-- Log loading state -->
       <div v-if="warehouseStore.loading" class="flex-grow flex flex-col items-center justify-center space-y-4">
         <Loader2 class="w-10 h-10 text-indigo-500 animate-spin" />
-        <p class="text-slate-500 text-xs font-medium">Hujjatlar yuklanmoqda...</p>
+        <p class="text-slate-500 text-xs font-medium">{{ settingsStore.t('warehouse.loading_docs') }}</p>
       </div>
 
       <!-- Error state -->
       <div v-else-if="warehouseStore.error" class="flex-grow flex flex-col items-center justify-center p-6 text-center space-y-4">
         <AlertTriangle class="w-12 h-12 text-red-400" />
-        <h3 class="text-base font-bold text-slate-900">Tarixni yuklashda xatolik</h3>
+        <h3 class="text-base font-bold text-slate-900">{{ settingsStore.t('warehouse.history_error_title') }}</h3>
         <p class="text-xs text-red-500">{{ warehouseStore.error }}</p>
         <button @click="triggerHistoryFetch" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition">
-          Qayta yuklash
+          {{ settingsStore.t('warehouse.reload') }}
         </button>
       </div>
 
@@ -170,7 +170,7 @@
                   {{ tx.type }}
                 </span>
                 <div>
-                  <span class="text-xs text-slate-500 font-medium">Hujjat #{{ tx.id }}</span>
+                  <span class="text-xs text-slate-500 font-medium">{{ settingsStore.t('warehouse.doc_number') }} #{{ tx.id }}</span>
                   <span class="mx-2 text-slate-300">|</span>
                   <span class="text-xs text-slate-500">{{ formatDateTime(tx.created_at) }}</span>
                 </div>
@@ -180,7 +180,7 @@
                 <User class="w-3.5 h-3.5 text-indigo-500" />
                 <span class="font-semibold">{{ tx.user?.name }}</span>
                 <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-4xs uppercase tracking-wider text-slate-500">
-                  {{ tx.user?.roles?.[0] || 'Staff' }}
+                  {{ tx.user?.roles?.[0] || settingsStore.t('warehouse.staff_fallback') }}
                 </span>
               </div>
             </div>
@@ -195,11 +195,11 @@
               <table class="w-full border-collapse text-left text-xs">
                 <thead>
                   <tr class="border-b border-slate-100 text-slate-400 text-3xs font-bold uppercase tracking-wider">
-                    <th class="pb-2">Masalliq</th>
-                    <th class="pb-2">Oldingi qoldiq</th>
-                    <th class="pb-2">O'zgarish</th>
-                    <th class="pb-2">Yangi qoldiq</th>
-                    <th class="pb-2 text-right" v-if="tx.type === 'kirim'">Birlik Narxi</th>
+                    <th class="pb-2">{{ settingsStore.t('warehouse.col_ingredient') }}</th>
+                    <th class="pb-2">{{ settingsStore.t('warehouse.col_prev_qty') }}</th>
+                    <th class="pb-2">{{ settingsStore.t('warehouse.col_change') }}</th>
+                    <th class="pb-2">{{ settingsStore.t('warehouse.col_new_qty') }}</th>
+                    <th class="pb-2 text-right" v-if="tx.type === 'kirim'">{{ settingsStore.t('warehouse.col_unit_price_short') }}</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50 text-slate-600">
@@ -223,7 +223,7 @@
         <!-- Empty history state -->
         <div v-if="warehouseStore.transactions.length === 0" class="flex flex-col items-center justify-center py-24 space-y-3">
           <Database class="w-12 h-12 text-slate-300" />
-          <p class="text-slate-500 text-xs font-medium">Hujjatlar topilmadi</p>
+          <p class="text-slate-500 text-xs font-medium">{{ settingsStore.t('warehouse.docs_not_found') }}</p>
         </div>
       </div>
     </div>
@@ -237,25 +237,25 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 shrink-0 border-b border-slate-100 pb-5">
             <!-- Action type -->
             <div class="space-y-1.5">
-              <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Hujjat Turi *</label>
+              <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('warehouse.doc_type_required') }}</label>
               <select
                 v-model="docType"
                 @change="clearBuilderRows"
                 class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-indigo-500 transition"
               >
-                <option value="kirim">Kirim (Stock In)</option>
-                <option value="chiqim">Chiqim (Manual Stock Out/Spoilage)</option>
-                <option value="inventarizatsiya">Inventarizatsiya (Audit Stock-take)</option>
+                <option value="kirim">{{ settingsStore.t('warehouse.stock_in') }}</option>
+                <option value="chiqim">{{ settingsStore.t('warehouse.stock_out_manual') }}</option>
+                <option value="inventarizatsiya">{{ settingsStore.t('warehouse.audit_full') }}</option>
               </select>
             </div>
 
             <!-- Notes -->
             <div class="sm:col-span-2 space-y-1.5">
-              <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Izoh / Tafsilotlar</label>
+              <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('warehouse.notes_label') }}</label>
               <input
                 v-model="docNotes"
                 type="text"
-                placeholder="Hujjat uchun izoh kiriting (masalan: Bozordan go'sht olindi)..."
+                :placeholder="settingsStore.t('warehouse.notes_placeholder')"
                 class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-xs text-slate-900 focus:outline-none transition"
               />
             </div>
@@ -264,13 +264,13 @@
           <!-- Repeater Items List -->
           <div class="flex-grow flex flex-col overflow-hidden">
             <div class="flex justify-between items-center mb-3 shrink-0">
-              <h3 class="text-xs font-bold text-slate-900">Hujjat Satrlari</h3>
+              <h3 class="text-xs font-bold text-slate-900">{{ settingsStore.t('warehouse.doc_rows') }}</h3>
               <button
                 @click="addBuilderRow"
                 class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-3xs font-bold transition flex items-center space-x-1"
               >
                 <Plus class="w-3.5 h-3.5" />
-                <span>Qator qo'shish</span>
+                <span>{{ settingsStore.t('warehouse.add_row') }}</span>
               </button>
             </div>
 
@@ -283,13 +283,13 @@
               >
                 <!-- Ingredient selector -->
                 <div class="sm:col-span-5 space-y-1">
-                  <label class="text-4xs text-slate-400 font-bold uppercase tracking-wider block sm:hidden">Masalliq</label>
+                  <label class="text-4xs text-slate-400 font-bold uppercase tracking-wider block sm:hidden">{{ settingsStore.t('warehouse.col_ingredient') }}</label>
                   <select
                     v-model="row.ingredient_id"
                     @change="handleSelectIngredient($event, idx)"
                     class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none transition appearance-none"
                   >
-                    <option value="" disabled>Tanlang...</option>
+                    <option value="" disabled>{{ settingsStore.t('warehouse.select_placeholder') }}</option>
                     <option
                       v-for="ing in ingredientsStore.ingredients"
                       :key="ing.id"
@@ -302,26 +302,26 @@
 
                 <!-- Quantity input -->
                 <div class="sm:col-span-3 relative space-y-1">
-                  <label class="text-4xs text-slate-400 font-bold uppercase tracking-wider block sm:hidden">Miqdori</label>
+                  <label class="text-4xs text-slate-400 font-bold uppercase tracking-wider block sm:hidden">{{ settingsStore.t('quantity') }}</label>
                   <input
                     v-model.number="row.quantity"
                     type="number"
                     step="0.001"
-                    placeholder="Miqdori..."
+                    :placeholder="settingsStore.t('warehouse.quantity_placeholder')"
                     class="w-full pl-3.5 pr-12 py-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none transition"
                   />
                   <span class="absolute right-4 bottom-2.5 text-xs text-slate-400 font-semibold uppercase">
-                    {{ row.unit || 'birlik' }}
+                    {{ row.unit || settingsStore.t('warehouse.unit_fallback') }}
                   </span>
                 </div>
 
                 <!-- Price input (Only on Stock-In) -->
                 <div class="sm:col-span-3 relative space-y-1" v-if="docType === 'kirim'">
-                  <label class="text-4xs text-slate-400 font-bold uppercase tracking-wider block sm:hidden">Sotib olish narxi</label>
+                  <label class="text-4xs text-slate-400 font-bold uppercase tracking-wider block sm:hidden">{{ settingsStore.t('warehouse.purchase_price') }}</label>
                   <input
                     v-model.number="row.unit_price"
                     type="number"
-                    placeholder="Narxi..."
+                    :placeholder="settingsStore.t('warehouse.price_placeholder')"
                     class="w-full pl-3.5 pr-12 py-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none transition"
                   />
                   <span class="absolute right-4 bottom-2.5 text-xs text-slate-400 font-semibold uppercase">
@@ -334,7 +334,7 @@
                   <button
                     @click="removeBuilderRow(idx)"
                     class="p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-500 hover:bg-red-500 hover:text-white transition duration-200"
-                    title="Qatorni o'chirish"
+                    :title="settingsStore.t('warehouse.remove_row_title')"
                   >
                     <Trash2 class="w-4 h-4 mx-auto sm:mx-0" />
                   </button>
@@ -344,7 +344,7 @@
               <!-- Empty builder state -->
               <div v-if="builderRows.length === 0" class="flex flex-col items-center justify-center py-20 text-slate-400 space-y-2">
                 <ChefHat class="w-10 h-10 stroke-[1.2]" />
-                <p class="text-xxs font-medium">Hujjatga hali hech qanday masalliq qatorlari qo'shilmagan.</p>
+                <p class="text-xxs font-medium">{{ settingsStore.t('warehouse.empty_builder') }}</p>
               </div>
             </div>
           </div>
@@ -359,7 +359,7 @@
           >
             <Loader2 v-if="warehouseStore.loading" class="w-4 h-4 animate-spin text-white" />
             <Save v-else class="w-4 h-4" />
-            <span>Hujjatni Saqlash</span>
+            <span>{{ settingsStore.t('warehouse.save_document') }}</span>
           </button>
         </div>
 
@@ -375,8 +375,8 @@
       <div class="w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn flex flex-col max-h-[500px]">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3 shrink-0">
           <div>
-            <h3 class="text-base font-bold text-slate-900">Masalliq Harakati Tarixi</h3>
-            <p class="text-xxs text-slate-500 mt-0.5">{{ selectedIngredient?.name }} (Joriy qoldiq: {{ selectedIngredient?.quantity }} {{ selectedIngredient?.unit }})</p>
+            <h3 class="text-base font-bold text-slate-900">{{ settingsStore.t('warehouse.timeline_title') }}</h3>
+            <p class="text-xxs text-slate-500 mt-0.5">{{ selectedIngredient?.name }} ({{ settingsStore.t('warehouse.current_stock_label') }}: {{ selectedIngredient?.quantity }} {{ selectedIngredient?.unit }})</p>
           </div>
           <button @click="showTimelineModal = false" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 transition">
             <X class="w-4 h-4" />
@@ -409,15 +409,15 @@
                 <span class="text-slate-400 font-medium">{{ formatDateTime(item.created_at) }}</span>
               </div>
               <div class="text-xs">
-                <span class="text-slate-500 font-medium">Boshlang'ich:</span>
+                <span class="text-slate-500 font-medium">{{ settingsStore.t('warehouse.initial_label') }}</span>
                 <span class="text-slate-900 font-bold mx-1">{{ formatDecimal(item.old_quantity) }}</span>
                 <span class="text-slate-400 font-medium">&#8594;</span>
-                <span class="text-slate-500 font-medium mx-1">O'zgarish:</span>
+                <span class="text-slate-500 font-medium mx-1">{{ settingsStore.t('warehouse.change_label') }}</span>
                 <span class="font-bold" :class="deltaClass(item.quantity, item.transaction?.type)">
                   {{ deltaSign(item.quantity, item.transaction?.type) }} {{ formatDecimal(Math.abs(item.quantity)) }}
                 </span>
                 <span class="text-slate-400 font-medium">&#8594;</span>
-                <span class="text-slate-500 font-medium mx-1">Yangi:</span>
+                <span class="text-slate-500 font-medium mx-1">{{ settingsStore.t('warehouse.new_label') }}</span>
                 <span class="text-slate-900 font-bold">{{ formatDecimal(item.new_quantity) }}</span>
               </div>
               <p v-if="item.transaction?.notes" class="text-xxs text-slate-500 italic">"{{ item.transaction.notes }}"</p>
@@ -432,7 +432,7 @@
           <!-- Empty Timeline -->
           <div v-if="warehouseStore.timeline.length === 0" class="flex flex-col items-center justify-center py-12 text-slate-400 space-y-2 shrink-0">
             <Database class="w-8 h-8 stroke-[1.2]" />
-            <p class="text-xxs font-medium">Bu masalliq uchun hali hech qanday harakatlar tarixi qayd etilmagan.</p>
+            <p class="text-xxs font-medium">{{ settingsStore.t('warehouse.empty_timeline') }}</p>
           </div>
         </div>
 
@@ -481,9 +481,9 @@ onMounted(async () => {
 
 // Translation labels
 const tabLabel = (key) => {
-  if (key === 'summary') return 'Ombor Qoldig\'i';
-  if (key === 'history') return 'Kirim/Chiqim Tarixi';
-  return 'Yangi Hujjat Yaratish';
+  if (key === 'summary') return settingsStore.t('warehouse.tab_summary');
+  if (key === 'history') return settingsStore.t('warehouse.tab_history');
+  return settingsStore.t('warehouse.tab_builder');
 };
 
 // Summary tab computed properties
@@ -541,7 +541,7 @@ const handleSelectIngredient = (e, index) => {
 
 const submitDocument = async () => {
   if (builderRows.value.length === 0) {
-    alert('Hujjatga kamida bitta masalliq qatori qo\'shing.');
+    alert(settingsStore.t('warehouse.alert_add_row'));
     return;
   }
 
@@ -549,7 +549,7 @@ const submitDocument = async () => {
   const ids = builderRows.value.map(r => r.ingredient_id).filter(id => id !== '');
   const duplicates = ids.filter((item, index) => ids.indexOf(item) !== index);
   if (duplicates.length > 0) {
-    alert('Bir xil masalliq bir necha marta tanlangan. Ularni birlashtiring.');
+    alert(settingsStore.t('warehouse.alert_duplicate'));
     return;
   }
 
@@ -562,7 +562,7 @@ const submitDocument = async () => {
   );
 
   if (invalid) {
-    alert('Barcha qatorlarni to\'g\'ri to\'ldiring. Kirim narxi noldan kichik bo\'lmasligi va miqdorlar ijobiy bo\'lishi kerak.');
+    alert(settingsStore.t('warehouse.alert_invalid_rows'));
     return;
   }
 
@@ -584,7 +584,7 @@ const submitDocument = async () => {
       await warehouseStore.submitAudit(payload);
     }
 
-    alert('Hujjat muvaffaqiyatli saqlandi!');
+    alert(settingsStore.t('warehouse.alert_doc_saved'));
 
     // Clear builder inputs
     docNotes.value = '';

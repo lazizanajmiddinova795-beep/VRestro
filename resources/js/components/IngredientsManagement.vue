@@ -5,9 +5,9 @@
     <div class="flex items-center justify-between mb-6 shrink-0">
       <div>
         <h1 class="text-2xl font-bold text-slate-900 tracking-wide">
-          Ta'minot Zaxirasi
+          {{ settingsStore.t('ingredients.page_title') }}
         </h1>
-        <p class="text-xs text-slate-500">Xom-ashyolar, ularning miqdori va sotib olish qiymatlarini boshqarish oynasi</p>
+        <p class="text-xs text-slate-500">{{ settingsStore.t('ingredients.page_subtitle') }}</p>
       </div>
 
       <!-- Add Ingredient button -->
@@ -16,7 +16,7 @@
         class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-semibold text-sm text-white shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
       >
         <Plus class="w-4.5 h-4.5" />
-        <span>Yangi Masalliq</span>
+        <span>{{ settingsStore.t('ingredients.add_button') }}</span>
       </button>
     </div>
 
@@ -28,8 +28,8 @@
           <Database class="w-6 h-6" />
         </div>
         <div>
-          <span class="block text-3xs font-bold uppercase tracking-wider text-slate-500">Umumiy Turlar</span>
-          <span class="text-xl font-bold text-slate-900 tracking-tight">{{ totalItems }} xil</span>
+          <span class="block text-3xs font-bold uppercase tracking-wider text-slate-500">{{ settingsStore.t('ingredients.total_types') }}</span>
+          <span class="text-xl font-bold text-slate-900 tracking-tight">{{ totalItems }} {{ settingsStore.t('ingredients.types_suffix') }}</span>
         </div>
       </div>
 
@@ -42,7 +42,7 @@
           <AlertTriangle class="w-6 h-6" />
         </div>
         <div>
-          <span class="block text-3xs font-bold uppercase tracking-wider text-slate-500">Kam Qolgan Masalliqlar</span>
+          <span class="block text-3xs font-bold uppercase tracking-wider text-slate-500">{{ settingsStore.t('ingredients.low_stock_widget') }}</span>
           <span class="text-xl font-bold tracking-tight" :class="lowStockCount > 0 ? 'text-red-500' : 'text-slate-900'">
             {{ lowStockCount }} ta
           </span>
@@ -55,7 +55,7 @@
           <Coins class="w-6 h-6" />
         </div>
         <div>
-          <span class="block text-3xs font-bold uppercase tracking-wider text-slate-500">Zaxiradagi Jami Qiymat</span>
+          <span class="block text-3xs font-bold uppercase tracking-wider text-slate-500">{{ settingsStore.t('ingredients.total_value_widget') }}</span>
           <span class="text-xl font-bold text-slate-900 tracking-tight">{{ formatCurrency(totalInventoryValue) }}</span>
         </div>
       </div>
@@ -72,7 +72,7 @@
           v-model="searchQuery"
           @input="triggerSearch"
           type="text"
-          placeholder="Masalliq nomi yoki SKU..."
+          :placeholder="settingsStore.t('warehouse.search_placeholder')"
           class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm placeholder-slate-400 text-slate-900 focus:outline-none transition"
         />
       </div>
@@ -86,7 +86,7 @@
             @change="triggerSearch"
             class="rounded border-slate-300 text-indigo-600 focus:ring-0 focus:ring-offset-0"
           />
-          <span class="text-xs text-slate-600 font-semibold">Faqat kam qolganlarni ko'rsatish</span>
+          <span class="text-xs text-slate-600 font-semibold">{{ settingsStore.t('ingredients.only_low_stock') }}</span>
         </label>
       </div>
     </div>
@@ -94,15 +94,15 @@
     <!-- Loading / Error States -->
     <div v-if="ingredientsStore.loading && ingredientsStore.ingredients.length === 0" class="flex-grow flex flex-col items-center justify-center space-y-4">
       <Loader2 class="w-10 h-10 text-indigo-500 animate-spin" />
-      <p class="text-slate-500 text-xs font-medium animate-pulse">Masalliqlar yuklanmoqda...</p>
+      <p class="text-slate-500 text-xs font-medium animate-pulse">{{ settingsStore.t('ingredients.loading') }}</p>
     </div>
 
     <div v-else-if="ingredientsStore.error" class="flex-grow flex flex-col items-center justify-center p-6 text-center space-y-4">
       <AlertTriangle class="w-12 h-12 text-red-400" />
-      <h3 class="text-base font-bold text-slate-900">{{ settingsStore.t('app_title') }} - Yuklashda xatolik</h3>
+      <h3 class="text-base font-bold text-slate-900">{{ settingsStore.t('ingredients.load_error_title') }}</h3>
       <p class="text-xs text-red-500">{{ ingredientsStore.error }}</p>
       <button @click="ingredientsStore.fetchIngredients()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition">
-        Qayta yuklash
+        {{ settingsStore.t('warehouse.reload') }}
       </button>
     </div>
 
@@ -113,14 +113,14 @@
           <table class="w-full border-collapse text-left">
             <thead>
               <tr class="border-b border-slate-200 text-slate-500 text-3xs font-bold uppercase tracking-wider bg-slate-50">
-                <th class="px-6 py-4">Nomi</th>
-                <th class="px-6 py-4">SKU</th>
-                <th class="px-6 py-4">Miqdori / O'lchov</th>
-                <th class="px-6 py-4">Minimal Chegara</th>
-                <th class="px-6 py-4">Birlik narxi</th>
-                <th class="px-6 py-4">Umumiy Qiymati</th>
-                <th class="px-6 py-4">Holat</th>
-                <th class="px-6 py-4 text-right">Amallar</th>
+                <th class="px-6 py-4">{{ settingsStore.t('name') }}</th>
+                <th class="px-6 py-4">{{ settingsStore.t('warehouse.col_sku') }}</th>
+                <th class="px-6 py-4">{{ settingsStore.t('ingredients.col_qty_unit') }}</th>
+                <th class="px-6 py-4">{{ settingsStore.t('ingredients.col_min_threshold') }}</th>
+                <th class="px-6 py-4">{{ settingsStore.t('ingredients.col_unit_price') }}</th>
+                <th class="px-6 py-4">{{ settingsStore.t('warehouse.col_total_value') }}</th>
+                <th class="px-6 py-4">{{ settingsStore.t('status') }}</th>
+                <th class="px-6 py-4 text-right">{{ settingsStore.t('action') }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-sm">
@@ -167,7 +167,7 @@
                     :class="ing.is_low_stock ? 'bg-red-50 border-red-200 text-red-600 animate-pulse' : 'bg-emerald-50 border-emerald-200 text-emerald-600'"
                   >
                     <span class="w-1 h-1 rounded-full" :class="ing.is_low_stock ? 'bg-red-500' : 'bg-emerald-500'"></span>
-                    <span>{{ ing.is_low_stock ? 'Kam qolgan' : 'Yetarli' }}</span>
+                    <span>{{ ing.is_low_stock ? settingsStore.t('warehouse.low_stock_badge') : settingsStore.t('warehouse.sufficient_badge') }}</span>
                   </span>
                 </td>
 
@@ -177,7 +177,7 @@
                   <button
                     @click="openAdjustModal(ing)"
                     class="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white transition duration-200"
-                    title="Qoldiqni tahrirlash (Adjust)"
+                    :title="settingsStore.t('ingredients.adjust_tooltip')"
                   >
                     <SlidersHorizontal class="w-4 h-4" />
                   </button>
@@ -185,7 +185,7 @@
                   <button
                     @click="openAddEditModal(ing)"
                     class="p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition duration-200"
-                    title="Tahrirlash"
+                    :title="settingsStore.t('edit')"
                   >
                     <Edit3 class="w-4 h-4" />
                   </button>
@@ -193,7 +193,7 @@
                   <button
                     @click="handleDelete(ing)"
                     class="p-2 rounded-xl bg-red-50 border border-red-200 text-red-500 hover:bg-red-500 hover:text-white transition duration-200"
-                    title="O'chirish"
+                    :title="settingsStore.t('delete')"
                   >
                     <Trash2 class="w-4 h-4" />
                   </button>
@@ -207,7 +207,7 @@
       <!-- Empty state -->
       <div v-if="ingredientsStore.ingredients.length === 0" class="flex flex-col items-center justify-center py-24 space-y-3">
         <Database class="w-12 h-12 text-slate-300" />
-        <p class="text-slate-500 text-xs font-medium">Masalliqlar topilmadi</p>
+        <p class="text-slate-500 text-xs font-medium">{{ settingsStore.t('ingredients.not_found') }}</p>
       </div>
     </div>
 
@@ -220,7 +220,7 @@
       <div class="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
           <h3 class="text-base font-bold text-slate-900">
-            {{ editingIngredient ? 'Masalliqni Tahrirlash' : 'Yangi Masalliq' }}
+            {{ editingIngredient ? settingsStore.t('ingredients.edit_title') : settingsStore.t('ingredients.new_title') }}
           </h3>
           <button @click="showAddEditModal = false" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 transition">
             <X class="w-4 h-4" />
@@ -229,28 +229,28 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="space-y-1.5 sm:col-span-2">
-            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Masalliq nomi *</label>
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('ingredients.name_label') }}</label>
             <input
               v-model="addEditForm.name"
               type="text"
-              placeholder="Masalan, Go'sht, Guruch..."
+              :placeholder="settingsStore.t('ingredients.name_placeholder')"
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
             />
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">SKU (Kod) *</label>
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('ingredients.sku_label') }}</label>
             <input
               v-model="addEditForm.sku"
               type="text"
-              placeholder="Avtomatik (ING-XXXXX)"
+              :placeholder="settingsStore.t('ingredients.sku_placeholder')"
               :disabled="!!editingIngredient"
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none disabled:opacity-50 transition"
             />
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">O'lchov birligi *</label>
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('ingredients.unit_label') }}</label>
             <select
               v-model="addEditForm.unit"
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
@@ -259,39 +259,39 @@
               <option value="g">gram (g)</option>
               <option value="l">litr (l)</option>
               <option value="ml">millilitr (ml)</option>
-              <option value="dona">dona</option>
-              <option value="pachka">pachka</option>
+              <option value="dona">{{ settingsStore.t('ingredients.unit_piece') }}</option>
+              <option value="pachka">{{ settingsStore.t('ingredients.unit_pack') }}</option>
             </select>
           </div>
 
           <div v-if="!editingIngredient" class="space-y-1.5">
-            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Dastlabki miqdori *</label>
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('ingredients.initial_qty') }}</label>
             <input
               v-model.number="addEditForm.quantity"
               type="number"
               step="0.001"
-              placeholder="Qoldiq miqdori..."
+              :placeholder="settingsStore.t('ingredients.qty_placeholder')"
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
             />
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Birlik narxi (UZS) *</label>
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('ingredients.unit_price_label') }}</label>
             <input
               v-model.number="addEditForm.cost_price"
               type="number"
-              placeholder="Birlik narxi..."
+              :placeholder="settingsStore.t('ingredients.unit_price_placeholder')"
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
             />
           </div>
 
           <div class="space-y-1.5" :class="editingIngredient ? 'sm:col-span-2' : ''">
-            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Minimal qoldiq chegarasi *</label>
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('ingredients.min_threshold_label') }}</label>
             <input
               v-model.number="addEditForm.low_stock_threshold"
               type="number"
               step="0.001"
-              placeholder="Minimal chegara..."
+              :placeholder="settingsStore.t('ingredients.min_threshold_placeholder')"
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
             />
           </div>
@@ -299,13 +299,13 @@
 
         <div class="flex justify-end space-x-2 pt-2">
           <button @click="showAddEditModal = false" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition">
-            Bekor qilish
+            {{ settingsStore.t('cancel') }}
           </button>
           <button
             @click="submitForm"
             class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition"
           >
-            Saqlash
+            {{ settingsStore.t('save') }}
           </button>
         </div>
       </div>
@@ -320,8 +320,8 @@
       <div class="w-full max-w-sm bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn">
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
           <div>
-            <h3 class="text-base font-bold text-slate-900">Qoldiqni O'zgartirish</h3>
-            <p class="text-xxs text-slate-500 mt-0.5">{{ selectedIngredient?.name }} (Joriy qoldiq: {{ selectedIngredient?.quantity }} {{ selectedIngredient?.unit }})</p>
+            <h3 class="text-base font-bold text-slate-900">{{ settingsStore.t('ingredients.adjust_title') }}</h3>
+            <p class="text-xxs text-slate-500 mt-0.5">{{ selectedIngredient?.name }} ({{ settingsStore.t('warehouse.current_stock_label') }}: {{ selectedIngredient?.quantity }} {{ selectedIngredient?.unit }})</p>
           </div>
           <button @click="showAdjustModal = false" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 transition">
             <X class="w-4 h-4" />
@@ -345,19 +345,19 @@
               :class="adjustForm.type === 'subtract' ? 'bg-red-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-900'"
             >
               <Minus class="w-3.5 h-3.5" />
-              <span>Kamashtirish</span>
+              <span>{{ settingsStore.t('ingredients.decrease') }}</span>
             </button>
           </div>
 
           <!-- Adjust Amount -->
           <div class="space-y-1.5">
-            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">O'zgarish Miqdori *</label>
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('ingredients.change_amount') }}</label>
             <div class="relative">
               <input
                 v-model.number="adjustForm.amount"
                 type="number"
                 step="0.001"
-                placeholder="Miqdorni kiriting..."
+                :placeholder="settingsStore.t('ingredients.amount_placeholder')"
                 class="w-full pl-4 pr-12 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
               />
               <span class="absolute right-4 inset-y-0 flex items-center text-xs font-bold text-slate-400 uppercase">
@@ -369,14 +369,14 @@
 
         <div class="flex justify-end space-x-2 pt-2">
           <button @click="showAdjustModal = false" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition">
-            Bekor qilish
+            {{ settingsStore.t('cancel') }}
           </button>
           <button
             @click="submitAdjustForm"
             class="px-5 py-2.5 text-white rounded-xl text-xs font-semibold transition"
             :class="adjustForm.type === 'add' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-red-600 hover:bg-red-700'"
           >
-            Tasdiqlash
+            {{ settingsStore.t('confirm') }}
           </button>
         </div>
       </div>
@@ -472,7 +472,7 @@ const openAddEditModal = (ing = null) => {
 
 const submitForm = async () => {
   if (!addEditForm.value.name.trim() || !addEditForm.value.unit || addEditForm.value.cost_price === '' || addEditForm.value.low_stock_threshold === '') {
-    alert('Majburiy maydonlarni to\'ldiring.');
+    alert(settingsStore.t('ingredients.alert_required_fields'));
     return;
   }
 
@@ -489,7 +489,7 @@ const submitForm = async () => {
 };
 
 const handleDelete = async (ing) => {
-  if (!confirm(`"${ing.name}" masallig'ini zaxiradan o'chirmoqchimisiz?`)) return;
+  if (!confirm(settingsStore.t('ingredients.confirm_delete').replace('{name}', ing.name))) return;
   try {
     await ingredientsStore.deleteIngredient(ing.id);
   } catch (err) {
@@ -508,7 +508,7 @@ const openAdjustModal = (ing) => {
 const submitAdjustForm = async () => {
   const amt = parseFloat(adjustForm.value.amount);
   if (isNaN(amt) || amt <= 0) {
-    alert('Musbat o\'zgarish miqdorini kiriting.');
+    alert(settingsStore.t('ingredients.alert_positive_amount'));
     return;
   }
 

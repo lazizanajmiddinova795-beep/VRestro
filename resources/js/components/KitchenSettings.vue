@@ -2,8 +2,8 @@
   <ChefLayout>
     <div class="max-w-3xl mx-auto space-y-6">
       <div class="text-left space-y-2">
-        <h2 class="text-slate-900 font-black text-2xl tracking-tight">{{ settingsStore.t('app_title') }} - Oshxona Ichki Sozlamalari</h2>
-        <p class="text-slate-500 font-bold text-sm mt-1">Ishchi terminal displeyi va ovozli xabarnomalarni sozlang.</p>
+        <h2 class="text-slate-900 font-black text-2xl tracking-tight">{{ settingsStore.t('kitchen.settings_title') }}</h2>
+        <p class="text-slate-500 font-bold text-sm mt-1">{{ settingsStore.t('kitchen.settings_subtitle') }}</p>
       </div>
 
       <!-- Chef Profile Card (Oshpaz Shaxsiy Profili) -->
@@ -34,41 +34,41 @@
               </span>
               <div class="flex items-center justify-center md:justify-start space-x-2 text-emerald-600 font-bold mt-3">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                <span>Navbatchilik Faol</span>
+                <span>{{ settingsStore.t('kitchen.shift_active') }}</span>
               </div>
             </div>
           </div>
 
           <!-- Edit button -->
-          <button 
-            @click="openEditModal" 
+          <button
+            @click="openEditModal"
             class="bg-slate-900 hover:bg-slate-800 text-white font-black py-2.5 px-4 rounded-xl border border-slate-950 shadow-sm transition duration-200 text-sm flex items-center space-x-2 self-center md:self-start"
           >
             <UserCheck class="w-4.5 h-4.5 text-orange-500" />
-            <span>Ma'lumotlarni kiritish</span>
+            <span>{{ settingsStore.t('kitchen.enter_data') }}</span>
           </button>
         </div>
 
         <!-- Profile Data Grid UI Structure -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-200">
           <div>
-            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">Telefon Raqami</span>
+            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">{{ settingsStore.t('kitchen.phone_label') }}</span>
             <span class="text-slate-900 font-black text-base mt-1 block">{{ chefPhone }}</span>
           </div>
           <div>
-            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">Email Manzili</span>
+            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">{{ settingsStore.t('kitchen.email_label') }}</span>
             <span class="text-slate-900 font-black text-base mt-1 block">{{ chefEmail }}</span>
           </div>
           <div>
-            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">Pasport Ma'lumotlari</span>
+            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">{{ settingsStore.t('kitchen.passport_label') }}</span>
             <span class="text-slate-900 font-black text-base mt-1 block">{{ chefPassport }}</span>
           </div>
           <div>
-            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">Tug'ilgan Sanasi</span>
+            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">{{ settingsStore.t('kitchen.birthdate_label') }}</span>
             <span class="text-slate-900 font-black text-base mt-1 block">{{ chefBirthDate }}</span>
           </div>
           <div class="md:col-span-2">
-            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">Yashash Manzili</span>
+            <span class="text-slate-500 font-extrabold text-xs tracking-wider uppercase">{{ settingsStore.t('kitchen.address_label') }}</span>
             <span class="text-slate-900 font-black text-base mt-1 block">{{ chefAddress }}</span>
           </div>
         </div>
@@ -81,15 +81,15 @@
         <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
           <div class="flex items-center space-x-3 border-b border-slate-200 pb-3 mb-6">
             <Volume2 class="w-6 h-6 text-indigo-600" />
-            <h3 class="text-slate-900 font-black text-lg flex items-center gap-2">Ovozli Xabarnomalar</h3>
+            <h3 class="text-slate-900 font-black text-lg flex items-center gap-2">{{ settingsStore.t('kitchen.sound_notifications') }}</h3>
           </div>
 
           <div class="space-y-6">
             <!-- New Order Sound Toggle -->
             <div class="flex items-center justify-between">
               <div>
-                <label class="text-slate-800 font-black text-base block">Yangi Buyurtma Ovozi</label>
-                <span class="text-slate-500 font-bold text-xs mt-0.5">Yangi buyurtma kelganda ovoz berish</span>
+                <label class="text-slate-800 font-black text-base block">{{ settingsStore.t('kitchen.new_order_sound') }}</label>
+                <span class="text-slate-500 font-bold text-xs mt-0.5">{{ settingsStore.t('kitchen.new_order_sound_desc') }}</span>
               </div>
               <button 
                 @click="toggleSetting('newOrderSound')"
@@ -108,8 +108,8 @@
             <!-- Overdue Warning Sound Toggle -->
             <div class="flex items-center justify-between">
               <div>
-                <label class="text-slate-800 font-black text-base block">Kechikish Ogohlantirish Ovozi</label>
-                <span class="text-slate-500 font-bold text-xs mt-0.5">Buyurtma 20 daqiqadan oshganda ogohlantirish</span>
+                <label class="text-slate-800 font-black text-base block">{{ settingsStore.t('kitchen.overdue_sound') }}</label>
+                <span class="text-slate-500 font-bold text-xs mt-0.5">{{ settingsStore.t('kitchen.overdue_sound_desc') }}</span>
               </div>
               <button 
                 @click="toggleSetting('alertSound')"
@@ -128,7 +128,7 @@
             <!-- Volume Slider -->
             <div class="space-y-2 pt-2">
               <div class="flex items-center justify-between text-sm font-bold">
-                <span class="text-slate-900 font-black text-sm">Ovoz Balandligi</span>
+                <span class="text-slate-900 font-black text-sm">{{ settingsStore.t('kitchen.volume_level') }}</span>
                 <span class="font-mono text-orange-600 font-extrabold">
                   {{ Math.round(chefStore.kitchenSettings.volume * 100) }}%
                 </span>
@@ -150,7 +150,7 @@
               class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold py-3.5 rounded-2xl flex items-center justify-center gap-2 border border-slate-200 transition-colors"
             >
               <Music class="w-5 h-5 text-indigo-650" />
-              <span>Ovozni sinash (Test Sound)</span>
+              <span>{{ settingsStore.t('kitchen.test_sound') }}</span>
             </button>
           </div>
         </div>
@@ -159,12 +159,12 @@
         <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
           <div class="flex items-center space-x-3 border-b border-slate-200 pb-3 mb-6">
             <Maximize2 class="w-6 h-6 text-indigo-600" />
-            <h3 class="text-slate-900 font-black text-lg flex items-center gap-2">KDS Displey Masshtabi</h3>
+            <h3 class="text-slate-900 font-black text-lg flex items-center gap-2">{{ settingsStore.t('kitchen.display_scale') }}</h3>
           </div>
 
           <div class="space-y-4">
             <p class="text-slate-500 font-bold text-xs leading-relaxed mb-4">
-              Oshxona terminali ekran o'lchamiga qarab buyurtma kartalarining zichligi va shrift o'lchamlarini tanlang.
+              {{ settingsStore.t('kitchen.display_scale_desc') }}
             </p>
 
             <div class="flex flex-col space-y-3 pt-2">
@@ -181,11 +181,11 @@
                     <span 
                       class="block text-sm"
                       :class="chefStore.kitchenSettings.layoutScale === 'compact' ? 'text-orange-950 font-black' : 'text-slate-700 font-extrabold'"
-                    >Zich (Compact)</span>
-                    <span 
+                    >{{ settingsStore.t('kitchen.scale_compact') }}</span>
+                    <span
                       class="text-xs mt-0.5 block"
                       :class="chefStore.kitchenSettings.layoutScale === 'compact' ? 'text-orange-700 font-bold' : 'text-slate-400 font-medium'"
-                    >Monitorlar uchun (bir qatorda 5-6 ta karta)</span>
+                    >{{ settingsStore.t('kitchen.scale_compact_desc') }}</span>
                   </div>
                   <span 
                     class="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
@@ -208,11 +208,11 @@
                     <span 
                       class="block text-sm"
                       :class="chefStore.kitchenSettings.layoutScale === 'normal' ? 'text-orange-950 font-black' : 'text-slate-700 font-extrabold'"
-                    >Standart (Normal)</span>
-                    <span 
+                    >{{ settingsStore.t('kitchen.scale_normal') }}</span>
+                    <span
                       class="text-xs mt-0.5 block"
                       :class="chefStore.kitchenSettings.layoutScale === 'normal' ? 'text-orange-700 font-bold' : 'text-slate-400 font-medium'"
-                    >Klassik ko'rinish (bir qatorda 3-4 ta karta)</span>
+                    >{{ settingsStore.t('kitchen.scale_normal_desc') }}</span>
                   </div>
                   <span 
                     class="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
@@ -235,11 +235,11 @@
                     <span 
                       class="block text-sm"
                       :class="chefStore.kitchenSettings.layoutScale === 'large' ? 'text-orange-950 font-black' : 'text-slate-700 font-extrabold'"
-                    >Yirik (Large / Zoom)</span>
-                    <span 
+                    >{{ settingsStore.t('kitchen.scale_large') }}</span>
+                    <span
                       class="text-xs mt-0.5 block"
                       :class="chefStore.kitchenSettings.layoutScale === 'large' ? 'text-orange-700 font-bold' : 'text-slate-400 font-medium'"
-                    >10 dyumli planshetlar uchun (bir qatorda 2 ta karta)</span>
+                    >{{ settingsStore.t('kitchen.scale_large_desc') }}</span>
                   </div>
                   <span 
                     class="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
@@ -257,13 +257,13 @@
       <div v-if="showEditModal" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
         <div class="bg-white border-2 border-slate-300 rounded-3xl w-full max-w-lg shadow-2xl p-6 space-y-6">
           <div class="flex items-center justify-between border-b pb-3">
-            <h3 class="text-slate-900 font-black text-xl">Profil Ma'lumotlarini Tahrirlash</h3>
+            <h3 class="text-slate-900 font-black text-xl">{{ settingsStore.t('kitchen.edit_profile_title') }}</h3>
             <button @click="showEditModal = false" class="text-slate-500 hover:text-slate-700 font-black text-lg">✕</button>
           </div>
 
           <form @submit.prevent="saveProfile" class="space-y-4 text-left">
             <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">To'liq Ism (Full Name)</label>
+              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.full_name_label') }}</label>
               <input 
                 type="text" 
                 v-model="editForm.name" 
@@ -273,7 +273,7 @@
             </div>
 
             <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">Telefon Raqami</label>
+              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.phone_label') }}</label>
               <input 
                 type="text" 
                 v-model="editForm.phone" 
@@ -284,7 +284,7 @@
             </div>
 
             <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">Email Manzili</label>
+              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.email_label') }}</label>
               <input 
                 type="email" 
                 v-model="editForm.email" 
@@ -293,7 +293,7 @@
             </div>
 
             <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">Pasport Ma'lumotlari (Seriya va raqam)</label>
+              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.passport_hint_label') }}</label>
               <input 
                 type="text" 
                 v-model="editForm.passport_number" 
@@ -303,7 +303,7 @@
             </div>
 
             <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">Tug'ilgan Sanasi</label>
+              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.birthdate_label') }}</label>
               <input 
                 type="date" 
                 v-model="editForm.birth_date" 
@@ -312,7 +312,7 @@
             </div>
 
             <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">Yashash Manzili</label>
+              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.address_label') }}</label>
               <input 
                 type="text" 
                 v-model="editForm.address" 
@@ -326,14 +326,14 @@
                 @click="showEditModal = false"
                 class="flex-1 py-3 border-2 border-slate-200 hover:bg-slate-50 text-slate-800 rounded-xl font-bold transition"
               >
-                Bekor qilish
+                {{ settingsStore.t('cancel') }}
               </button>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 :disabled="saving"
                 class="flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-black transition disabled:opacity-50"
               >
-                {{ saving ? 'Saqlanmoqda...' : 'Saqlash' }}
+                {{ saving ? settingsStore.t('kitchen.saving') : settingsStore.t('save') }}
               </button>
             </div>
           </form>
@@ -363,16 +363,16 @@ const avatarInitials = computed(() => {
   return chefName.value.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 });
 
-const chefPhone = computed(() => authStore.user?.phone || 'Kiritilmagan');
-const chefEmail = computed(() => authStore.user?.email || 'Kiritilmagan');
+const chefPhone = computed(() => authStore.user?.phone || settingsStore.t('not_entered'));
+const chefEmail = computed(() => authStore.user?.email || settingsStore.t('not_entered'));
 const chefPassport = computed(() => {
   const raw = authStore.user?.passport_number;
-  if (!raw) return 'Kiritilmagan';
+  if (!raw) return settingsStore.t('not_entered');
   return raw.substring(0, 2) + ' ****' + raw.substring(raw.length - 3);
 });
 const chefBirthDate = computed(() => {
   const raw = authStore.user?.birth_date;
-  if (!raw) return 'Kiritilmagan';
+  if (!raw) return settingsStore.t('not_entered');
   try {
     const date = new Date(raw);
     return date.toLocaleDateString('uz-UZ');
@@ -380,7 +380,7 @@ const chefBirthDate = computed(() => {
     return raw;
   }
 });
-const chefAddress = computed(() => authStore.user?.address || 'Kiritilmagan');
+const chefAddress = computed(() => authStore.user?.address || settingsStore.t('not_entered'));
 
 const showEditModal = ref(false);
 const saving = ref(false);
@@ -420,7 +420,7 @@ const saveProfile = async () => {
 
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message || "Profilni saqlashda xatolik yuz berdi.");
+      throw new Error(data.message || settingsStore.t('kitchen.save_error'));
     }
 
     // Update local user in authStore and localStorage

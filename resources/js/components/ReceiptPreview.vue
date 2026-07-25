@@ -20,7 +20,7 @@
             @click="refreshReceipts" 
             :disabled="receiptsStore.loading"
             class="p-2.5 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 hover:text-slate-955 transition duration-200 disabled:opacity-50"
-            title="Yangilash"
+            :title="cashierStore.t('yangilash')"
           >
             <RotateCw class="w-4 h-4" :class="{'animate-spin': receiptsStore.loading}" />
           </button>
@@ -64,7 +64,7 @@
                   <span 
                     v-if="item.is_printed" 
                     class="px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-black"
-                    title="Chop etilgan"
+                    :title="cashierStore.t('chop_etilgan')"
                   >
                     {{ cashierStore.t('chop_etilgan') }}
                   </span>
@@ -100,7 +100,7 @@
             </tr>
             <tr v-if="receiptsStore.payments.length === 0 && !receiptsStore.loading">
               <td colspan="5" class="py-8 text-center text-slate-500 text-xs">
-                Cheklar mavjud emas
+                {{ cashierStore.t('receipts_not_found') }}
               </td>
             </tr>
           </tbody>
@@ -313,25 +313,25 @@
         
         <div class="ticket-divider"></div>
 
-        <div>Chek №: #{{ String(selectedPayment.id).padStart(6, '0') }}</div>
-        <div>Buyurtma №: {{ selectedPayment.order?.order_number }}</div>
-        <div>Sana: {{ formatDateTime(selectedPayment.created_at) }}</div>
-        <div>Stol: {{ selectedPayment.order?.table?.table_number }}</div>
-        <div>Kassir: {{ authStore.user?.name }}</div>
-        <div v-if="selectedPayment.order?.waiter?.name">Ofitsiant: {{ selectedPayment.order.waiter.name }}</div>
+        <div>{{ cashierStore.t('chek_no') }}: #{{ String(selectedPayment.id).padStart(6, '0') }}</div>
+        <div>{{ cashierStore.t('buyurtma_no') }}: {{ selectedPayment.order?.order_number }}</div>
+        <div>{{ cashierStore.t('sana') }}: {{ formatDateTime(selectedPayment.created_at) }}</div>
+        <div>{{ cashierStore.t('stol') }}: {{ selectedPayment.order?.table?.table_number }}</div>
+        <div>{{ cashierStore.t('kassir') }}: {{ authStore.user?.name }}</div>
+        <div v-if="selectedPayment.order?.waiter?.name">{{ cashierStore.t('ofitsiant') }}: {{ selectedPayment.order.waiter.name }}</div>
 
         <div class="ticket-divider"></div>
 
         <div v-if="printMode === 'pre-check' || printMode === 'mix'" class="ticket-center ticket-bold bg-gray-header">
-          *** NAVBAT CHEKI / PRE-CHECK ***
+          *** {{ cashierStore.t('navbat_cheki').toUpperCase() }} ***
         </div>
 
         <table class="ticket-table">
           <thead>
             <tr>
-              <th align="left">Nomi</th>
-              <th align="center">Soni</th>
-              <th align="right">Summa</th>
+              <th align="left">{{ cashierStore.t('nomi') }}</th>
+              <th align="center">{{ cashierStore.t('soni') }}</th>
+              <th align="right">{{ cashierStore.t('summa') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -347,46 +347,46 @@
 
         <div class="ticket-totals">
           <div class="flex-row">
-            <span>Oraliq jami (Subtotal):</span>
+            <span>{{ cashierStore.t('oraliq_jami') }}:</span>
             <span>{{ formatCurrency(getSubtotal()) }}</span>
           </div>
           <div class="flex-row font-italic" v-if="getDiscountAmount() > 0">
-            <span>Chegirma:</span>
+            <span>{{ cashierStore.t('chegirma') }}:</span>
             <span>-{{ formatCurrency(getDiscountAmount()) }}</span>
           </div>
           <div class="flex-row">
-            <span>Xizmat haqi ({{ serviceChargeRate }}%):</span>
+            <span>{{ cashierStore.t('xizmat_haqi') }} ({{ serviceChargeRate }}%):</span>
             <span>{{ formatCurrency(getServiceCharge()) }}</span>
           </div>
           <div class="flex-row">
-            <span>QQS ({{ taxRate }}%):</span>
+            <span>{{ cashierStore.t('qqs') }} ({{ taxRate }}%):</span>
             <span>{{ formatCurrency(getTax()) }}</span>
           </div>
 
           <template v-if="printMode === 'invoice' || printMode === 'mix'">
             <div class="ticket-divider-thin"></div>
-            <div class="ticket-bold">To'lov shakli:</div>
+            <div class="ticket-bold">{{ cashierStore.t('tolov_shakli') }}:</div>
             <div class="flex-row pl-2" v-if="parseFloat(selectedPayment.cash_amount) > 0">
-              <span>Naqd:</span>
+              <span>{{ cashierStore.t('naqd') }}:</span>
               <span>{{ formatCurrency(selectedPayment.cash_amount) }}</span>
             </div>
             <div class="flex-row pl-2" v-if="parseFloat(selectedPayment.card_amount) > 0">
-              <span>Karta:</span>
+              <span>{{ cashierStore.t('karta') }}:</span>
               <span>{{ formatCurrency(selectedPayment.card_amount) }}</span>
             </div>
             <div class="flex-row pl-2" v-if="parseFloat(selectedPayment.qr_amount) > 0">
-              <span>QR to'lov:</span>
+              <span>{{ cashierStore.t('qr_tolov') }}:</span>
               <span>{{ formatCurrency(selectedPayment.qr_amount) }}</span>
             </div>
             <div class="flex-row pl-2" v-if="parseFloat(selectedPayment.bonus_used) > 0">
-              <span>Bonusdan:</span>
+              <span>{{ cashierStore.t('bonusdan') }}:</span>
               <span>{{ formatCurrency(selectedPayment.bonus_used) }}</span>
             </div>
           </template>
 
           <div class="ticket-divider"></div>
           <div class="flex-row ticket-bold font-large">
-            <span>JAMI TO'LOV:</span>
+            <span>{{ cashierStore.t('jami_to_lov') }}:</span>
             <span>{{ formatCurrency(selectedPayment.total_amount) }}</span>
           </div>
         </div>
@@ -399,7 +399,7 @@
             <path fill="#000000" d="M0 0h7v7H0zm22 0h7v7h-7zM0 22h7v7H0zM2 2h3v3H2zm20 0h3v3h-3zm-20 20h3v3H2z"/>
             <path fill="#000000" d="M9 1h1v1H9zm2 0h2v1h-2zm4 0h1v2h-1zm3 0h1v1h-1zm-6 2h1v1h-1zm3 0h2v1h-2zm-6 2h2v1H9zm3 0h1v1h-1zm4 0h1v1h-1zm1 1h1v1h-1zm-7 2h1v1H9zm6 0h2v1h-2zm2 1h1v1h-1zm-7 2h2v1H9zm6 0h1v1h-1zm3 0h1v2h-1zm-8 2h1v1h-1zm3 0h1v2h-1zm4 0h1v1h-1zm-9 2h1v1H8zm2 0h1v1h-1zm3 0h2v1h-2zm4 0h1v1h-1zm-6 2h1v1zm3 0h2v1h-2zm4 0h1v1h-1zM9 13h1v1H9zm2 0h1v1h-1zm4 0h2v1h-2zm3 0h1v1h-1z"/>
           </svg>
-          <div style="font-size: 7.5pt; font-family: monospace; margin-top: 4px; text-transform: uppercase;">Tekshirish uchun skanerlang</div>
+          <div style="font-size: 7.5pt; font-family: monospace; margin-top: 4px; text-transform: uppercase;">{{ cashierStore.t('scan_to_verify') }}</div>
         </div>
 
         <div class="ticket-divider"></div>
@@ -439,13 +439,13 @@
                 @change="handleTableSelect"
                 class="w-full px-4 py-2.5 rounded-xl bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
               >
-                <option value="" disabled>Stolni tanlang...</option>
-                <option 
-                  v-for="t in allTablesList" 
-                  :key="t.id" 
+                <option value="" disabled>{{ cashierStore.t('select_table_placeholder') }}</option>
+                <option
+                  v-for="t in allTablesList"
+                  :key="t.id"
                   :value="t.id"
                 >
-                  {{ t.table_number ? t.table_number.replace('Stol', cashierStore.t('stol')) : '' }} ({{ t.status === 'occupied' ? 'Band' : 'Bo\'sh' }})
+                  {{ t.table_number ? t.table_number.replace('Stol', cashierStore.t('stol')) : '' }} ({{ t.status === 'occupied' ? cashierStore.t('table_occupied') : cashierStore.t('table_free') }})
                 </option>
               </select>
             </div>
@@ -453,7 +453,7 @@
             <!-- Loader or details -->
             <div v-if="loadingOrderDetails" class="py-6 flex flex-col items-center justify-center space-y-2">
               <RotateCw class="w-6 h-6 text-indigo-500 animate-spin" />
-              <span class="text-xxs text-slate-400">Buyurtma yuklanmoqda...</span>
+              <span class="text-xxs text-slate-400">{{ cashierStore.t('order_loading') }}</span>
             </div>
 
             <template v-else-if="selectedOrderDetails">
@@ -480,7 +480,7 @@
                       v-model="addFoodForm.food_id"
                       class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-xs text-white focus:outline-none focus:border-indigo-500"
                     >
-                      <option value="" disabled>Taomni tanlang...</option>
+                      <option value="" disabled>{{ cashierStore.t('select_food_placeholder') }}</option>
                       <option v-for="f in allFoods" :key="f.id" :value="f.id">
                         {{ cashierStore.t(f.name.toLowerCase()) }} - {{ formatCurrency(f.price) }}
                       </option>
@@ -511,16 +511,16 @@
                     :key="index" 
                     class="flex justify-between items-center text-xs pt-1.5"
                   >
-                    <span class="text-slate-300 truncate max-w-[200px]">{{ item.food?.name || 'Noma\'lum' }} <span class="text-slate-500">x{{ item.quantity }}</span></span>
+                    <span class="text-slate-300 truncate max-w-[200px]">{{ item.food?.name || cashierStore.t('unknown_item') }} <span class="text-slate-500">x{{ item.quantity }}</span></span>
                     <div class="flex items-center space-x-3">
                       <span class="font-semibold text-white font-mono">{{ formatCurrency(item.quantity * (item.price || item.food?.price)) }}</span>
-                      <button @click="removeFoodFromOrder(index)" class="text-rose-400 hover:text-rose-300 transition" title="O'chirish">
+                      <button @click="removeFoodFromOrder(index)" class="text-rose-400 hover:text-rose-300 transition" :title="settingsStore.t('delete')">
                         <X class="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
                   <div v-if="!selectedOrderDetails.items || selectedOrderDetails.items.length === 0" class="text-center py-4 text-xs text-slate-500">
-                    Chekda hozircha hech narsa yo'q. Taom qo'shing.
+                    {{ cashierStore.t('no_items_yet') }}
                   </div>
                 </div>
                 
@@ -553,9 +553,9 @@
               <!-- 2. Select Customer (Loyalty) -->
               <div class="space-y-1.5">
                 <div class="flex justify-between items-center">
-                  <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">Mijoz (Sodiqlik tizimi)</label>
+                  <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">{{ cashierStore.t('customer_loyalty_label') }}</label>
                   <span class="text-[10px] text-indigo-400 font-bold" v-if="selectedCustomer">
-                    Bonus: {{ formatCurrency(selectedCustomer.bonus_balance) }}
+                    {{ cashierStore.t('bonus_label') }} {{ formatCurrency(selectedCustomer.bonus_balance) }}
                   </span>
                 </div>
                 <select 
@@ -585,7 +585,7 @@
                   <option value="cash">{{ cashierStore.t('naqd') }}</option>
                   <option value="card">{{ cashierStore.t('karta') }}</option>
                   <option value="qr">{{ cashierStore.t('qr_tolov') }}</option>
-                  <option value="mixed">Aralash to'lov (Mixed)</option>
+                  <option value="mixed">{{ cashierStore.t('mixed_payment_option') }}</option>
                 </select>
               </div>
 
@@ -593,7 +593,7 @@
               <div class="p-3 rounded-2xl bg-white/5 border border-white/5 space-y-3.5 text-xs">
                 <!-- Cash Amount -->
                 <div class="grid grid-cols-3 items-center gap-2" v-if="newPaymentForm.payment_method === 'cash' || newPaymentForm.payment_method === 'mixed'">
-                  <span class="text-slate-400 font-semibold">Naqd pul:</span>
+                  <span class="text-slate-400 font-semibold">{{ cashierStore.t('cash_amount_label') }}</span>
                   <input 
                     v-model.number="newPaymentForm.cash_amount"
                     type="number"
@@ -604,7 +604,7 @@
                 </div>
                 <!-- Card Amount -->
                 <div class="grid grid-cols-3 items-center gap-2" v-if="newPaymentForm.payment_method === 'card' || newPaymentForm.payment_method === 'mixed'">
-                  <span class="text-slate-400 font-semibold">Plastik karta:</span>
+                  <span class="text-slate-400 font-semibold">{{ cashierStore.t('card_amount_label') }}</span>
                   <input 
                     v-model.number="newPaymentForm.card_amount"
                     type="number"
@@ -615,7 +615,7 @@
                 </div>
                 <!-- QR Amount -->
                 <div class="grid grid-cols-3 items-center gap-2" v-if="newPaymentForm.payment_method === 'qr' || newPaymentForm.payment_method === 'mixed'">
-                  <span class="text-slate-400 font-semibold">QR to'lov:</span>
+                  <span class="text-slate-400 font-semibold">{{ cashierStore.t('qr_amount_label') }}</span>
                   <input 
                     v-model.number="newPaymentForm.qr_amount"
                     type="number"
@@ -626,7 +626,7 @@
                 </div>
                 <!-- Bonus used -->
                 <div class="grid grid-cols-3 items-center gap-2" v-if="selectedCustomer && selectedCustomer.bonus_balance > 0">
-                  <span class="text-slate-400 font-semibold">Bonusdan:</span>
+                  <span class="text-slate-400 font-semibold">{{ cashierStore.t('bonus_amount_label') }}</span>
                   <input 
                     v-model.number="newPaymentForm.bonus_used"
                     type="number"
@@ -642,7 +642,7 @@
                 v-if="!isSplitAmountValid && newPaymentForm.payment_method === 'mixed'"
                 class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xxs text-amber-400 font-semibold"
               >
-                Diqqat: To'lov summasi jami miqdorga to'g'ri kelmayapti. Kiritilgan summa: {{ formatCurrency(totalEnteredAmount) }} (Jami: {{ formatCurrency(orderCalculations.total) }}).
+                {{ cashierStore.t('split_warning_prefix') }} {{ formatCurrency(totalEnteredAmount) }} ({{ cashierStore.t('split_warning_total') }} {{ formatCurrency(orderCalculations.total) }}).
               </div>
             </template>
           </div>
@@ -654,7 +654,7 @@
               @click="triggerVoidFlow(selectedOrderDetails.id)"
               class="px-4 py-2 bg-rose-500/10 hover:bg-rose-500 border border-rose-500/20 rounded-xl text-xs font-semibold text-rose-400 hover:text-white transition mr-auto"
             >
-              Buyurtmani Bekor Qilish
+              {{ cashierStore.t('void_order_button') }}
             </button>
             <button @click="showPaymentModal = false" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-semibold text-slate-300 transition">
               {{ cashierStore.t('bekor_qilish') }}
@@ -664,7 +664,7 @@
               :disabled="loadingSubmit || !selectedOrderDetails || selectedOrderDetails.items.length === 0 || (newPaymentForm.payment_method === 'mixed' && !isSplitAmountValid)"
               class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {{ loadingSubmit ? 'To\'lanmoqda...' : cashierStore.t('tolovni_yakunlash') }}
+              {{ loadingSubmit ? cashierStore.t('paying_in_progress') : cashierStore.t('tolovni_yakunlash') }}
             </button>
           </div>
         </div>
@@ -681,7 +681,7 @@
         <div class="w-full max-w-sm backdrop-blur-xl bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4 text-left text-white animate-scaleIn">
           <div class="flex justify-between items-center border-b border-white/5 pb-2">
             <h3 class="text-sm font-bold text-rose-400 flex items-center space-x-1.5">
-              <span>⚠️ Buyurtmani bekor qilish</span>
+              <span>⚠️ {{ cashierStore.t('void_modal_title') }}</span>
             </h3>
             <button @click="showVoidModal = false" class="text-slate-400 hover:text-white">
               <X class="w-4 h-4" />
@@ -690,29 +690,29 @@
 
           <div class="space-y-3.5">
             <p class="text-xxs text-slate-400 leading-normal">
-              Buyurtmani bekor qilish sababini tanlang yoki batafsil izoh yozing. Ushbu harakat ombordagi masalliqlarni qayta hisoblaydi.
+              {{ cashierStore.t('void_modal_desc') }}
             </p>
 
             <div class="space-y-1.5">
-              <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">Sababni tanlang *</label>
-              <select 
+              <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">{{ cashierStore.t('void_reason_label') }}</label>
+              <select
                 v-model="voidForm.reasonSelect"
                 class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-xs text-white focus:outline-none focus:border-rose-500"
               >
-                <option value="">-- Sababni tanlang --</option>
-                <option value="Mijoz shoshilganligi sababli">Mijoz shoshilganligi sababli</option>
-                <option value="Taom sifati tufayli">Taom sifati tufayli</option>
-                <option value="Operator xatosi">Operator xatosi</option>
-                <option value="custom">Boshqa sabab (izohda yozish)...</option>
+                <option value="">{{ cashierStore.t('void_reason_placeholder') }}</option>
+                <option value="Mijoz shoshilganligi sababli">{{ cashierStore.t('void_reason_1') }}</option>
+                <option value="Taom sifati tufayli">{{ cashierStore.t('void_reason_2') }}</option>
+                <option value="Operator xatosi">{{ cashierStore.t('void_reason_3') }}</option>
+                <option value="custom">{{ cashierStore.t('void_reason_custom') }}</option>
               </select>
             </div>
 
             <div class="space-y-1.5">
-              <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">Qo'shimcha izoh</label>
-              <textarea 
+              <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">{{ cashierStore.t('void_extra_note_label') }}</label>
+              <textarea
                 v-model="voidForm.reasonText"
                 rows="2"
-                placeholder="Sababni batafsil tushuntiring..."
+                :placeholder="cashierStore.t('void_extra_note_placeholder')"
                 class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-rose-500 transition resize-none"
               ></textarea>
             </div>
@@ -720,14 +720,14 @@
 
           <div class="flex justify-end space-x-2 pt-2 border-t border-white/5">
             <button @click="showVoidModal = false" class="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xxs font-semibold text-slate-300">
-              Ortga
+              {{ cashierStore.t('back_button') }}
             </button>
-            <button 
+            <button
               @click="submitVoidOrder"
               :disabled="loadingVoid || !isVoidReasonProvided"
               class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xxs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {{ loadingVoid ? 'Bekor qilinmoqda...' : 'Tasdiqlash' }}
+              {{ loadingVoid ? cashierStore.t('voiding_in_progress') : cashierStore.t('confirm_button') }}
             </button>
           </div>
         </div>
@@ -825,10 +825,10 @@ const submitVoidOrder = async () => {
 
     const result = await response.json();
     if (!response.ok) {
-      throw new Error(result.message || 'Bekor qilishda xatolik yuz berdi.');
+      throw new Error(result.message || cashierStore.t('void_error'));
     }
 
-    alert('Buyurtma bekor qilindi.');
+    alert(cashierStore.t('void_success'));
     showVoidModal.value = false;
     showPaymentModal.value = false;
 
@@ -1148,7 +1148,7 @@ const submitPayment = async () => {
 
       const orderData = await orderRes.json();
       if (!orderRes.ok) {
-        throw new Error(orderData.message || 'Buyurtma yaratishda xatolik yuz berdi.');
+        throw new Error(orderData.message || cashierStore.t('order_create_error'));
       }
       orderId = orderData.order.id;
     }
@@ -1178,8 +1178,8 @@ const submitPayment = async () => {
     modal.value = {
       show: true,
       type: 'success',
-      title: 'To\'lov muvaffaqiyatli',
-      message: 'To\'lov tizimda qayd etildi. Chekni chop etishingiz mumkin.',
+      title: cashierStore.t('payment_success_title'),
+      message: cashierStore.t('payment_success_message'),
       icon: markRaw(CheckCircle)
     };
   } catch (err) {

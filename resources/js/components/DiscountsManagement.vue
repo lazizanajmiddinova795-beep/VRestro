@@ -3,8 +3,8 @@
     <!-- Top Header & Breadcrumbs -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ settingsStore.t('app_title') }} - Chegirmalar va Promo-kodlar</h1>
-        <p class="text-sm text-slate-500">Promokampaniyalar, foizli va summali vaucherlar hamda sotuv chegirmalari boshqaruvi.</p>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ settingsStore.t('discounts.title') }}</h1>
+        <p class="text-sm text-slate-500">{{ settingsStore.t('discounts.subtitle_full') }}</p>
       </div>
       <div>
         <button
@@ -12,7 +12,7 @@
           class="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
         >
           <Plus class="w-4 h-4" />
-          <span>Yangi chegirma qo'shish</span>
+          <span>{{ settingsStore.t('discounts.add_button') }}</span>
         </button>
       </div>
     </div>
@@ -34,7 +34,7 @@
               v-model="filters.search"
               @input="handleSearch"
               type="text"
-              placeholder="Nomi yoki kod bo'yicha qidirish..."
+              :placeholder="settingsStore.t('discounts.search_placeholder')"
               class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition duration-200"
             />
           </div>
@@ -44,21 +44,21 @@
               class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition duration-200"
               :class="filters.is_active === '' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200'"
             >
-              Barchasi
+              {{ settingsStore.t('discounts.all') }}
             </button>
             <button
               @click="setFilterActive('1')"
               class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition duration-200"
               :class="filters.is_active === '1' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200'"
             >
-              Faol
+              {{ settingsStore.t('discounts.active') }}
             </button>
             <button
               @click="setFilterActive('0')"
               class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition duration-200"
               :class="filters.is_active === '0' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200'"
             >
-              Nofaol
+              {{ settingsStore.t('discounts.inactive') }}
             </button>
           </div>
         </div>
@@ -70,8 +70,8 @@
 
         <div v-else-if="discountStore.discounts.length === 0" class="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-slate-200 bg-slate-50">
           <Tag class="w-12 h-12 text-slate-400 mb-3" />
-          <h3 class="text-lg font-semibold text-slate-900">Hech qanday chegirma topilmadi</h3>
-          <p class="text-sm text-slate-500 mt-1 max-w-sm">Hozircha hech qanday promo-kod yoki chegirma kampaniyalari qo'shilmagan.</p>
+          <h3 class="text-lg font-semibold text-slate-900">{{ settingsStore.t('discounts.not_found') }}</h3>
+          <p class="text-sm text-slate-500 mt-1 max-w-sm">{{ settingsStore.t('discounts.not_found_desc') }}</p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -115,7 +115,7 @@
                 >
                   <Percent v-if="discount.type === 'percentage'" class="w-3.5 h-3.5" />
                   <DollarSign v-else class="w-3.5 h-3.5" />
-                  <span>{{ discount.type === 'percentage' ? 'Foizli' : 'Summali' }}</span>
+                  <span>{{ discount.type === 'percentage' ? settingsStore.t('discounts.percentage') : settingsStore.t('discounts.fixed_amount') }}</span>
                 </span>
 
                 <span class="text-xl font-extrabold text-slate-900">
@@ -126,19 +126,19 @@
               <!-- Promocode badge if exists -->
               <div class="flex flex-col gap-1.5">
                 <div class="flex items-center space-x-2 text-xs">
-                  <span class="text-slate-500">Promo-kod:</span>
+                  <span class="text-slate-500">{{ settingsStore.t('discounts.promo_code_label') }}</span>
                   <span
                     v-if="discount.code"
                     class="font-mono px-2 py-0.5 bg-indigo-50 border border-indigo-100 rounded text-indigo-600 font-bold uppercase tracking-wider select-all"
                   >
                     {{ discount.code }}
                   </span>
-                  <span v-else class="text-slate-400 italic">Avtomatik menyu chegirmasi</span>
+                  <span v-else class="text-slate-400 italic">{{ settingsStore.t('discounts.auto_discount') }}</span>
                 </div>
 
                 <!-- Minimum Order Limit -->
                 <div class="text-xs text-slate-500 flex items-center space-x-1">
-                  <span>Minimal buyurtma:</span>
+                  <span>{{ settingsStore.t('discounts.min_order_label') }}</span>
                   <span class="text-slate-900 font-medium">{{ formatCurrency(discount.min_order_amount) }}</span>
                 </div>
               </div>
@@ -151,21 +151,21 @@
                 <span v-if="discount.expires_at">
                   {{ formatDate(discount.starts_at) }} - {{ formatDate(discount.expires_at) }}
                 </span>
-                <span v-else class="italic text-slate-400">Muddatsiz</span>
+                <span v-else class="italic text-slate-400">{{ settingsStore.t('discounts.unlimited') }}</span>
               </div>
 
               <div class="flex items-center space-x-2">
                 <button
                   @click="openEditModal(discount)"
                   class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition duration-200"
-                  title="Tahrirlash"
+                  :title="settingsStore.t('edit')"
                 >
                   <Edit3 class="w-4 h-4 text-slate-500" />
                 </button>
                 <button
                   @click="handleDelete(discount.id)"
                   class="p-1.5 rounded-lg hover:bg-red-50 hover:text-red-500 transition duration-200"
-                  title="O'chirish"
+                  :title="settingsStore.t('delete')"
                 >
                   <Trash2 class="w-4 h-4 text-slate-500" />
                 </button>
@@ -182,17 +182,17 @@
           <div>
             <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
               <ShoppingBag class="w-5 h-5 text-indigo-600" />
-              <span>POS Chekout Promo-kod</span>
+              <span>{{ settingsStore.t('discounts.pos_hook_title') }}</span>
             </h2>
-            <p class="text-xs text-slate-500 mt-1">Haqiqiy buyurtmalarni tanlab chegirma yoki promo-kodlarni tekshirib ko'rish integratsiya paneli.</p>
+            <p class="text-xs text-slate-500 mt-1">{{ settingsStore.t('discounts.pos_hook_desc') }}</p>
           </div>
 
           <!-- Select Order -->
           <div class="space-y-2">
-            <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">Faol buyurtmani tanlang</label>
+            <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">{{ settingsStore.t('discounts.select_active_order') }}</label>
             <div v-if="ordersLoading" class="flex items-center space-x-2 text-xs text-slate-500">
               <div class="w-4 h-4 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin"></div>
-              <span>Buyurtmalar yuklanmoqda...</span>
+              <span>{{ settingsStore.t('discounts.orders_loading') }}</span>
             </div>
             <select
               v-else-if="activeOrders.length > 0"
@@ -200,25 +200,25 @@
               @change="handleOrderChange"
               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-indigo-500 transition duration-200"
             >
-              <option value="" disabled>Buyurtmani tanlang</option>
+              <option value="" disabled>{{ settingsStore.t('discounts.select_order_placeholder') }}</option>
               <option v-for="order in activeOrders" :key="order.id" :value="order.id">
-                {{ order.order_number }} - Stol: {{ order.table?.table_number || 'Olib ketish' }} ({{ formatCurrency(order.total_amount) }})
+                {{ order.order_number }} - {{ settingsStore.t('payments.table_label') }}: {{ order.table?.table_number || settingsStore.t('payments.takeaway') }} ({{ formatCurrency(order.total_amount) }})
               </option>
             </select>
             <div v-else class="text-xs text-amber-600 italic">
-              Ayni paytda faol (delivered bo'lmagan) buyurtmalar topilmadi. Avval yangi buyurtma yarating.
+              {{ settingsStore.t('discounts.no_active_orders') }}
             </div>
           </div>
 
           <!-- Current Order Summary Card -->
           <div v-if="currentOrder" class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
             <div class="flex justify-between items-center text-xs text-slate-500">
-              <span>Buyurtma:</span>
+              <span>{{ settingsStore.t('discounts.order_label') }}</span>
               <span class="text-slate-900 font-bold">{{ currentOrder.order_number }}</span>
             </div>
 
             <div class="text-xs text-slate-500">
-              <span class="block mb-1.5 font-semibold">Tarkibi:</span>
+              <span class="block mb-1.5 font-semibold">{{ settingsStore.t('discounts.contents_label') }}</span>
               <ul class="space-y-1 pl-2">
                 <li v-for="item in currentOrder.items" :key="item.id" class="flex justify-between text-slate-600">
                   <span>{{ item.food?.name }} ({{ item.quantity }}x)</span>
@@ -230,17 +230,17 @@
             <!-- Discount Applied Snapshot -->
             <div v-if="currentOrder.discount" class="pt-2.5 border-t border-slate-200 space-y-1.5 text-xs">
               <div class="flex justify-between text-slate-500">
-                <span>Qo'llangan Chegirma:</span>
+                <span>{{ settingsStore.t('discounts.applied_discount') }}</span>
                 <span class="text-indigo-600 font-bold uppercase">{{ currentOrder.discount.name }}</span>
               </div>
               <div class="flex justify-between text-slate-500">
-                <span>Chegirma Summasi:</span>
+                <span>{{ settingsStore.t('discounts.discount_amount') }}</span>
                 <span class="text-red-500 font-bold">- {{ formatCurrency(currentOrder.discount_amount) }}</span>
               </div>
             </div>
 
             <div class="pt-2.5 border-t border-slate-200 flex justify-between items-center">
-              <span class="text-sm font-semibold text-slate-600">Jami summasi:</span>
+              <span class="text-sm font-semibold text-slate-600">{{ settingsStore.t('discounts.total_amount_label') }}</span>
               <span class="text-base font-extrabold text-slate-900">
                 {{ formatCurrency(currentOrder.total_amount) }}
               </span>
@@ -249,7 +249,7 @@
 
           <!-- Test Promo Input -->
           <div class="space-y-3">
-            <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">Promo-kod yozing</label>
+            <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">{{ settingsStore.t('discounts.write_promo_code') }}</label>
             <div class="flex space-x-2">
               <input
                 v-model="promocodeString"
@@ -262,7 +262,7 @@
                 :disabled="!selectedOrderId || !promocodeString"
                 class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold text-sm transition duration-200 shrink-0"
               >
-                Tekshirish
+                {{ settingsStore.t('discounts.check_button') }}
               </button>
             </div>
           </div>
@@ -287,7 +287,7 @@
     >
       <div class="relative w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl space-y-6">
         <div class="flex justify-between items-center">
-          <h3 class="text-xl font-bold text-slate-900">{{ isEditing ? 'Chegirma kampaniyasini tahrirlash' : 'Yangi chegirma yaratish' }}</h3>
+          <h3 class="text-xl font-bold text-slate-900">{{ isEditing ? settingsStore.t('discounts.edit_campaign_title') : settingsStore.t('discounts.new_campaign_title') }}</h3>
           <button @click="closeModal" class="p-1 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition duration-200">
             <X class="w-5 h-5" />
           </button>
@@ -296,12 +296,12 @@
         <form @submit.prevent="saveDiscount" class="space-y-4">
           <!-- Name of discount -->
           <div class="space-y-1">
-            <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">Kampaniya nomi</label>
+            <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">{{ settingsStore.t('discounts.campaign_name') }}</label>
             <input
               v-model="form.name"
               type="text"
               required
-              placeholder="Masalan: Yangi yil chegirmasi"
+              :placeholder="settingsStore.t('discounts.campaign_name_placeholder')"
               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition duration-200"
             />
           </div>
@@ -309,24 +309,24 @@
           <!-- Row: Type Select and Numeric Value -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-1">
-              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">Chegirma turi</label>
+              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">{{ settingsStore.t('discounts.discount_type') }}</label>
               <select
                 v-model="form.type"
                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-indigo-500 transition duration-200"
               >
-                <option value="percentage">Percentage (Foizli %)</option>
-                <option value="fixed">Fixed (Summali UZS)</option>
+                <option value="percentage">{{ settingsStore.t('discounts.type_percentage') }}</option>
+                <option value="fixed">{{ settingsStore.t('discounts.type_fixed') }}</option>
               </select>
             </div>
 
             <div class="space-y-1">
-              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">Chegirma miqdori</label>
+              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">{{ settingsStore.t('discounts.discount_amount_label') }}</label>
               <input
                 v-model.number="form.value"
                 type="number"
                 step="0.01"
                 required
-                placeholder="Masalan: 15 yoki 50000"
+                :placeholder="settingsStore.t('discounts.amount_placeholder')"
                 class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition duration-200"
               />
             </div>
@@ -335,18 +335,18 @@
           <!-- Row: Promo Code & Min Spend -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-1">
-              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">Promo-kod (Ixtiyoriy)</label>
+              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">{{ settingsStore.t('discounts.promo_code_optional') }}</label>
               <input
                 v-model="form.code"
                 type="text"
                 placeholder="Masalan: YANGIYIL2026"
                 class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 uppercase placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition duration-200"
               />
-              <span class="text-xxs text-slate-400">Bo'sh qoldirilsa, avtomatik chegirma bo'ladi.</span>
+              <span class="text-xxs text-slate-400">{{ settingsStore.t('discounts.auto_discount_hint') }}</span>
             </div>
 
             <div class="space-y-1">
-              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">Minimal buyurtma summasi</label>
+              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">{{ settingsStore.t('discounts.min_order_amount') }}</label>
               <input
                 v-model.number="form.min_order_amount"
                 type="number"
@@ -360,7 +360,7 @@
           <!-- Date Pickers for Start and Expiration -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-1">
-              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">Boshlanish vaqti</label>
+              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">{{ settingsStore.t('discounts.starts_at') }}</label>
               <input
                 v-model="form.starts_at"
                 type="datetime-local"
@@ -369,7 +369,7 @@
             </div>
 
             <div class="space-y-1">
-              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">Tugash vaqti</label>
+              <label class="text-xs text-slate-500 uppercase tracking-wider block font-semibold">{{ settingsStore.t('discounts.expires_at') }}</label>
               <input
                 v-model="form.expires_at"
                 type="datetime-local"
@@ -386,7 +386,7 @@
               type="checkbox"
               class="w-4 h-4 rounded border-slate-300 bg-white text-indigo-600 focus:ring-0"
             />
-            <label for="is_active_form" class="text-xs font-semibold text-slate-600">Faol kampaniya sifatida saqlash</label>
+            <label for="is_active_form" class="text-xs font-semibold text-slate-600">{{ settingsStore.t('discounts.save_as_active') }}</label>
           </div>
 
           <div class="pt-4 border-t border-slate-100 flex justify-end space-x-2">
@@ -395,7 +395,7 @@
               @click="closeModal"
               class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition duration-200"
             >
-              Bekor qilish
+              {{ settingsStore.t('cancel') }}
             </button>
             <button
               type="submit"
@@ -536,7 +536,7 @@ const handleToggleStatus = async (id) => {
 };
 
 const handleDelete = async (id) => {
-  if (confirm("Ushbu chegirma kampaniyasini o'chirib tashlamoqchimisiz?")) {
+  if (confirm(settingsStore.t('discounts.confirm_delete'))) {
     try {
       await discountStore.deleteDiscount(id);
     } catch (err) {
@@ -591,7 +591,7 @@ const testApplyPromocode = async () => {
       selectedOrderId.value,
       promocodeString.value.toUpperCase()
     );
-    verificationSuccess.value = res.message || 'Promo-kod muvaffaqiyatli qo\'llanildi.';
+    verificationSuccess.value = res.message || settingsStore.t('discounts.applied_success');
     // Update local order state
     currentOrder.value = res.order;
     // Update it in the list too
@@ -600,7 +600,7 @@ const testApplyPromocode = async () => {
       activeOrders.value[idx] = res.order;
     }
   } catch (err) {
-    verificationError.value = err.message || 'Promo-kod noto\'g\'ri yoki muddati o\'tgan.';
+    verificationError.value = err.message || settingsStore.t('discounts.invalid_or_expired');
   }
 };
 

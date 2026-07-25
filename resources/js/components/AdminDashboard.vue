@@ -16,12 +16,12 @@
         <div class="flex items-center space-x-4">
           <div class="flex items-center space-x-3 mr-4">
             <span class="text-xs bg-violet-500/10 text-violet-600 dark:text-violet-300 border border-violet-500/20 px-2.5 py-1 rounded-full font-bold">
-              Administrator
+              {{ settingsStore.t('dashboard.admin_badge') }}
             </span>
             <span class="text-sm font-bold text-slate-700 dark:text-slate-300">{{ authStore.user?.name }}</span>
           </div>
           <button @click="handleLogout" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-red-500/10 hover:border-red-500/20 text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition duration-300">
-            Chiqish
+            {{ settingsStore.t('nav.logout') }}
           </button>
         </div>
       </div>
@@ -40,14 +40,14 @@
           class="px-5 py-2.5 rounded-xl text-xs font-extrabold transition duration-200"
           :class="activeTab === 'overview' ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'"
         >
-          Umumiy Boshqaruv
+          {{ settingsStore.t('dashboard.tab_overview') }}
         </button>
-        <button 
+        <button
           @click="switchTab('analytics')"
           class="px-5 py-2.5 rounded-xl text-xs font-extrabold transition duration-200"
           :class="activeTab === 'analytics' ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'"
         >
-          Tahlillar va Hisobotlar (BI Suite)
+          {{ settingsStore.t('dashboard.tab_analytics') }}
         </button>
       </div>
 
@@ -56,15 +56,15 @@
         <!-- Loading / Error States -->
         <div v-if="dashboardStore.loading" class="flex flex-col items-center justify-center py-40 space-y-4">
           <Loader2 class="w-12 h-12 text-indigo-600 animate-spin" />
-          <p class="text-slate-600 text-sm font-bold animate-pulse">Tahliliy ma'lumotlar yuklanmoqda...</p>
+          <p class="text-slate-600 text-sm font-bold animate-pulse">{{ settingsStore.t('dashboard.loading_analytics') }}</p>
         </div>
 
         <div v-else-if="dashboardStore.error" class="max-w-md mx-auto my-20 p-6 rounded-2xl bg-red-50 border border-red-200 text-center space-y-4 shadow-sm">
           <AlertTriangle class="w-12 h-12 text-red-500 mx-auto" />
-          <h3 class="text-lg font-bold text-slate-900">{{ settingsStore.t('app_title') }} - Xatolik yuz berdi</h3>
+          <h3 class="text-lg font-bold text-slate-900">{{ settingsStore.t('error') }}</h3>
           <p class="text-sm text-red-600 font-semibold">{{ dashboardStore.error }}</p>
           <button @click="dashboardStore.fetchAnalytics" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition duration-200 shadow-md">
-            Qayta urinish
+            {{ settingsStore.t('dashboard.retry') }}
           </button>
         </div>
 
@@ -75,7 +75,7 @@
             <!-- Widget 1: Revenue -->
             <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(16,185,129,0.12)] transition-all duration-300">
               <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">Bugungi Tushum</span>
+                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.today_revenue') }}</span>
                 <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-500/20">
                   <DollarSign class="w-5 h-5" />
                 </div>
@@ -93,7 +93,7 @@
                     <TrendingDown v-else class="w-3.5 h-3.5 mr-1" />
                     {{ Math.abs(dashboardStore.metrics.widgets.revenue.change_percent) }}%
                   </span>
-                  <span class="text-xs text-slate-500 font-bold">kechagiga nisbatan</span>
+                  <span class="text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.vs_yesterday') }}</span>
                 </div>
               </div>
             </div>
@@ -101,7 +101,7 @@
             <!-- Widget 2: Total Orders -->
             <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(99,102,241,0.12)] transition-all duration-300">
               <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">Buyurtmalar</span>
+                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.today_orders') }}</span>
                 <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20">
                   <ShoppingBag class="w-5 h-5" />
                 </div>
@@ -111,9 +111,9 @@
                   {{ dashboardStore.metrics.widgets.orders.total }} ta
                 </h3>
                 <p class="text-xs text-slate-500 font-bold flex items-center space-x-2">
-                  <span class="text-indigo-600 font-extrabold">{{ dashboardStore.metrics.widgets.orders.active }} faol</span>
+                  <span class="text-indigo-600 font-extrabold">{{ dashboardStore.metrics.widgets.orders.active }} {{ settingsStore.t('dashboard.active_short') }}</span>
                   <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
-                  <span class="text-emerald-600 font-extrabold">{{ dashboardStore.metrics.widgets.orders.completed }} yopilgan</span>
+                  <span class="text-emerald-600 font-extrabold">{{ dashboardStore.metrics.widgets.orders.completed }} {{ settingsStore.t('dashboard.completed_short') }}</span>
                 </p>
               </div>
             </div>
@@ -121,7 +121,7 @@
             <!-- Widget 3: Kitchen Load -->
             <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(245,158,11,0.12)] transition-all duration-300">
               <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">Oshxona Yuklamasi</span>
+                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.kitchen_load_title') }}</span>
                 <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-bold shadow-md shadow-amber-500/20">
                   <ChefHat class="w-5 h-5" />
                 </div>
@@ -131,14 +131,14 @@
                   <span>{{ dashboardStore.metrics.widgets.kitchen_load }} ta</span>
                   <span v-if="dashboardStore.metrics.widgets.kitchen_load > 0" class="inline-flex w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
                 </h3>
-                <p class="text-xs text-slate-500 font-bold">tayyorlanayotgan buyurtmalar</p>
+                <p class="text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.kitchen_load_desc') }}</p>
               </div>
             </div>
 
             <!-- Widget 4: Daily Expenses -->
             <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(244,63,94,0.12)] transition-all duration-300">
               <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">Bugungi Xarajatlar</span>
+                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.today_expenses') }}</span>
                 <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-bold shadow-md shadow-rose-500/20">
                   <TrendingDown class="w-5 h-5" />
                 </div>
@@ -147,7 +147,7 @@
                 <h3 class="text-2xl font-black text-slate-900 tracking-tight">
                   {{ formatCurrency(dashboardStore.metrics.widgets.expenses) }}
                 </h3>
-                <p class="text-xs text-slate-500 font-bold">tizimga kiritilgan xarajatlar</p>
+                <p class="text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.expenses_desc') }}</p>
               </div>
             </div>
           </div>
@@ -156,8 +156,8 @@
           <div class="bg-white dark:bg-slate-900/60 border-2 border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
             <div class="flex items-center justify-between mb-6">
               <div>
-                <h2 class="text-slate-900 dark:text-white font-black text-lg tracking-tight">Haftalik Savdo Dinamikasi</h2>
-                <p class="text-slate-500 dark:text-slate-400 font-extrabold text-xs mt-0.5">So'nggi 7 kunlik sotuvlar va xarajatlar tahlili</p>
+                <h2 class="text-slate-900 dark:text-white font-black text-lg tracking-tight">{{ settingsStore.t('dashboard.weekly_chart') }}</h2>
+                <p class="text-slate-500 dark:text-slate-400 font-extrabold text-xs mt-0.5">{{ settingsStore.t('dashboard.weekly_chart_desc') }}</p>
               </div>
             </div>
             <!-- Chart Canvas Container -->
@@ -172,17 +172,17 @@
             <!-- Top Selling Items (Grid 2 cols width) -->
             <div class="lg:col-span-2 bg-white dark:bg-slate-900/60 border-2 border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
               <div class="mb-4">
-                <h2 class="text-slate-900 dark:text-white font-black text-lg tracking-tight">Top 5 Taomlar</h2>
-                <p class="text-slate-500 dark:text-slate-400 font-extrabold text-xs mt-0.5">Eng ko'p sotilgan va ommabop taomlar ro'yxati</p>
+                <h2 class="text-slate-900 dark:text-white font-black text-lg tracking-tight">{{ settingsStore.t('dashboard.top5_foods') }}</h2>
+                <p class="text-slate-500 dark:text-slate-400 font-extrabold text-xs mt-0.5">{{ settingsStore.t('dashboard.top5_foods_desc') }}</p>
               </div>
               <div class="overflow-x-auto flex-grow">
                 <table class="w-full text-left text-sm">
                   <thead>
                     <tr class="border-b border-slate-200/80 dark:border-white/5 text-slate-500 dark:text-slate-400 font-extrabold text-xs uppercase tracking-wider">
-                      <th class="py-3 font-extrabold">Raqam</th>
-                      <th class="py-3 font-extrabold">Nomi</th>
-                      <th class="py-3 font-extrabold text-center">Miqdori</th>
-                      <th class="py-3 font-extrabold text-right">Tushum</th>
+                      <th class="py-3 font-extrabold">{{ settingsStore.t('dashboard.col_number') }}</th>
+                      <th class="py-3 font-extrabold">{{ settingsStore.t('dashboard.col_name') }}</th>
+                      <th class="py-3 font-extrabold text-center">{{ settingsStore.t('dashboard.col_quantity') }}</th>
+                      <th class="py-3 font-extrabold text-right">{{ settingsStore.t('dashboard.col_revenue') }}</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-200/80 dark:divide-white/5">
@@ -197,7 +197,7 @@
                       <td class="py-3 text-right font-black text-indigo-600 dark:text-indigo-400 text-sm">{{ formatCurrency(item.revenue) }}</td>
                     </tr>
                     <tr v-if="dashboardStore.metrics.tables.top_selling.length === 0">
-                      <td colspan="4" class="py-8 text-center text-xs text-slate-500 font-bold">Ma'lumotlar mavjud emas</td>
+                      <td colspan="4" class="py-8 text-center text-xs text-slate-500 font-bold">{{ settingsStore.t('no_data') }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -208,17 +208,17 @@
             <div class="lg:col-span-3 bg-white dark:bg-slate-900/60 border-2 border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
               <div class="mb-4">
                 <h2 class="text-slate-900 dark:text-white font-black text-lg tracking-tight">{{ settingsStore.t('dashboard.live_orders') }}</h2>
-                <p class="text-slate-500 dark:text-slate-400 font-extrabold text-xs mt-0.5">Tizimga kirib kelayotgan oxirgi 5 ta buyurtmalar monitoringi</p>
+                <p class="text-slate-500 dark:text-slate-400 font-extrabold text-xs mt-0.5">{{ settingsStore.t('dashboard.live_orders_desc') }}</p>
               </div>
               <div class="overflow-x-auto flex-grow">
                 <table class="w-full text-left text-sm">
                   <thead>
                     <tr class="border-b border-slate-200/80 dark:border-white/5 text-slate-500 dark:text-slate-400 font-extrabold text-xs uppercase tracking-wider">
-                      <th class="py-3 font-extrabold">Buyurtma ID</th>
-                      <th class="py-3 font-extrabold">Stol / Xizmatchi</th>
-                      <th class="py-3 font-extrabold text-center">Status</th>
-                      <th class="py-3 font-extrabold text-right">Summa</th>
-                      <th class="py-3 font-extrabold text-right">Vaqti</th>
+                      <th class="py-3 font-extrabold">{{ settingsStore.t('dashboard.col_order_id') }}</th>
+                      <th class="py-3 font-extrabold">{{ settingsStore.t('dashboard.col_table_waiter') }}</th>
+                      <th class="py-3 font-extrabold text-center">{{ settingsStore.t('status') }}</th>
+                      <th class="py-3 font-extrabold text-right">{{ settingsStore.t('dashboard.col_amount') }}</th>
+                      <th class="py-3 font-extrabold text-right">{{ settingsStore.t('dashboard.col_time') }}</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-200/80 dark:divide-white/5">
@@ -240,7 +240,7 @@
                       <td class="py-3 text-right text-xs text-slate-500 font-bold">{{ order.created_at }}</td>
                     </tr>
                     <tr v-if="dashboardStore.metrics.tables.live_orders.length === 0">
-                      <td colspan="5" class="py-8 text-center text-xs text-slate-500 font-bold">Faol buyurtmalar mavjud emas</td>
+                      <td colspan="5" class="py-8 text-center text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.no_active_orders') }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -256,8 +256,8 @@
         <!-- Date range & refresh tools -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h2 class="text-xl font-black tracking-tight text-slate-900 dark:text-white">Hisobotlar va Tahlillar (BI Suite)</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 font-extrabold mt-0.5">Restoranning moliyaviy oqimlari, menyu tahlili, ombor sarfi va xodimlar samaradorligi monitoringi.</p>
+            <h2 class="text-xl font-black tracking-tight text-slate-900 dark:text-white">{{ settingsStore.t('analytics.reports_title') }}</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-extrabold mt-0.5">{{ settingsStore.t('analytics.reports_desc') }}</p>
           </div>
           
           <div class="flex flex-wrap items-center gap-3">
@@ -269,18 +269,18 @@
                 class="px-3.5 py-1.5 text-xs font-extrabold rounded-lg transition duration-200"
                 :class="reportsStore.activePeriod === p.value ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
               >
-                {{ p.label }}
+                {{ settingsStore.t(p.labelKey) }}
               </button>
             </div>
 
-            <button 
+            <button
               @click="loadAll"
               :disabled="reportsStore.loading"
               class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-indigo-600 text-xs font-extrabold text-white shadow-md shadow-indigo-600/30 hover:scale-[1.02] transition duration-200"
             >
               <Loader2 v-if="reportsStore.loading" class="w-4 h-4 animate-spin" />
               <RefreshCw v-else class="w-4 h-4" />
-              <span>Yangilash</span>
+              <span>{{ settingsStore.t('refresh') }}</span>
             </button>
           </div>
         </div>
@@ -291,25 +291,25 @@
           class="p-4 rounded-2xl border-2 border-slate-200/80 dark:border-white/5 bg-white dark:bg-slate-950/40 flex flex-wrap items-center gap-4 animate-fadeIn shadow-sm"
         >
           <div class="flex items-center space-x-3 text-sm text-slate-700 dark:text-slate-300 font-bold">
-            <span>Oraliqni tanlang:</span>
-            <input 
+            <span>{{ settingsStore.t('analytics.select_range') }}</span>
+            <input
               v-model="reportsStore.startDate"
-              type="date" 
+              type="date"
               class="bg-slate-50 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl px-3 py-1.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
             />
-            <span>dan</span>
-            <input 
+            <span>{{ settingsStore.t('analytics.from') }}</span>
+            <input
               v-model="reportsStore.endDate"
-              type="date" 
+              type="date"
               class="bg-slate-50 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl px-3 py-1.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
             />
-            <span>gacha</span>
+            <span>{{ settingsStore.t('analytics.to') }}</span>
           </div>
-          <button 
+          <button
             @click="loadAll"
             class="px-4 py-1.5 text-xs font-extrabold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition duration-200 shadow-sm"
           >
-            Qo'llash
+            {{ settingsStore.t('analytics.apply') }}
           </button>
         </div>
 
@@ -321,7 +321,7 @@
                 <DollarSign class="h-6 w-6" />
               </div>
               <div>
-                <p class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Jami sotuv tushumi</p>
+                <p class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ settingsStore.t('analytics.total_income') }}</p>
                 <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1">
                   {{ formatCurrencyBI(reportsStore.salesReport?.summary?.grand_invoiced_income) }}
                 </h3>
@@ -335,7 +335,7 @@
                 <Tag class="h-6 w-6" />
               </div>
               <div>
-                <p class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Chegirmalar summasi</p>
+                <p class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ settingsStore.t('analytics.total_discounts') }}</p>
                 <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1">
                   - {{ formatCurrencyBI(reportsStore.salesReport?.summary?.disbursed_discounts_total) }}
                 </h3>
@@ -349,7 +349,7 @@
                 <Coins class="h-6 w-6" />
               </div>
               <div>
-                <p class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Keshbek bonus sarfi</p>
+                <p class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ settingsStore.t('analytics.cashback_used') }}</p>
                 <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1">
                   {{ formatCurrencyBI(reportsStore.salesReport?.summary?.cashback_bonuses_used) }}
                 </h3>
@@ -361,8 +361,8 @@
         <!-- Charts -->
         <div class="rounded-3xl border-2 border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-4">
           <div class="flex justify-between items-center">
-            <h2 class="text-lg font-black text-slate-900 dark:text-white">Sotuv dinamikasi (Sotuvlar progression)</h2>
-            <span class="text-xs text-slate-500 dark:text-slate-400 font-extrabold">UZS hisobida</span>
+            <h2 class="text-lg font-black text-slate-900 dark:text-white">{{ settingsStore.t('analytics.sales_dynamics') }}</h2>
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-extrabold">{{ settingsStore.t('analytics.in_uzs') }}</span>
           </div>
           <div class="relative h-80 w-full">
             <canvas ref="salesChartRef"></canvas>
@@ -374,10 +374,10 @@
           <div class="rounded-3xl border-2 border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-4">
             <h2 class="text-lg font-black text-slate-900 dark:text-white flex items-center space-x-2">
               <TrendingUp class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-              <span>Eng ko'p sotilgan taomlar</span>
+              <span>{{ settingsStore.t('analytics.top_selling_foods') }}</span>
             </h2>
             <div v-if="!reportsStore.menuReport?.top_selling?.length" class="text-sm text-slate-500 italic py-6 text-center font-bold">
-              Ma'lumot mavjud emas
+              {{ settingsStore.t('analytics.no_data_available') }}
             </div>
             <div v-else class="space-y-4.5">
               <div v-for="(food, idx) in reportsStore.menuReport.top_selling" :key="food.id" class="space-y-1.5">
@@ -398,10 +398,10 @@
           <div class="rounded-3xl border-2 border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-4">
             <h2 class="text-lg font-black text-slate-900 dark:text-white flex items-center space-x-2">
               <TrendingDown class="w-5 h-5 text-red-600 dark:text-red-400" />
-              <span>Eng kam sotilgan taomlar (Muzlagan)</span>
+              <span>{{ settingsStore.t('analytics.least_selling_foods') }}</span>
             </h2>
             <div v-if="!reportsStore.menuReport?.least_selling?.length" class="text-sm text-slate-500 italic py-6 text-center font-bold">
-              Ma'lumot mavjud emas
+              {{ settingsStore.t('analytics.no_data_available') }}
             </div>
             <div v-else class="space-y-3">
               <div 
@@ -411,7 +411,7 @@
               >
                 <div>
                   <span class="font-black text-slate-900 dark:text-white block text-sm">{{ food.name }}</span>
-                  <span class="text-xs text-slate-500 font-bold">Sotilgan: {{ food.units_sold }} dona</span>
+                  <span class="text-xs text-slate-500 font-bold">{{ settingsStore.t('analytics.sold_label') }} {{ food.units_sold }} dona</span>
                 </div>
                 <div class="text-right">
                   <span class="text-xs text-red-600 dark:text-red-400 font-black block">{{ formatCurrencyBI(food.revenue) }}</span>
@@ -426,17 +426,17 @@
           <div class="lg:col-span-2 rounded-3xl border-2 border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm space-y-4">
             <h2 class="text-lg font-black text-slate-900 dark:text-white flex items-center space-x-2">
               <Package class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-              <span>Sarflangan mahsulotlar (Ombor tahlili)</span>
+              <span>{{ settingsStore.t('analytics.consumed_products') }}</span>
             </h2>
-            
+
             <div class="overflow-x-auto">
               <table class="w-full text-left text-sm border-collapse">
                 <thead>
                   <tr class="border-b border-slate-200/80 dark:border-white/5 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-extrabold">
-                    <th class="py-2.5">Mahsulot</th>
-                    <th class="py-2.5 text-right">Retsept bo'yicha</th>
-                    <th class="py-2.5 text-right">Manual chiqim</th>
-                    <th class="py-2.5 text-right">Jami sarf</th>
+                    <th class="py-2.5">{{ settingsStore.t('analytics.col_product') }}</th>
+                    <th class="py-2.5 text-right">{{ settingsStore.t('analytics.col_recipe_usage') }}</th>
+                    <th class="py-2.5 text-right">{{ settingsStore.t('analytics.col_manual_usage') }}</th>
+                    <th class="py-2.5 text-right">{{ settingsStore.t('analytics.col_total_usage') }}</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200/80 dark:divide-white/5">
@@ -447,7 +447,7 @@
                     <td class="py-2.5 text-right text-indigo-300 font-bold">{{ item.total_consumed.toFixed(2) }}</td>
                   </tr>
                   <tr v-if="!reportsStore.inventoryReport?.depletions?.length">
-                    <td colspan="4" class="py-6 text-center text-xs text-slate-500 italic">Hisob-kitob mavjud emas</td>
+                    <td colspan="4" class="py-6 text-center text-xs text-slate-500 italic">{{ settingsStore.t('analytics.no_calculation') }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -457,13 +457,13 @@
           <div class="rounded-2xl border-2 border-slate-200/80 bg-white p-6 shadow-sm space-y-5">
             <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
               <Users class="w-5 h-5 text-violet-600" />
-              <span>Xodimlar KPIs</span>
+              <span>{{ settingsStore.t('analytics.staff_kpis') }}</span>
             </h2>
 
             <div class="space-y-3">
-              <h3 class="text-xs text-slate-500 uppercase tracking-wider font-bold">Buyurtma olgan ofitsiantlar</h3>
+              <h3 class="text-xs text-slate-500 uppercase tracking-wider font-bold">{{ settingsStore.t('analytics.waiters_orders_taken') }}</h3>
               <div v-if="!reportsStore.staffReport?.waiters?.length" class="text-xs text-slate-500 italic">
-                Ofitsiantlar faolligi topilmadi
+                {{ settingsStore.t('analytics.no_waiter_activity') }}
               </div>
               <div v-else class="space-y-2">
                 <div
@@ -473,7 +473,7 @@
                 >
                   <div>
                     <span class="text-xs font-semibold text-slate-900 block">{{ waiter.name }}</span>
-                    <span class="text-xxs text-slate-500">{{ waiter.total_orders_taken }} ta buyurtma</span>
+                    <span class="text-xxs text-slate-500">{{ waiter.total_orders_taken }} {{ settingsStore.t('analytics.orders_count_suffix') }}</span>
                   </div>
                   <span class="text-xs text-indigo-600 font-bold">{{ formatCurrencyBI(waiter.total_revenue_generated) }}</span>
                 </div>
@@ -481,9 +481,9 @@
             </div>
 
             <div class="space-y-3 border-t border-slate-100 pt-4">
-              <h3 class="text-xs text-slate-500 uppercase tracking-wider font-bold">Faol Oshpazlar</h3>
+              <h3 class="text-xs text-slate-500 uppercase tracking-wider font-bold">{{ settingsStore.t('analytics.active_chefs') }}</h3>
               <div v-if="!reportsStore.staffReport?.chefs?.length" class="text-xs text-slate-500 italic">
-                Oshpazlar faolligi topilmadi
+                {{ settingsStore.t('analytics.no_chef_activity') }}
               </div>
               <div v-else class="space-y-2">
                 <div
@@ -492,7 +492,7 @@
                   class="flex justify-between items-center p-2 bg-slate-50 rounded-lg border border-slate-200"
                 >
                   <span class="text-xs font-semibold text-slate-900">{{ chef.name }}</span>
-                  <span class="text-xs text-emerald-600 font-bold">{{ chef.total_dishes_prepared }} ta taom</span>
+                  <span class="text-xs text-emerald-600 font-bold">{{ chef.total_dishes_prepared }} {{ settingsStore.t('analytics.dishes_count_suffix') }}</span>
                 </div>
               </div>
             </div>
@@ -504,7 +504,7 @@
     <!-- Footer -->
     <footer class="border-t border-slate-200 py-8 text-center text-xs text-slate-500 mt-12 bg-slate-50">
       <div class="max-w-7xl mx-auto px-6">
-        &copy; 2026 VRestro. Barcha huquqlar himoyalangan. Boshqaruv Panel Platformasi.
+        {{ settingsStore.t('footer.rights') }}
       </div>
     </footer>
   </div>
@@ -547,11 +547,11 @@ let chartInstance = null;
 
 // BI Suite reports settings
 const periods = [
-  { label: 'Bugun', value: 'today' },
-  { label: 'Shu hafta', value: 'week' },
-  { label: 'Shu oy', value: 'month' },
-  { label: 'Bu yil', value: 'year' },
-  { label: 'Custom', value: 'custom' }
+  { labelKey: 'analytics.period_today', value: 'today' },
+  { labelKey: 'analytics.period_week', value: 'week' },
+  { labelKey: 'analytics.period_month', value: 'month' },
+  { labelKey: 'analytics.period_year', value: 'year' },
+  { labelKey: 'analytics.period_custom', value: 'custom' }
 ];
 
 const salesChartRef = ref(null);
@@ -770,14 +770,14 @@ const formatCurrencyBI = (value) => {
 };
 
 const getStatusLabel = (status) => {
-  const labels = {
-    'pending': 'Kutilmoqda',
-    'cooking': 'Tayyorlanmoqda',
-    'ready': 'Tayyor',
-    'paid': 'To\'langan',
-    'cancelled': 'Bekor qilingan'
+  const keys = {
+    'pending': 'kitchen.pending',
+    'cooking': 'kitchen.cooking',
+    'ready': 'kitchen.ready',
+    'paid': 'orders.paid',
+    'cancelled': 'orders.cancelled'
   };
-  return labels[status] || status;
+  return keys[status] ? settingsStore.t(keys[status]) : status;
 };
 
 const getStatusBadgeClass = (status) => {

@@ -3,21 +3,21 @@
     <!-- Top Header -->
     <div class="flex items-center justify-between shrink-0">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-white">{{ settingsStore.t('app_title') }} - {{ settingsStore.t('settings.title') }}</h1>
-        <p class="text-sm text-slate-400">Restoranning global branding, moliyaviy me'yorlari va xavfsizlik konfiguratsiyalari.</p>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ settingsStore.t('settings.title') }}</h1>
+        <p class="text-sm text-slate-500">{{ settingsStore.t('settings.subtitle_full') }}</p>
       </div>
     </div>
 
     <!-- Active tabs navigation -->
-    <div class="flex space-x-2 border-b border-white/5 pb-px shrink-0">
-      <button 
-        v-for="tab in tabs" 
+    <div class="flex space-x-2 border-b border-slate-200 pb-px shrink-0">
+      <button
+        v-for="tab in tabs"
         :key="tab.id"
         @click="activeTab = tab.id"
         class="relative px-5 py-3 text-sm font-semibold tracking-wide transition-all duration-200"
-        :class="activeTab === tab.id ? 'text-white border-b-2 border-indigo-500' : 'text-slate-400 hover:text-slate-200'"
+        :class="activeTab === tab.id ? 'text-slate-900 border-b-2 border-indigo-500' : 'text-slate-400 hover:text-slate-600'"
       >
-        {{ tab.label }}
+        {{ settingsStore.t(tab.labelKey) }}
       </button>
     </div>
 
@@ -36,22 +36,22 @@
       <div v-if="activeTab === 'general'" class="space-y-6 animate-fadeIn">
         
         <!-- DISPLAY & INTERFACE SETTINGS CARD (Exact Match to User Screenshot) -->
-        <div class="backdrop-blur-xl bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 shadow-2xl space-y-6">
-          
+        <div class="backdrop-blur-xl bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
+
           <!-- Card Header -->
-          <div class="flex items-center space-x-3.5 pb-4 border-b border-slate-800/60">
+          <div class="flex items-center space-x-3.5 pb-4 border-b border-slate-200">
             <div class="p-3 rounded-2xl bg-pink-500/10 text-pink-500 border border-pink-500/20 shadow-md">
               <Settings class="w-6 h-6 stroke-[2]" />
             </div>
             <div>
-              <h2 class="text-xl font-bold text-white tracking-tight">Sozlamalar</h2>
-              <p class="text-xs text-slate-400 mt-0.5">Interfeys tili, ranglar mavzusi, yozuv hajmi va xodimlar huquqlarini boshqarish</p>
+              <h2 class="text-xl font-bold text-slate-900 tracking-tight">{{ settingsStore.t('settings.title') }}</h2>
+              <p class="text-xs text-slate-500 mt-0.5">{{ settingsStore.t('settings.interface_desc') }}</p>
             </div>
           </div>
 
           <!-- Settings Rows List -->
-          <div class="divide-y divide-slate-800/60">
-            
+          <div class="divide-y divide-slate-200">
+
             <!-- 1. Tizim tili -->
             <div class="py-4 flex items-center justify-between gap-4">
               <div class="flex items-center space-x-3.5">
@@ -59,15 +59,15 @@
                   <Globe class="w-5.5 h-5.5 stroke-[1.8]" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Tizim tili</h3>
-                  <p class="text-xs text-slate-500">Dastur interfeysi tilini tanlang</p>
+                  <h3 class="text-sm font-bold text-slate-900">{{ settingsStore.t('settings.sys_lang') }}</h3>
+                  <p class="text-xs text-slate-500">{{ settingsStore.t('settings.lang_desc') }}</p>
                 </div>
               </div>
               <div class="relative">
                 <select
                   :value="settingsStore.language"
                   @change="onLanguageChange($event.target.value)"
-                  class="px-4 py-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition cursor-pointer min-w-[150px]"
+                  class="px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-indigo-500 transition cursor-pointer min-w-[150px]"
                 >
                   <option value="uz">O'zbek (UZ)</option>
                   <option value="ru">Русский (RU)</option>
@@ -83,12 +83,12 @@
                   <Moon class="w-5.5 h-5.5 stroke-[1.8]" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Ranglar mavzusi</h3>
-                  <p class="text-xs text-slate-500">Dastur minimalist oq dizaynda ishlaydi</p>
+                  <h3 class="text-sm font-bold text-slate-900">{{ settingsStore.t('settings.theme_mode') }}</h3>
+                  <p class="text-xs text-slate-500">{{ settingsStore.t('settings.theme_desc') }}</p>
                 </div>
               </div>
               <span class="px-4 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-md">
-                Yorug' (Oq)
+                {{ settingsStore.t('settings.light_theme') }}
               </span>
             </div>
 
@@ -99,15 +99,15 @@
                   <Eye class="w-5.5 h-5.5 stroke-[1.8]" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Ko'z himoyasi (Tungi Filtr)</h3>
-                  <p class="text-xs text-slate-500">Moviy nurlarni kamaytirish rejimi</p>
+                  <h3 class="text-sm font-bold text-slate-900">{{ settingsStore.t('settings.night_filter') }}</h3>
+                  <p class="text-xs text-slate-500">{{ settingsStore.t('settings.night_filter_desc') }}</p>
                 </div>
               </div>
               <!-- Toggle Switch -->
               <button 
                 @click="settingsStore.setNightFilter(!settingsStore.nightFilter)"
                 class="w-13 h-7 rounded-full transition duration-300 relative p-1 focus:outline-none"
-                :class="settingsStore.nightFilter ? 'bg-amber-500 shadow-lg shadow-amber-500/20' : 'bg-slate-300 dark:bg-slate-800'"
+                :class="settingsStore.nightFilter ? 'bg-amber-500 shadow-lg shadow-amber-500/20' : 'bg-slate-300'"
               >
                 <div 
                   class="w-5 h-5 rounded-full bg-white transition duration-300 shadow-md transform"
@@ -123,37 +123,37 @@
                   <Type class="w-5.5 h-5.5 stroke-[1.8]" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Matn o'lchami</h3>
-                  <p class="text-xs text-slate-500">Interfeysdagi harflar hajmini o'zgartirish</p>
+                  <h3 class="text-sm font-bold text-slate-900">{{ settingsStore.t('settings.font_size') }}</h3>
+                  <p class="text-xs text-slate-500">{{ settingsStore.t('settings.font_size_desc') }}</p>
                 </div>
               </div>
-              <div class="flex items-center p-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl">
-                <button 
+              <div class="flex items-center p-1 bg-slate-100 border border-slate-200 rounded-xl">
+                <button
                   @click="settingsStore.setFontSize('small')"
                   class="px-3.5 py-2 text-xs font-bold rounded-lg transition duration-200"
                   :class="settingsStore.fontSize === 'small'
                     ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
+                    : 'text-slate-500 hover:text-slate-900'"
                 >
-                  Kichik
+                  {{ settingsStore.t('settings.small') }}
                 </button>
-                <button 
+                <button
                   @click="settingsStore.setFontSize('medium')"
                   class="px-3.5 py-2 text-xs font-bold rounded-lg transition duration-200"
                   :class="settingsStore.fontSize === 'medium'
                     ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
+                    : 'text-slate-500 hover:text-slate-900'"
                 >
-                  O'rtacha
+                  {{ settingsStore.t('settings.medium') }}
                 </button>
-                <button 
+                <button
                   @click="settingsStore.setFontSize('large')"
                   class="px-3.5 py-2 text-xs font-bold rounded-lg transition duration-200"
                   :class="settingsStore.fontSize === 'large'
                     ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
+                    : 'text-slate-500 hover:text-slate-900'"
                 >
-                  Katta
+                  {{ settingsStore.t('settings.large') }}
                 </button>
               </div>
             </div>
@@ -162,68 +162,68 @@
         </div>
 
         <!-- RESTAURANT BRANDING FORM -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-white/5 pt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-slate-200 pt-6">
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Restoran nomi</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.brand_name') }}</label>
+          <input
             v-model="generalForm.restaurant_name"
-            type="text" 
-            placeholder="Restoran nomi..."
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            type="text"
+            :placeholder="settingsStore.t('settings.brand_name') + '...'"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Telefon raqami</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.brand_phone') }}</label>
+          <input
             v-model="generalForm.restaurant_phone"
-            type="text" 
-            placeholder="Telefon raqami..."
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            type="text"
+            :placeholder="settingsStore.t('settings.brand_phone') + '...'"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Ish vaqtlari</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.brand_hours') }}</label>
+          <input
             v-model="generalForm.restaurant_hours"
-            type="text" 
+            type="text"
             placeholder="09:00 - 23:00"
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <div class="space-y-1.5 md:col-span-2">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Restoran manzili</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.brand_address') }}</label>
+          <input
             v-model="generalForm.restaurant_address"
-            type="text" 
-            placeholder="Manzil..."
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            type="text"
+            :placeholder="settingsStore.t('settings.brand_address') + '...'"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <!-- Logo drag zone -->
         <div class="space-y-1.5 md:col-span-2">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Restoran logotipi</label>
-          <div 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.restaurant_logo') }}</label>
+          <div
             @click="$refs.logoInput.click()"
-            class="w-full border-2 border-dashed border-white/10 hover:border-indigo-500/50 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition bg-white/2 hover:bg-white/5 space-y-2"
+            class="w-full border-2 border-dashed border-slate-200 hover:border-indigo-500/50 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition bg-slate-50 hover:bg-slate-100 space-y-2"
           >
-            <input 
-              ref="logoInput" 
-              type="file" 
-              class="hidden" 
-              accept="image/*" 
+            <input
+              ref="logoInput"
+              type="file"
+              class="hidden"
+              accept="image/*"
               @change="handleLogoChange"
             />
-            <div v-if="logoPreview" class="w-32 h-32 rounded-xl overflow-hidden border border-white/10">
+            <div v-if="logoPreview" class="w-32 h-32 rounded-xl overflow-hidden border border-slate-200">
               <img :src="logoPreview" class="w-full h-full object-cover" />
             </div>
             <div v-else class="text-slate-500 flex flex-col items-center space-y-1">
               <UploadCloud class="w-10 h-10 stroke-[1.2]" />
-              <span class="text-xs font-medium">Logotip yuklash uchun bosing</span>
-              <span class="text-3xs text-slate-600">JPEG, PNG, WEBP (Maks: 2MB)</span>
+              <span class="text-xs font-medium">{{ settingsStore.t('settings.logo_upload_hint') }}</span>
+              <span class="text-3xs text-slate-400">{{ settingsStore.t('settings.logo_formats') }}</span>
             </div>
           </div>
         </div>
@@ -233,20 +233,20 @@
       <!-- Tab 2: Finance & Localization -->
       <div v-if="activeTab === 'finance'" class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Soliq stavkasi (%)</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.tax_rate') }}</label>
+          <input
             v-model.number="financeForm.tax_rate"
-            type="number" 
+            type="number"
             placeholder="12"
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Valyuta birligi</label>
-          <select 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.currency') }}</label>
+          <select
             v-model="financeForm.currency"
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition appearance-none"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition appearance-none"
           >
             <option value="UZS">UZS (so'm)</option>
             <option value="USD">USD ($)</option>
@@ -256,47 +256,47 @@
         </div>
 
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Xizmat haqi stavkasi (%)</label>
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.service_charge') }}</label>
           <input
             v-model.number="financeForm.service_charge_rate"
-            type="number" 
+            type="number"
             placeholder="10"
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <div class="space-y-1.5 md:col-span-2">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Chek sarlavhasi (Receipt Header)</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.receipt_header') }}</label>
+          <input
             v-model="financeForm.receipt_header"
-            type="text" 
+            type="text"
             placeholder="Xizmatimizdan mamnunmisiz?..."
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <div class="space-y-1.5 md:col-span-2">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Chek tagso'zi (Receipt Footer)</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.receipt_footer') }}</label>
+          <input
             v-model="financeForm.receipt_footer"
-            type="text" 
+            type="text"
             placeholder="Yana kelishingizni kutib qolamiz!..."
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <!-- System Tools inside Tab 2 -->
-        <div class="space-y-1.5 md:col-span-2 border-t border-white/5 pt-4 mt-2">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider block">Tizim vositalari (System Tools)</label>
-          <button 
+        <div class="space-y-1.5 md:col-span-2 border-t border-slate-200 pt-4 mt-2">
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider block">{{ settingsStore.t('settings.system_tools') }}</label>
+          <button
             type="button"
             @click="handleClearCache"
             :disabled="clearingCache"
-            class="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition duration-200"
+            class="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition duration-200"
           >
             <Trash2 v-if="!clearingCache" class="w-4 h-4" />
             <Loader2 v-else class="w-4 h-4 animate-spin" />
-            <span>Keshni tozalash (Clear Cache)</span>
+            <span>{{ settingsStore.t('settings.clear_cache') }}</span>
           </button>
         </div>
       </div>
@@ -304,111 +304,111 @@
       <!-- Tab 3: Security Change Password -->
       <div v-if="activeTab === 'security'" class="max-w-md gap-6 space-y-4 animate-fadeIn">
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Amaldagi parol</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.old_password') }}</label>
+          <input
             v-model="securityForm.old_password"
-            type="password" 
-            placeholder="Amaldagi parol..."
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            type="password"
+            :placeholder="settingsStore.t('settings.old_password') + '...'"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Yangi parol</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.new_password_field') }}</label>
+          <input
             v-model="securityForm.new_password"
-            type="password" 
-            placeholder="Yangi parol..."
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            type="password"
+            :placeholder="settingsStore.t('settings.new_password_field') + '...'"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
         <div class="space-y-1.5">
-          <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Yangi parolni tasdiqlash</label>
-          <input 
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.confirm_new_password') }}</label>
+          <input
             v-model="securityForm.new_password_confirmation"
-            type="password" 
-            placeholder="Yangi parolni tasdiqlash..."
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+            type="password"
+            :placeholder="settingsStore.t('settings.confirm_new_password') + '...'"
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
           />
         </div>
 
-        <button 
+        <button
           @click="submitPasswordChange"
           class="flex items-center space-x-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition duration-200"
         >
           <KeyRound class="w-4 h-4" />
-          <span>Parolni yangilash</span>
+          <span>{{ settingsStore.t('settings.update_password') }}</span>
         </button>
       </div>
 
       <!-- Tab 4: Telegram Bot Integration -->
-      <div v-if="activeTab === 'telegram'" class="max-w-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl space-y-6 animate-fadeIn">
+      <div v-if="activeTab === 'telegram'" class="max-w-2xl bg-white backdrop-blur-xl border border-slate-200 p-6 md:p-8 rounded-3xl space-y-6 animate-fadeIn shadow-sm">
         <div class="flex items-start space-x-4">
           <div class="p-3 bg-[#229ED9]/10 text-[#229ED9] rounded-2xl shrink-0">
             <Send class="w-6 h-6" />
           </div>
           <div>
-            <h3 class="text-base font-bold text-white">Telegram Bildirishnomalari</h3>
-            <p class="text-xs text-slate-400 mt-0.5">Tizimdagi yangi buyurtmalar, bekor qilingan buyurtmalar va past ombor qoldig'i haqida real-vaqt rejimida guruh yoki kanalga xabar jo'natish.</p>
+            <h3 class="text-base font-bold text-slate-900">{{ settingsStore.t('settings.telegram_title') }}</h3>
+            <p class="text-xs text-slate-500 mt-0.5">{{ settingsStore.t('settings.telegram_desc') }}</p>
           </div>
         </div>
 
-        <div class="flex items-center justify-between bg-slate-950/20 border border-white/5 p-4 rounded-2xl">
+        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 p-4 rounded-2xl">
           <div>
-            <span class="text-xs font-semibold text-white">Bot bildirishnomalari holati</span>
-            <span class="text-3xs text-slate-500 block mt-0.5">Bildirishnomalarni Telegram orqali yuborishni faollashtirish.</span>
+            <span class="text-xs font-semibold text-slate-900">{{ settingsStore.t('settings.telegram_status') }}</span>
+            <span class="text-3xs text-slate-500 block mt-0.5">{{ settingsStore.t('settings.telegram_status_hint') }}</span>
           </div>
           <label class="flex items-center space-x-2.5 cursor-pointer">
-            <input 
-              type="checkbox" 
-              v-model="telegramForm.telegram_notifications_enabled" 
+            <input
+              type="checkbox"
+              v-model="telegramForm.telegram_notifications_enabled"
               class="sr-only peer"
             />
-            <div class="w-9 h-5 bg-slate-800 border border-slate-700 rounded-full peer peer-checked:bg-emerald-600 peer-checked:border-emerald-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 peer-checked:after:bg-white relative"></div>
-            <span class="text-xs font-medium text-slate-300">{{ telegramForm.telegram_notifications_enabled ? 'Yoqilgan' : 'O\'chirilgan' }}</span>
+            <div class="w-9 h-5 bg-slate-300 border border-slate-300 rounded-full peer peer-checked:bg-emerald-600 peer-checked:border-emerald-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 relative"></div>
+            <span class="text-xs font-medium text-slate-600">{{ telegramForm.telegram_notifications_enabled ? settingsStore.t('settings.enabled') : settingsStore.t('settings.disabled') }}</span>
           </label>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div class="space-y-1.5 md:col-span-2">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Telegram Bot Token</label>
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.bot_token') }}</label>
             <div class="relative">
-              <input 
+              <input
                 v-model="telegramForm.telegram_bot_token"
-                type="text" 
+                type="text"
                 placeholder="8846820582:AAEY..."
-                class="w-full pl-4 pr-10 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition font-mono"
+                class="w-full pl-4 pr-10 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition font-mono"
               />
             </div>
-            <span class="text-4xs text-slate-600">@BotFather orqali olingan maxfiy token.</span>
+            <span class="text-4xs text-slate-400">{{ settingsStore.t('settings.bot_token_hint') }}</span>
           </div>
 
           <div class="space-y-1.5 md:col-span-2">
-            <label class="text-3xs text-slate-400 font-bold uppercase tracking-wider">Telegram Chat ID (Guruh yoki Kanal nomi)</label>
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.chat_id') }}</label>
             <div class="relative">
-              <input 
+              <input
                 v-model="telegramForm.telegram_chat_id"
-                type="text" 
+                type="text"
                 placeholder="-100123456789 yoki @my_channel"
-                class="w-full pl-4 pr-10 py-2.5 rounded-xl bg-slate-950/40 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition font-mono"
+                class="w-full pl-4 pr-10 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition font-mono"
               />
             </div>
-            <span class="text-4xs text-slate-600">Mijozlar guruhi yoki jamoaviy kanal havolasi (Masalan: @VRestro_uz).</span>
+            <span class="text-4xs text-slate-400">{{ settingsStore.t('settings.chat_id_hint') }}</span>
           </div>
 
           <div class="md:col-span-2 pt-2 flex items-center justify-between">
-            <button 
+            <button
               type="button"
               @click="testTelegramConnection"
               :disabled="testingConnection"
-              class="flex items-center space-x-2 px-5 py-3 rounded-xl bg-indigo-600/10 border border-indigo-500/20 hover:bg-indigo-600 hover:text-white text-xs font-semibold text-indigo-400 transition duration-200"
+              class="flex items-center space-x-2 px-5 py-3 rounded-xl bg-indigo-600/10 border border-indigo-500/20 hover:bg-indigo-600 hover:text-white text-xs font-semibold text-indigo-600 transition duration-200"
             >
               <Send v-if="!testingConnection" class="w-4 h-4" />
               <Loader2 v-else class="w-4 h-4 animate-spin" />
-              <span>Ulanishni tekshirish (Test Message)</span>
+              <span>{{ settingsStore.t('settings.test_connection') }}</span>
             </button>
-            <span class="text-4xs text-slate-500">Kanalga botni administrator qilib qo'shish esdan chiqmasin!</span>
+            <span class="text-4xs text-slate-500">{{ settingsStore.t('settings.test_connection_hint') }}</span>
           </div>
         </div>
       </div>
@@ -416,18 +416,18 @@
     </div>
 
     <!-- Floating Global Save Button -->
-    <div 
+    <div
       v-if="activeTab !== 'security'"
       class="fixed bottom-6 right-6 z-40"
     >
-      <button 
+      <button
         @click="saveAllSettings"
         :disabled="settingStore.loading"
         class="flex items-center space-x-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm font-bold rounded-2xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition duration-200 animate-pulse-glow"
       >
         <Save v-if="!settingStore.loading" class="w-5 h-5" />
         <Loader2 v-else class="w-5 h-5 animate-spin" />
-        <span>Sozlamalarni saqlash</span>
+        <span>{{ settingsStore.t('settings.save_button') }}</span>
       </button>
     </div>
   </div>
@@ -461,10 +461,10 @@ const successMsg = ref('');
 const errorMsg = ref('');
 
 const tabs = [
-  { id: 'general', label: 'Asosiy Sozlamalar' },
-  { id: 'finance', label: 'Moliya va Lokalizatsiya' },
-  { id: 'telegram', label: 'Telegram & Ogohlantirishlar' },
-  { id: 'security', label: 'Xavfsizlik' }
+  { id: 'general', labelKey: 'settings.tab_general' },
+  { id: 'finance', labelKey: 'settings.tab_finance' },
+  { id: 'telegram', labelKey: 'settings.tab_telegram' },
+  { id: 'security', labelKey: 'settings.tab_security' }
 ];
 
 // Form models
@@ -574,7 +574,7 @@ const submitPasswordChange = async () => {
   errorMsg.value = '';
 
   if (!securityForm.value.old_password || !securityForm.value.new_password || !securityForm.value.new_password_confirmation) {
-    errorMsg.value = 'Iltimos parollarni to\'liq to\'ldiring.';
+    errorMsg.value = settingsStore.t('settings.fill_passwords');
     return;
   }
 
