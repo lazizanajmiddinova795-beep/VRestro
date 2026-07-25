@@ -89,6 +89,32 @@
               Bosh sahifaga qaytish
             </router-link>
           </div>
+
+          <!-- Mobile App Download Buttons -->
+          <div class="flex items-center justify-center gap-3 pt-3">
+            <a 
+              href="https://play.google.com" 
+              target="_blank"
+              class="flex items-center space-x-2 px-4 py-2.5 bg-slate-950/60 hover:bg-slate-900/80 border border-white/10 rounded-xl text-white transition hover:scale-105 shadow-md group"
+            >
+              <Play class="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition" />
+              <div class="text-left">
+                <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold leading-tight">Yuklab olish</span>
+                <span class="block text-xs font-black leading-tight">Android APK</span>
+              </div>
+            </a>
+            <a 
+              href="https://apps.apple.com" 
+              target="_blank"
+              class="flex items-center space-x-2 px-4 py-2.5 bg-slate-950/60 hover:bg-slate-900/80 border border-white/10 rounded-xl text-white transition hover:scale-105 shadow-md group"
+            >
+              <Apple class="w-5 h-5 text-white group-hover:text-indigo-400 transition" />
+              <div class="text-left">
+                <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold leading-tight">Yuklab olish</span>
+                <span class="block text-xs font-black leading-tight">App Store</span>
+              </div>
+            </a>
+          </div>
         </div>
 
         <!-- STEP 2: Telegram OTP Verification -->
@@ -170,7 +196,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ChefHat, User, Lock, ArrowRight, KeyRound, CheckCircle } from 'lucide-vue-next';
+import { ChefHat, User, Lock, ArrowRight, KeyRound, CheckCircle, Apple, Play } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingsStore } from '@/stores/settings';
 
