@@ -70,18 +70,18 @@
 
         <div v-else-if="dashboardStore.metrics" class="space-y-8 animate-fadeIn">
           <!-- Dashboard Widgets -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
             
             <!-- Widget 1: Revenue -->
-            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(16,185,129,0.12)] transition-all duration-300">
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.today_revenue') }}</span>
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-500/20">
-                  <DollarSign class="w-5 h-5" />
+            <div class="bg-white border border-slate-200/90 rounded-2xl md:rounded-3xl p-3 md:p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(16,185,129,0.12)] transition-all duration-300">
+              <div class="flex items-center justify-between mb-2 md:mb-4">
+                <span class="text-[9px] md:text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.today_revenue') }}</span>
+                <div class="w-8 h-8 md:w-11 md:h-11 rounded-xl md:rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-500/20">
+                  <DollarSign class="w-4 h-4 md:w-5 md:h-5" />
                 </div>
               </div>
-              <div class="space-y-2">
-                <h3 class="text-2xl font-black text-slate-900 tracking-tight">
+              <div class="space-y-1 md:space-y-2">
+                <h3 class="text-lg md:text-2xl font-black text-slate-900 tracking-tight">
                   {{ formatCurrency(dashboardStore.metrics?.widgets?.revenue?.value || 0) }}
                 </h3>
                 <div class="flex items-center space-x-2">
@@ -99,15 +99,15 @@
             </div>
 
             <!-- Widget 2: Total Orders -->
-            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(99,102,241,0.12)] transition-all duration-300">
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.today_orders') }}</span>
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20">
-                  <ShoppingBag class="w-5 h-5" />
+            <div class="bg-white border border-slate-200/90 rounded-2xl md:rounded-3xl p-3 md:p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(99,102,241,0.12)] transition-all duration-300">
+              <div class="flex items-center justify-between mb-2 md:mb-4">
+                <span class="text-[9px] md:text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.today_orders') }}</span>
+                <div class="w-8 h-8 md:w-11 md:h-11 rounded-xl md:rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20">
+                  <ShoppingBag class="w-4 h-4 md:w-5 md:h-5" />
                 </div>
               </div>
-              <div class="space-y-2">
-                <h3 class="text-2xl font-black text-slate-900 tracking-tight">
+              <div class="space-y-1 md:space-y-2">
+                <h3 class="text-lg md:text-2xl font-black text-slate-900 tracking-tight">
                   {{ dashboardStore.metrics?.widgets?.orders?.total || 0 }} ta
                 </h3>
                 <p class="text-xs text-slate-500 font-bold flex items-center space-x-2">
@@ -119,15 +119,15 @@
             </div>
 
             <!-- Widget 3: Kitchen Load -->
-            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(245,158,11,0.12)] transition-all duration-300">
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.kitchen_load_title') }}</span>
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-bold shadow-md shadow-amber-500/20">
-                  <ChefHat class="w-5 h-5" />
+            <div class="bg-white border border-slate-200/90 rounded-2xl md:rounded-3xl p-3 md:p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(245,158,11,0.12)] transition-all duration-300">
+              <div class="flex items-center justify-between mb-2 md:mb-4">
+                <span class="text-[9px] md:text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.kitchen_load_title') }}</span>
+                <div class="w-8 h-8 md:w-11 md:h-11 rounded-xl md:rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-bold shadow-md shadow-amber-500/20">
+                  <ChefHat class="w-4 h-4 md:w-5 md:h-5" />
                 </div>
               </div>
-              <div class="space-y-2">
-                <h3 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+              <div class="space-y-1 md:space-y-2">
+                <h3 class="text-lg md:text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
                   <span>{{ dashboardStore.metrics?.widgets?.kitchen_load || 0 }} ta</span>
                   <span v-if="(dashboardStore.metrics?.widgets?.kitchen_load || 0) > 0" class="inline-flex w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
                 </h3>
@@ -136,15 +136,15 @@
             </div>
 
             <!-- Widget 4: Daily Expenses -->
-            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(244,63,94,0.12)] transition-all duration-300">
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.today_expenses') }}</span>
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-bold shadow-md shadow-rose-500/20">
-                  <TrendingDown class="w-5 h-5" />
+            <div class="bg-white border border-slate-200/90 rounded-2xl md:rounded-3xl p-3 md:p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:shadow-[0_15px_30px_-5px_rgba(244,63,94,0.12)] transition-all duration-300">
+              <div class="flex items-center justify-between mb-2 md:mb-4">
+                <span class="text-[9px] md:text-xs font-extrabold text-slate-500 tracking-wider uppercase">{{ settingsStore.t('dashboard.today_expenses') }}</span>
+                <div class="w-8 h-8 md:w-11 md:h-11 rounded-xl md:rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-bold shadow-md shadow-rose-500/20">
+                  <TrendingDown class="w-4 h-4 md:w-5 md:h-5" />
                 </div>
               </div>
-              <div class="space-y-2">
-                <h3 class="text-2xl font-black text-slate-900 tracking-tight">
+              <div class="space-y-1 md:space-y-2">
+                <h3 class="text-lg md:text-2xl font-black text-slate-900 tracking-tight">
                   {{ formatCurrency(dashboardStore.metrics?.widgets?.expenses || 0) }}
                 </h3>
                 <p class="text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.expenses_desc') }}</p>

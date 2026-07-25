@@ -38,44 +38,67 @@
         <div
           v-for="food in filteredFoods"
           :key="food.id"
-          class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 hover:border-slate-300 transition duration-200"
+          class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-slate-300 transition duration-200"
+          :class="{'border-indigo-200 bg-indigo-50/30': expandedFoodId === food.id}"
         >
-          <div class="flex items-center space-x-3 pb-3 border-b border-slate-100">
-            <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
+          <div
+            class="flex items-center space-x-3 p-4 md:p-5 md:pb-3 md:border-b md:border-slate-100 cursor-pointer md:cursor-default"
+            @click="toggleFood(food.id)"
+          >
+            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
               <img v-if="food.image_url" :src="food.image_url" :alt="food.name" class="w-full h-full object-cover" />
-              <Utensils v-else class="w-6 h-6 text-slate-400" />
+              <Utensils v-else class="w-5 h-5 md:w-6 md:h-6 text-slate-400" />
             </div>
             <div class="overflow-hidden flex-grow">
-              <h3 class="text-base font-black text-slate-900 truncate">{{ settingsStore.t('app_title') }} - {{ food.name }}</h3>
+              <h3 class="text-sm md:text-base font-black text-slate-900 truncate">{{ food.name }}</h3>
               <span class="text-xs font-bold text-slate-500 block">{{ food.category?.name || 'Kategoriya' }}</span>
             </div>
+            <!-- Mobile expand chevron -->
+            <ChevronDown
+              class="w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 md:hidden"
+              :class="{'rotate-180 text-indigo-600': expandedFoodId === food.id}"
+            />
             <button
               v-if="canEdit"
-              @click="openEditModal(food)"
-              class="p-2 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white transition duration-200 shrink-0"
+              @click.stop="openEditModal(food)"
+              class="p-2 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white transition duration-200 shrink-0 hidden md:block"
               title="Retseptni tahrirlash"
             >
               <Edit3 class="w-4 h-4" />
             </button>
           </div>
 
-          <!-- Recipe Ingredients List -->
-          <div class="space-y-2">
-            <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Tarkibiy Masalliqlar:</h4>
-            <div v-if="food.recipes && food.recipes.length > 0" class="divide-y divide-slate-100">
-              <div
-                v-for="recipe in food.recipes"
-                :key="recipe.id"
-                class="py-2 flex items-center justify-between text-xs"
+          <!-- Recipe Ingredients List: always visible on md+, collapsible on mobile -->
+          <div
+            class="overflow-hidden transition-all duration-200"
+            :class="expandedFoodId === food.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 md:max-h-none md:opacity-100'"
+          >
+            <div class="px-4 pb-4 md:p-5 md:pt-0 space-y-2">
+              <!-- Mobile edit button -->
+              <button
+                v-if="canEdit"
+                @click.stop="openEditModal(food)"
+                class="w-full py-2 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold flex items-center justify-center space-x-1 md:hidden mb-2"
               >
-                <span class="font-bold text-slate-800">{{ recipe.ingredient?.name || 'Masalliq' }}</span>
-                <span class="font-extrabold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md">
-                  {{ recipe.quantity_required }} {{ recipe.ingredient?.unit || 'kg' }}
-                </span>
+                <Edit3 class="w-3.5 h-3.5" />
+                <span>Retseptni tahrirlash</span>
+              </button>
+              <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Tarkibiy Masalliqlar:</h4>
+              <div v-if="food.recipes && food.recipes.length > 0" class="divide-y divide-slate-100">
+                <div
+                  v-for="recipe in food.recipes"
+                  :key="recipe.id"
+                  class="py-2 flex items-center justify-between text-xs"
+                >
+                  <span class="font-bold text-slate-800">{{ recipe.ingredient?.name || 'Masalliq' }}</span>
+                  <span class="font-extrabold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md">
+                    {{ recipe.quantity_required }} {{ recipe.ingredient?.unit || 'kg' }}
+                  </span>
+                </div>
               </div>
-            </div>
-            <div v-else class="text-xs text-slate-400 italic py-2">
-              Retsept masalliqlari kiritilmagan.
+              <div v-else class="text-xs text-slate-400 italic py-2">
+                Retsept masalliqlari kiritilmagan.
+              </div>
             </div>
           </div>
         </div>
@@ -160,7 +183,7 @@ import { ref, computed, onMounted } from 'vue';
 import ChefLayout from '@/components/ChefLayout.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useIngredientsStore } from '@/stores/ingredients';
-import { BookOpen, Search, Loader2, AlertTriangle, Utensils, Edit3, X, Trash2 } from 'lucide-vue-next';
+import { BookOpen, Search, Loader2, AlertTriangle, Utensils, Edit3, X, Trash2, ChevronDown } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const ingredientsStore = useIngredientsStore();
@@ -168,6 +191,11 @@ const foods = ref([]);
 const loading = ref(true);
 const error = ref('');
 const searchQuery = ref('');
+const expandedFoodId = ref(null);
+
+const toggleFood = (foodId) => {
+  expandedFoodId.value = expandedFoodId.value === foodId ? null : foodId;
+};
 
 // Chefs can view every recipe; only Admins (and Chefs, per the restaurant's
 // own workflow) are allowed to change ingredient quantities here.

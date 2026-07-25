@@ -2,7 +2,7 @@
   <div class="flex-grow p-6 flex flex-col h-screen overflow-hidden">
 
     <!-- Top Header -->
-    <div class="flex items-center justify-between mb-6 shrink-0">
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 shrink-0 gap-3">
       <div>
         <h1 class="text-2xl font-bold text-slate-900 tracking-wide">
           {{ settingsStore.t('warehouse.title') }}
@@ -11,12 +11,12 @@
       </div>
 
       <!-- Navigation tabs -->
-      <div class="flex space-x-1.5 bg-slate-100 p-1 rounded-2xl border border-slate-200">
+      <div class="flex space-x-1.5 bg-slate-100 p-1 rounded-2xl border border-slate-200 overflow-x-auto shrink-0">
         <button
           v-for="t in ['summary', 'history', 'builder']"
           :key="t"
           @click="activeTab = t"
-          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200 capitalize"
+          class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200 capitalize whitespace-nowrap"
           :class="activeTab === t ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-900'"
         >
           {{ tabLabel(t) }}
