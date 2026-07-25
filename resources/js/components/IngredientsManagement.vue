@@ -21,42 +21,42 @@
     </div>
 
     <!-- Analytics Mini-widgets -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 shrink-0">
+    <div class="flex md:grid md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-6 shrink-0 overflow-x-auto pb-1 md:pb-0">
       <!-- Total Items Widget -->
-      <div class="bg-white border border-slate-200 shadow-sm rounded-3xl p-5 flex items-center space-x-4">
-        <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
-          <Database class="w-6 h-6" />
+      <div class="bg-white border border-slate-200 shadow-sm rounded-2xl md:rounded-3xl p-3 md:p-5 flex items-center space-x-3 md:space-x-4 min-w-[160px] md:min-w-0">
+        <div class="w-9 h-9 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+          <Database class="w-4 h-4 md:w-6 md:h-6" />
         </div>
         <div>
-          <span class="block text-3xs font-bold uppercase tracking-wider text-slate-500">{{ settingsStore.t('ingredients.total_types') }}</span>
-          <span class="text-xl font-bold text-slate-900 tracking-tight">{{ totalItems }} {{ settingsStore.t('ingredients.types_suffix') }}</span>
+          <span class="block text-[9px] md:text-3xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">{{ settingsStore.t('ingredients.total_types') }}</span>
+          <span class="text-base md:text-xl font-bold text-slate-900 tracking-tight whitespace-nowrap">{{ totalItems }} {{ settingsStore.t('ingredients.types_suffix') }}</span>
         </div>
       </div>
 
       <!-- Low Stock Alerts Widget -->
-      <div class="bg-white border border-slate-200 shadow-sm rounded-3xl p-5 flex items-center space-x-4">
+      <div class="bg-white border border-slate-200 shadow-sm rounded-2xl md:rounded-3xl p-3 md:p-5 flex items-center space-x-3 md:space-x-4 min-w-[180px] md:min-w-0">
         <div
-          class="w-12 h-12 rounded-2xl flex items-center justify-center border transition"
+          class="w-9 h-9 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center border transition shrink-0"
           :class="lowStockCount > 0 ? 'bg-red-50 border-red-200 text-red-500 animate-pulse' : 'bg-slate-100 border-slate-200 text-slate-400'"
         >
-          <AlertTriangle class="w-6 h-6" />
+          <AlertTriangle class="w-4 h-4 md:w-6 md:h-6" />
         </div>
         <div>
-          <span class="block text-3xs font-bold uppercase tracking-wider text-slate-500">{{ settingsStore.t('ingredients.low_stock_widget') }}</span>
-          <span class="text-xl font-bold tracking-tight" :class="lowStockCount > 0 ? 'text-red-500' : 'text-slate-900'">
+          <span class="block text-[9px] md:text-3xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">{{ settingsStore.t('ingredients.low_stock_widget') }}</span>
+          <span class="text-base md:text-xl font-bold tracking-tight whitespace-nowrap" :class="lowStockCount > 0 ? 'text-red-500' : 'text-slate-900'">
             {{ lowStockCount }} ta
           </span>
         </div>
       </div>
 
       <!-- Total Inventory Value Widget -->
-      <div class="bg-white border border-slate-200 shadow-sm rounded-3xl p-5 flex items-center space-x-4">
-        <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
-          <Coins class="w-6 h-6" />
+      <div class="bg-white border border-slate-200 shadow-sm rounded-2xl md:rounded-3xl p-3 md:p-5 flex items-center space-x-3 md:space-x-4 min-w-[200px] md:min-w-0">
+        <div class="w-9 h-9 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+          <Coins class="w-4 h-4 md:w-6 md:h-6" />
         </div>
         <div>
-          <span class="block text-3xs font-bold uppercase tracking-wider text-slate-500">{{ settingsStore.t('ingredients.total_value_widget') }}</span>
-          <span class="text-xl font-bold text-slate-900 tracking-tight">{{ formatCurrency(totalInventoryValue) }}</span>
+          <span class="block text-[9px] md:text-3xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">{{ settingsStore.t('ingredients.total_value_widget') }}</span>
+          <span class="text-base md:text-xl font-bold text-slate-900 tracking-tight whitespace-nowrap">{{ formatCurrency(totalInventoryValue) }}</span>
         </div>
       </div>
     </div>
@@ -113,17 +113,17 @@
           <table class="w-full border-collapse text-left">
             <thead>
               <tr class="border-b border-slate-200 text-slate-500 text-3xs font-bold uppercase tracking-wider bg-slate-50">
-                <th class="px-6 py-4">{{ settingsStore.t('name') }}</th>
-                <th class="px-6 py-4">{{ settingsStore.t('warehouse.col_sku') }}</th>
-                <th class="px-6 py-4">{{ settingsStore.t('ingredients.col_qty_unit') }}</th>
-                <th class="px-6 py-4">{{ settingsStore.t('ingredients.col_min_threshold') }}</th>
-                <th class="px-6 py-4">{{ settingsStore.t('ingredients.col_unit_price') }}</th>
-                <th class="px-6 py-4">{{ settingsStore.t('warehouse.col_total_value') }}</th>
-                <th class="px-6 py-4">{{ settingsStore.t('status') }}</th>
-                <th class="px-6 py-4 text-right">{{ settingsStore.t('action') }}</th>
+                <th class="px-3 md:px-6 py-3 md:py-4">{{ settingsStore.t('name') }}</th>
+                <th class="px-3 md:px-6 py-3 md:py-4">{{ settingsStore.t('warehouse.col_sku') }}</th>
+                <th class="px-3 md:px-6 py-3 md:py-4">{{ settingsStore.t('ingredients.col_qty_unit') }}</th>
+                <th class="px-3 md:px-6 py-3 md:py-4">{{ settingsStore.t('ingredients.col_min_threshold') }}</th>
+                <th class="px-3 md:px-6 py-3 md:py-4">{{ settingsStore.t('ingredients.col_unit_price') }}</th>
+                <th class="px-3 md:px-6 py-3 md:py-4">{{ settingsStore.t('warehouse.col_total_value') }}</th>
+                <th class="px-3 md:px-6 py-3 md:py-4">{{ settingsStore.t('status') }}</th>
+                <th class="px-3 md:px-6 py-3 md:py-4 text-right">{{ settingsStore.t('action') }}</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100 text-sm">
+            <tbody class="divide-y divide-slate-100 text-xs md:text-sm">
               <tr
                 v-for="ing in ingredientsStore.ingredients"
                 :key="ing.id"
@@ -131,37 +131,37 @@
                 :class="ing.is_low_stock ? 'bg-red-50/50 hover:bg-red-50' : ''"
               >
                 <!-- Name -->
-                <td class="px-6 py-4.5 font-bold text-slate-900 tracking-wide group-hover:text-indigo-600 transition-colors">
+                <td class="px-3 md:px-6 py-3 md:py-4.5 font-bold text-slate-900 tracking-wide group-hover:text-indigo-600 transition-colors">
                   {{ ing.name }}
                 </td>
 
                 <!-- SKU -->
-                <td class="px-6 py-4.5 font-mono text-xs text-slate-500">
+                <td class="px-3 md:px-6 py-3 md:py-4.5 font-mono text-xs text-slate-500">
                   {{ ing.sku }}
                 </td>
 
                 <!-- Quantity -->
-                <td class="px-6 py-4.5 font-semibold text-slate-900">
+                <td class="px-3 md:px-6 py-3 md:py-4.5 font-semibold text-slate-900">
                   {{ formatDecimal(ing.quantity) }} <span class="text-xs text-slate-500 font-normal">{{ ing.unit }}</span>
                 </td>
 
                 <!-- Low threshold -->
-                <td class="px-6 py-4.5 font-semibold text-slate-500">
+                <td class="px-3 md:px-6 py-3 md:py-4.5 font-semibold text-slate-500">
                   {{ formatDecimal(ing.low_stock_threshold) }} <span class="text-xs text-slate-400 font-normal">{{ ing.unit }}</span>
                 </td>
 
                 <!-- Cost Price -->
-                <td class="px-6 py-4.5 text-slate-600">
+                <td class="px-3 md:px-6 py-3 md:py-4.5 text-slate-600">
                   {{ formatCurrency(ing.cost_price) }}
                 </td>
 
                 <!-- Total Value -->
-                <td class="px-6 py-4.5 font-bold text-slate-600">
+                <td class="px-3 md:px-6 py-3 md:py-4.5 font-bold text-slate-600">
                   {{ formatCurrency(ing.total_value) }}
                 </td>
 
                 <!-- Alert Badge -->
-                <td class="px-6 py-4.5">
+                <td class="px-3 md:px-6 py-3 md:py-4.5">
                   <span
                     class="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-3xs font-bold border"
                     :class="ing.is_low_stock ? 'bg-red-50 border-red-200 text-red-600 animate-pulse' : 'bg-emerald-50 border-emerald-200 text-emerald-600'"
@@ -172,7 +172,7 @@
                 </td>
 
                 <!-- Actions -->
-                <td class="px-6 py-4.5 text-right space-x-1.5 whitespace-nowrap">
+                <td class="px-3 md:px-6 py-3 md:py-4.5 text-right space-x-1.5 whitespace-nowrap">
                   <!-- Stock Adjustment trigger -->
                   <button
                     @click="openAdjustModal(ing)"

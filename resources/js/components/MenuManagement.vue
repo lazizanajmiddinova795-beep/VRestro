@@ -2,7 +2,7 @@
   <div class="flex-grow p-6 flex flex-col md:flex-row h-screen overflow-hidden gap-6">
 
     <!-- Left Column: Categories Management -->
-    <aside class="w-full md:w-80 bg-white border border-slate-200 shadow-sm rounded-3xl p-5 flex flex-col justify-between shrink-0 h-full">
+    <aside class="w-full md:w-80 bg-white border border-slate-200 shadow-sm rounded-3xl p-5 flex flex-col justify-between shrink-0 max-h-[40vh] md:max-h-none md:h-full overflow-hidden">
       <div class="space-y-6 overflow-hidden flex flex-col h-full">
         <!-- Header -->
         <div class="flex justify-between items-center shrink-0">
@@ -40,7 +40,7 @@
           <div
             v-for="cat in menuStore.categories"
             :key="cat.id"
-            class="group w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition hover:bg-slate-50"
+            class="group w-full flex items-center justify-between px-4 py-3 md:py-2.5 rounded-xl transition hover:bg-slate-50 cursor-pointer"
             :class="menuStore.selectedCategoryId === cat.id ? 'bg-indigo-50 border border-indigo-100' : ''"
           >
             <button
