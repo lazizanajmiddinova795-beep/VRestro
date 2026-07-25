@@ -129,7 +129,7 @@
               <div class="space-y-2">
                 <h3 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
                   <span>{{ dashboardStore.metrics?.widgets?.kitchen_load || 0 }} ta</span>
-                  <span v-if="dashboardStore.metrics?.widgets?.kitchen_load || 0 > 0" class="inline-flex w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+                  <span v-if="(dashboardStore.metrics?.widgets?.kitchen_load || 0) > 0" class="inline-flex w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
                 </h3>
                 <p class="text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.kitchen_load_desc') }}</p>
               </div>
@@ -186,7 +186,7 @@
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-200/80 dark:divide-white/5">
-                    <tr v-for="(item, idx) in dashboardStore.metrics.tables.top_selling" :key="item.name" class="hover:bg-slate-100/60 dark:hover:bg-white/5 transition-colors duration-150">
+                    <tr v-for="(item, idx) in (dashboardStore.metrics?.tables?.top_selling || [])" :key="item.name" class="hover:bg-slate-100/60 dark:hover:bg-white/5 transition-colors duration-150">
                       <td class="py-3 font-bold">
                         <span class="w-6 h-6 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-black border border-indigo-500/20">
                           {{ idx + 1 }}
@@ -196,7 +196,7 @@
                       <td class="py-3 text-center font-bold text-slate-700 dark:text-slate-300 text-sm">{{ item.quantity }} ta</td>
                       <td class="py-3 text-right font-black text-indigo-600 dark:text-indigo-400 text-sm">{{ formatCurrency(item.revenue) }}</td>
                     </tr>
-                    <tr v-if="dashboardStore.metrics.tables.top_selling.length === 0">
+                    <tr v-if="!dashboardStore.metrics?.tables?.top_selling?.length">
                       <td colspan="4" class="py-8 text-center text-xs text-slate-500 font-bold">{{ settingsStore.t('no_data') }}</td>
                     </tr>
                   </tbody>
@@ -222,7 +222,7 @@
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-200/80 dark:divide-white/5">
-                    <tr v-for="order in dashboardStore.metrics?.tables?.live_orders" :key="order.id" class="hover:bg-slate-100/60 dark:hover:bg-white/5 transition-colors duration-150">
+                    <tr v-for="order in (dashboardStore.metrics?.tables?.live_orders || [])" :key="order.id" class="hover:bg-slate-100/60 dark:hover:bg-white/5 transition-colors duration-150">
                       <td class="py-3 font-black text-slate-900 dark:text-white text-sm">#{{ order.id }}</td>
                       <td class="py-3">
                         <span class="block text-slate-900 dark:text-slate-200 font-bold text-sm">{{ order.table_id }}-stol</span>
@@ -239,7 +239,7 @@
                       <td class="py-3 text-right font-black text-indigo-600 dark:text-indigo-400 text-sm">{{ formatCurrency(order.total_amount) }}</td>
                       <td class="py-3 text-right text-xs text-slate-500 font-bold">{{ order.created_at }}</td>
                     </tr>
-                    <tr v-if="dashboardStore.metrics?.tables?.live_orders.length === 0">
+                    <tr v-if="!dashboardStore.metrics?.tables?.live_orders?.length">
                       <td colspan="5" class="py-8 text-center text-xs text-slate-500 font-bold">{{ settingsStore.t('dashboard.no_active_orders') }}</td>
                     </tr>
                   </tbody>
