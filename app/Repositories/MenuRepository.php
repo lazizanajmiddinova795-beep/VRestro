@@ -81,7 +81,7 @@ class MenuRepository implements MenuRepositoryInterface
      */
     public function getAllFoods(array $filters): Collection
     {
-        $query = Food::with('category');
+        $query = Food::with(['category', 'recipes.ingredient']);
 
         // Filter by Category
         if (!empty($filters['category_id'])) {
