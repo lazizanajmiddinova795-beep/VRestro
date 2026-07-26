@@ -2,7 +2,7 @@
   <div class="flex-grow p-6 flex flex-col h-screen overflow-hidden">
     
     <!-- Top Header -->
-    <div class="flex items-center justify-between mb-6 shrink-0">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 shrink-0 gap-4">
       <div>
         <h1 class="text-2xl font-bold text-slate-900 tracking-wide">
           {{ settingsStore.t('staff.title') }}
@@ -10,16 +10,41 @@
         <p class="text-xs text-slate-500">{{ settingsStore.t('staff.subtitle') }}</p>
       </div>
 
-      <!-- Add Staff button -->
-      <button
-        @click="openAddEditModal()"
-        class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-semibold text-sm text-white shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
-      >
-        <UserPlus class="w-4.5 h-4.5" />
-        <span>{{ settingsStore.t('staff.add_button') }}</span>
-      </button>
+      <div class="flex items-center gap-3 flex-wrap">
+        <!-- Tab switcher -->
+        <div class="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200">
+          <button
+            @click="activeTab = 'staff'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200 flex items-center space-x-1.5"
+            :class="activeTab === 'staff' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-800'"
+          >
+            <Users class="w-3.5 h-3.5" />
+            <span>Xodimlar</span>
+          </button>
+          <button
+            @click="activeTab = 'permissions'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200 flex items-center space-x-1.5"
+            :class="activeTab === 'permissions' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-800'"
+          >
+            <ShieldCheck class="w-3.5 h-3.5" />
+            <span>Huquqlar</span>
+          </button>
+        </div>
+
+        <!-- Add Staff button (only on staff tab) -->
+        <button
+          v-if="activeTab === 'staff'"
+          @click="openAddEditModal()"
+          class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-semibold text-sm text-white shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
+        >
+          <UserPlus class="w-4.5 h-4.5" />
+          <span>{{ settingsStore.t('staff.add_button') }}</span>
+        </button>
+      </div>
     </div>
 
+    <!-- ========== TAB 1: STAFF LIST ========== -->
+    <template v-if="activeTab === 'staff'">
     <!-- Filters Row -->
     <div class="bg-white border border-slate-200 shadow-sm rounded-3xl p-5 mb-6 grid grid-cols-1 sm:grid-cols-4 gap-4 shrink-0">
       <!-- Search Input -->
@@ -193,6 +218,10 @@
         <p class="text-slate-500 text-xs font-medium">{{ settingsStore.t('staff.not_found') }}</p>
       </div>
     </div>
+    </template>
+
+    <!-- ========== TAB 2: PERMISSIONS ========== -->
+    <StaffPermissions v-else-if="activeTab === 'permissions'" />
 
     <!-- MODAL: Add / Edit Employee -->
     <div
@@ -361,10 +390,14 @@ import {
 import { useStaffStore } from '@/stores/staff';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingsStore } from '@/stores/settings';
+import StaffPermissions from '@/components/StaffPermissions.vue';
 
 const staffStore = useStaffStore();
 const authStore = useAuthStore();
 const settingsStore = useSettingsStore();
+
+// Active tab: 'staff' | 'permissions'
+const activeTab = ref('staff');
 
 // Whether the currently logged-in user is allowed to edit/deactivate/delete a
 // given staff member. Only a super-admin may touch another super-admin's account.
