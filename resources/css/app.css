@@ -300,4 +300,17 @@ html.night-filter {
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
 }
 
+/* ── Font size scaling via data-font-size attribute ── */
+:root,
+[data-font-size="medium"] {
+  font-size: 14px;
+}
+
+[data-font-size="small"] {
+  font-size: 12px;
+}
+
+[data-font-size="large"] {
+  font-size: 16px;
+}
 
