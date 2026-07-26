@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -43,6 +44,15 @@ class AuthController extends Controller
             ]);
         }
 
+        // Log direct login (no OTP)
+        ActivityLog::record(
+            'login',
+            "{$authData['user']->name} tizimga kirdi (to'g'ridan-to'g'ri)",
+            'auth',
+            ['user_id' => $authData['user']->id],
+            $authData['user']
+        );
+
         return response()->json([
             'requires_otp' => false,
             'message' => 'Tizimga kirish muvaffaqiyatli yakunlandi.',
@@ -64,6 +74,15 @@ class AuthController extends Controller
         $authData = $this->authService->verifyOtpAndIssueToken(
             $data['user_id'],
             $data['otp']
+        );
+
+        // Log OTP-verified login
+        ActivityLog::record(
+            'login',
+            "{$authData['user']->name} tizimga kirdi (OTP orqali)",
+            'auth',
+            ['user_id' => $authData['user']->id],
+            $authData['user']
         );
 
         return response()->json([

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Services\OrderService;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use Illuminate\Http\JsonResponse;
@@ -58,6 +59,13 @@ class OrderController extends Controller
 
         $order = $this->orderService->createOrder($data);
 
+        ActivityLog::record(
+            'order_created',
+            "Buyurtma #{$order->id} yaratildi (" . count($data['items']) . " ta taom)",
+            'orders',
+            ['order_id' => $order->id, 'item_count' => count($data['items'])]
+        );
+
         return response()->json([
             'message' => 'Buyurtma muvaffaqiyatli yaratildi.',
             'order' => $order
@@ -96,6 +104,13 @@ class OrderController extends Controller
 
         $order = $this->orderService->updateStatus($id, $data['status']);
 
+        ActivityLog::record(
+            'order_status_changed',
+            "Buyurtma #{$id} statusi '{$data['status']}' ga o'zgartirildi",
+            'orders',
+            ['order_id' => $id, 'status' => $data['status']]
+        );
+
         return response()->json([
             'message' => 'Buyurtma statusi o\'zgartirildi.',
             'order' => $order
@@ -115,6 +130,13 @@ class OrderController extends Controller
         ]);
 
         $order = $this->orderService->cancelOrder($id, $data['cancellation_reason']);
+
+        ActivityLog::record(
+            'order_cancelled',
+            "Buyurtma #{$id} bekor qilindi. Sabab: {$data['cancellation_reason']}",
+            'orders',
+            ['order_id' => $id, 'reason' => $data['cancellation_reason']]
+        );
 
         return response()->json([
             'message' => 'Buyurtma bekor qilindi.',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Http\Requests\ProcessPaymentRequest;
 use App\Repositories\Contracts\PaymentRepositoryInterface;
 use App\Services\PaymentService;
@@ -63,6 +64,13 @@ class PaymentController extends Controller
     {
         $payment = $this->paymentService->processPayment($request->validated());
 
+        ActivityLog::record(
+            'payment_processed',
+            "To'lov qabul qilindi — #{$payment->id} — " . number_format($payment->amount, 0, '.', ' ') . " so'm",
+            'payments',
+            ['payment_id' => $payment->id, 'amount' => $payment->amount, 'method' => $payment->payment_method]
+        );
+
         return response()->json([
             'message' => 'To\'lov muvaffaqiyatli amalga oshirildi.',
             'payment' => $payment
@@ -78,6 +86,13 @@ class PaymentController extends Controller
     public function refund(int $id): JsonResponse
     {
         $payment = $this->paymentService->refundPayment($id);
+
+        ActivityLog::record(
+            'payment_refunded',
+            "To'lov #{$id} qaytarildi (refund)",
+            'payments',
+            ['payment_id' => $id]
+        );
 
         return response()->json([
             'message' => 'To\'lov bekor qilindi (refunded).',

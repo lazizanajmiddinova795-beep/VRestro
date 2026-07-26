@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DashboardController;
 
 use App\Http\Controllers\OrderController;
@@ -152,8 +153,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Settings
     Route::get('/settings', [SettingController::class, 'index']);
-    // Only admins manage credentials — ordinary staff cannot change their
-    // own login/password; that's done for them via the Staff panel.
     Route::middleware('role:Admin')->post('/settings/password', [SettingController::class, 'changePassword']);
     Route::post('/user/profile', [SettingController::class, 'updateProfile']);
     Route::post('/shift/close', [ShiftController::class, 'closeShift']);
@@ -161,6 +160,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/settings', [SettingController::class, 'update']);
         Route::post('/settings/clear-cache', [SettingController::class, 'clearCache']);
         Route::post('/settings/test-telegram', [SettingController::class, 'testTelegram']);
+    });
+
+    // Activity Logs (Admin only)
+    Route::middleware('role:Admin')->group(function () {
+        Route::get('/activity-logs', [ActivityLogController::class, 'index']);
+        Route::delete('/activity-logs/clear', [ActivityLogController::class, 'clear']);
     });
 
     // Waiter panel routes

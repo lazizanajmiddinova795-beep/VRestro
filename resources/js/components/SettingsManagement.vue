@@ -32,6 +32,9 @@
     <!-- Forms Area -->
     <div class="max-w-4xl flex-grow pb-24">
       
+      <!-- Tab: Faoliyat Jurnali (Admin only) -->
+      <ActivityLogPanel v-if="activeTab === 'activity'" />
+
       <!-- Tab 1: General Branding & Display Interface -->
       <div v-if="activeTab === 'general'" class="space-y-6 animate-fadeIn">
         
@@ -434,10 +437,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { Save, UploadCloud, Loader2, KeyRound, Trash2, Send, Settings, Globe, Moon, Eye, Type } from 'lucide-vue-next';
 import { useSettingStore, useSettingsStore } from '@/stores/settings';
 import { useAuthStore } from '@/stores/auth';
+import ActivityLogPanel from '@/components/ActivityLogPanel.vue';
 
 const settingStore = useSettingStore();
 const settingsStore = useSettingsStore();
@@ -460,12 +464,19 @@ const activeTab = ref('general');
 const successMsg = ref('');
 const errorMsg = ref('');
 
-const tabs = [
-  { id: 'general', labelKey: 'settings.tab_general' },
-  { id: 'finance', labelKey: 'settings.tab_finance' },
-  { id: 'telegram', labelKey: 'settings.tab_telegram' },
-  { id: 'security', labelKey: 'settings.tab_security' }
-];
+const tabs = computed(() => {
+  const base = [
+    { id: 'general',  labelKey: 'settings.tab_general' },
+    { id: 'finance',  labelKey: 'settings.tab_finance' },
+    { id: 'telegram', labelKey: 'settings.tab_telegram' },
+    { id: 'security', labelKey: 'settings.tab_security' },
+  ];
+  // Faoliyat jurnali faqat Admin uchun
+  if (authStore.user?.roles?.[0] === 'Admin' || authStore.user?.role === 'Admin') {
+    base.push({ id: 'activity', labelKey: 'settings.tab_activity' });
+  }
+  return base;
+});
 
 // Form models
 const generalForm = ref({
