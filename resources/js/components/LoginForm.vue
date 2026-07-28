@@ -151,6 +151,18 @@
             {{ error }}
           </div>
 
+          <!-- Resend OTP -->
+          <div class="w-full text-center">
+            <button
+              @click="handleResendOtp"
+              :disabled="resendingOtp || submittingOtp"
+              class="text-xs text-indigo-400 hover:text-indigo-300 underline underline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+              <span v-if="resendingOtp">Yangi kod yuborilmoqda...</span>
+              <span v-else>Yangi kod so'rash</span>
+            </button>
+          </div>
+
           <!-- Actions -->
           <div class="w-full space-y-3">
             <button 
@@ -212,6 +224,7 @@ const loading = ref(false);
 const submittingOtp = ref(false);
 const success = ref(false);
 const otpCode = ref('');
+const resendingOtp = ref(false);
 
 const handleCredentialsSubmit = async () => {
   error.value = '';
@@ -319,6 +332,39 @@ const handleBackToCredentials = () => {
   error.value = '';
   authStore.resetLoginFlow();
 };
+
+const handleResendOtp = async () => {
+  error.value = '';
+  resendingOtp.value = true;
+  try {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        login: login.value,
+        password: password.value,
+      }),
+    });
+    const data = await response.json();
+    if (response.ok && data.requires_otp) {
+      otpCode.value = '';
+      error.value = '';
+      // Update tempUser (in case id changed)
+      authStore.setTempUser(data.user);
+    } else {
+      // If credentials expired from memory, ask user to go back
+      error.value = "Qayta kirish uchun 'Orqaga' tugmasini bosing.";
+    }
+  } catch (err) {
+    error.value = 'Yangi kod yuborishda xatolik yuz berdi.';
+  } finally {
+    resendingOtp.value = false;
+  }
+};
+
 </script>
 
 <style>
