@@ -471,8 +471,8 @@ const tabs = computed(() => {
     { id: 'telegram', labelKey: 'settings.tab_telegram' },
     { id: 'security', labelKey: 'settings.tab_security' },
   ];
-  // Faoliyat jurnali faqat Admin uchun
-  if (authStore.user?.roles?.[0] === 'Admin' || authStore.user?.role === 'Admin') {
+  // Faoliyat jurnali faqat Tizim Administratori (is_superadmin) uchun
+  if (authStore.user?.is_superadmin) {
     base.push({ id: 'activity', labelKey: 'settings.tab_activity' });
   }
   return base;

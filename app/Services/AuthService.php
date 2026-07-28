@@ -85,17 +85,18 @@ class AuthService
     protected function presentUser(User $user, $roles): array
     {
         return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'login' => $user->login,
-            'phone' => $user->phone,
-            'email' => $user->email,
+            'id'              => $user->id,
+            'name'            => $user->name,
+            'login'           => $user->login,
+            'phone'           => $user->phone,
+            'email'           => $user->email,
             'passport_number' => $user->passport_number,
-            'birth_date' => $user->birth_date,
-            'address' => $user->address,
-            'avatar_url' => $user->avatar_url,
-            'shift_hours' => $user->shift_hours,
-            'roles' => $roles,
+            'birth_date'      => $user->birth_date,
+            'address'         => $user->address,
+            'avatar_url'      => $user->avatar_url,
+            'shift_hours'     => $user->shift_hours,
+            'is_superadmin'   => (bool) $user->is_superadmin,
+            'roles'           => $roles,
         ];
     }
 

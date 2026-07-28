@@ -8,7 +8,7 @@
         <p class="text-xs font-black text-indigo-800">Huquqlar va Ruxsatlar boshqaruvi</p>
         <p class="text-xs text-indigo-600 mt-0.5 font-medium">
           Har bir xodim uchun tizim bo'limlariga kirish ruxsatini yoqing yoki o'chiring.
-          Admin roli barcha bo'limlarga kirish huquqiga ega.
+          Faqat <b>Tizim Administratori</b> barcha bo'limlarga kirish huquqiga ega (o'zgartirib bo'lmaydi).
         </p>
       </div>
     </div>
@@ -77,14 +77,14 @@
             :key="mod.key"
             class="flex items-center justify-center"
           >
-            <!-- Admin always has all access, show locked icon -->
-            <div v-if="member.roles?.[0]?.name === 'Admin'" class="flex flex-col items-center">
-              <div class="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center">
-                <ShieldCheck class="w-4 h-4 text-emerald-600" />
+            <!-- Superadmin always has all access (locked) -->
+            <div v-if="member.is_superadmin" class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center" title="Tizim Administratori — o'zgartirib bo'lmaydi">
+                <ShieldCheck class="w-4 h-4 text-amber-600" />
               </div>
             </div>
 
-            <!-- Toggle for non-admin -->
+            <!-- Toggle for everyone else (including regular Admin) -->
             <div v-else class="flex flex-col items-center">
               <button
                 @click="togglePermission(member.id, mod.key)"

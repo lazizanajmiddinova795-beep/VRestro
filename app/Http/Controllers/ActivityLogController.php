@@ -10,10 +10,15 @@ class ActivityLogController extends Controller
 {
     /**
      * GET /api/activity-logs
-     * Admin only — returns paginated activity logs with optional filters.
+     * Superadmin only — returns paginated activity logs with optional filters.
      */
     public function index(Request $request): JsonResponse
     {
+        // Only Tizim Administratori (is_superadmin) can view logs
+        if (!$request->user() || !$request->user()->is_superadmin) {
+            return response()->json(['message' => 'Ruxsat yo\'q.'], 403);
+        }
+
         $query = ActivityLog::with('user')
             ->orderBy('created_at', 'desc');
 
@@ -53,11 +58,16 @@ class ActivityLogController extends Controller
 
     /**
      * DELETE /api/activity-logs/clear
-     * Admin only — clears all logs (optional utility).
+     * Superadmin only — clears all logs.
      */
-    public function clear(): JsonResponse
+    public function clear(Request $request): JsonResponse
     {
+        if (!$request->user() || !$request->user()->is_superadmin) {
+            return response()->json(['message' => 'Ruxsat yo\'q.'], 403);
+        }
+
         ActivityLog::truncate();
         return response()->json(['message' => 'Jurnal tozalandi.']);
     }
+
 }
