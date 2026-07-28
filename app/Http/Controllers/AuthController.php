@@ -45,12 +45,13 @@ class AuthController extends Controller
         }
 
         // Log direct login (no OTP)
+        $logUser = \App\Models\User::find($authData['user']['id'] ?? null);
         ActivityLog::record(
             'login',
-            "{$authData['user']->name} tizimga kirdi (to'g'ridan-to'g'ri)",
+            ($authData['user']['name'] ?? 'Noma\'lum') . " tizimga kirdi",
             'auth',
-            ['user_id' => $authData['user']->id],
-            $authData['user']
+            ['user_id' => $authData['user']['id'] ?? null],
+            $logUser
         );
 
         return response()->json([
@@ -77,12 +78,13 @@ class AuthController extends Controller
         );
 
         // Log OTP-verified login
+        $logUser = \App\Models\User::find($data['user_id']);
         ActivityLog::record(
             'login',
-            "{$authData['user']->name} tizimga kirdi (OTP orqali)",
+            ($authData['user']['name'] ?? 'Noma\'lum') . " tizimga kirdi (OTP orqali)",
             'auth',
-            ['user_id' => $authData['user']->id],
-            $authData['user']
+            ['user_id' => $data['user_id']],
+            $logUser
         );
 
         return response()->json([
