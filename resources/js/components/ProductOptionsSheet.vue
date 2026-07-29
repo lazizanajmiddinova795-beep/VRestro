@@ -1,36 +1,36 @@
 <template>
   <div 
-    class="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm p-4"
+    class="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 backdrop-blur-sm p-4"
     @click.self="$emit('close')"
   >
-    <div class="w-full max-w-md bg-slate-900 border border-white/10 rounded-3xl p-6 space-y-6 shadow-2xl animate-slideUp overflow-y-auto max-h-[80vh] mb-20">
+    <div class="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-2xl animate-slideUp overflow-y-auto max-h-[80vh] mb-20">
       <!-- Header Section -->
       <div class="flex justify-between items-start">
         <div class="flex items-center space-x-3">
-          <div class="w-12 h-12 rounded-xl bg-slate-950 flex items-center justify-center overflow-hidden border border-white/5 shrink-0">
+          <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 shrink-0">
             <img v-if="food.image_url" :src="food.image_url" :alt="food.name" class="w-full h-full object-cover" />
-            <ChefHat v-else class="w-6 h-6 text-slate-600 stroke-[1.2]" />
+            <ChefHat v-else class="w-6 h-6 text-slate-400 stroke-[1.2]" />
           </div>
           <div>
-            <h3 class="text-base font-bold text-white leading-snug">{{ settingsStore.t('app_title') }} - {{ food.name }}</h3>
-            <p class="text-xs text-slate-400 mt-0.5">{{ food.description || t('food_desc_fallback') }}</p>
+            <h3 class="text-base font-bold text-slate-900 leading-snug">{{ food.name }}</h3>
+            <p class="text-xs text-slate-500 mt-0.5">{{ food.description || t('food_desc_fallback') }}</p>
           </div>
         </div>
-        <button @click="$emit('close')" class="p-2 rounded-xl bg-white/5 text-slate-400 hover:text-white">
+        <button @click="$emit('close')" class="p-2 rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900">
           <X class="w-5 h-5" />
         </button>
       </div>
 
       <!-- Portion Size Section -->
       <div class="space-y-2">
-        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ t('select_portion') }}</h4>
+        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t('select_portion') }}</h4>
         <div class="grid grid-cols-3 gap-2">
-          <button 
-            v-for="size in portionSizes" 
+          <button
+            v-for="size in portionSizes"
             :key="size.name"
             @click="selectedSize = size"
             class="py-2.5 rounded-xl border text-2xs font-bold transition-all duration-200"
-            :class="selectedSize.name === size.name ? 'bg-violet-600/20 border-violet-500 text-violet-400' : 'bg-slate-950 border-white/5 text-slate-400 hover:border-slate-800'"
+            :class="selectedSize.name === size.name ? 'bg-violet-50 border-violet-400 text-violet-600' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'"
           >
             {{ translateSizeName(size.name) }}
           </button>
@@ -39,14 +39,14 @@
 
       <!-- Quick Modifiers (Checkboxes) -->
       <div class="space-y-2">
-        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ t('extra_wishes') }}</h4>
+        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t('extra_wishes') }}</h4>
         <div class="flex flex-wrap gap-2">
-          <button 
-            v-for="mod in availableModifiers" 
+          <button
+            v-for="mod in availableModifiers"
             :key="mod"
             @click="toggleModifier(mod)"
             class="px-3.5 py-2 rounded-xl border text-3xs font-bold transition-all duration-200"
-            :class="selectedModifiers.includes(mod) ? 'bg-violet-600/20 border-violet-500 text-violet-400' : 'bg-slate-950 border-white/5 text-slate-400 hover:border-slate-800'"
+            :class="selectedModifiers.includes(mod) ? 'bg-violet-50 border-violet-400 text-violet-600' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'"
           >
             {{ selectedModifiers.includes(mod) ? '✓' : '+' }} {{ translateModifier(mod) }}
           </button>
@@ -55,12 +55,12 @@
 
       <!-- Custom Notes Area -->
       <div class="space-y-2">
-        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ t('kitchen_comment') }}</h4>
-        <textarea 
+        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t('kitchen_comment') }}</h4>
+        <textarea
           v-model="customNote"
           rows="2"
           :placeholder="t('comment_placeholder')"
-          class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-violet-500 transition duration-150 resize-none"
+          class="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-violet-500 transition duration-150 resize-none"
         ></textarea>
       </div>
 
@@ -76,8 +76,6 @@
 </template>
 
 <script setup>
-import { useSettingsStore } from '@/stores/settings';
-const settingsStore = useSettingsStore();
 import { ref, computed } from 'vue';
 import { ChefHat, X } from 'lucide-vue-next';
 

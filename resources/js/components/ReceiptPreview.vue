@@ -210,7 +210,7 @@
                 :key="item.id"
                 class="grid grid-cols-12 text-[9px] leading-tight"
               >
-                <span class="col-span-6 truncate">{{ cashierStore.t(item.food?.name?.toLowerCase() || '') }}</span>
+                <span class="col-span-6 truncate">{{ item.food?.name || '' }}</span>
                 <span class="col-span-2 text-center">x{{ item.quantity }}</span>
                 <span class="col-span-4 text-right">{{ formatCurrency(item.quantity * item.price) }}</span>
               </div>
@@ -415,17 +415,17 @@
     <Transition name="fade">
       <div 
         v-if="showPaymentModal" 
-        class="fixed inset-0 z-50 backdrop-blur-md bg-black/60 flex items-center justify-center p-6 no-print"
+        class="fixed inset-0 z-50 backdrop-blur-md bg-slate-900/30 flex items-center justify-center p-6 no-print"
         @click.self="showPaymentModal = false"
       >
-        <div class="w-full max-w-md backdrop-blur-xl bg-slate-900/80 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn text-left text-white max-h-[90vh] overflow-y-auto">
-          
-          <div class="flex justify-between items-center border-b border-white/5 pb-3">
-            <h3 class="text-base font-bold text-white flex items-center space-x-2">
-              <Plus class="w-5 h-5 text-indigo-400" />
+        <div class="w-full max-w-md backdrop-blur-xl bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn text-left text-slate-900 max-h-[90vh] overflow-y-auto">
+
+          <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+            <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+              <Plus class="w-5 h-5 text-indigo-600" />
               <span>{{ cashierStore.t('yangi_tolov_kiritish') }}</span>
             </h3>
-            <button @click="showPaymentModal = false" class="p-1 rounded-lg bg-white/5 text-slate-400 hover:text-white transition">
+            <button @click="showPaymentModal = false" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 transition">
               <X class="w-4 h-4" />
             </button>
           </div>
@@ -433,11 +433,11 @@
           <div class="space-y-4">
             <!-- 1. Select Table (Any table can be selected) -->
             <div class="space-y-1.5">
-              <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">{{ cashierStore.t('stol') }}</label>
-              <select 
-                v-model="newPaymentForm.table_id" 
+              <label class="text-xxs text-slate-500 font-bold uppercase tracking-wider">{{ cashierStore.t('stol') }}</label>
+              <select
+                v-model="newPaymentForm.table_id"
                 @change="handleTableSelect"
-                class="w-full px-4 py-2.5 rounded-xl bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+                class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
               >
                 <option value="" disabled>{{ cashierStore.t('select_table_placeholder') }}</option>
                 <option
@@ -453,16 +453,16 @@
             <!-- Loader or details -->
             <div v-if="loadingOrderDetails" class="py-6 flex flex-col items-center justify-center space-y-2">
               <RotateCw class="w-6 h-6 text-indigo-500 animate-spin" />
-              <span class="text-xxs text-slate-400">{{ cashierStore.t('order_loading') }}</span>
+              <span class="text-xxs text-slate-500">{{ cashierStore.t('order_loading') }}</span>
             </div>
 
             <template v-else-if="selectedOrderDetails">
-              
+
               <!-- Food items adding section (Always available, lets cashier add items manually too!) -->
-              <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3">
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                 <div class="flex justify-between items-center">
-                  <span class="text-xxs text-slate-400 font-bold uppercase tracking-wider">{{ cashierStore.t('buyurtma_tarkibi') }}</span>
-                  <button 
+                  <span class="text-xxs text-slate-500 font-bold uppercase tracking-wider">{{ cashierStore.t('buyurtma_tarkibi') }}</span>
+                  <button
                     type="button"
                     @click="showAddFoodForm = true"
                     class="px-2.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-[10px] font-bold text-white transition flex items-center space-x-1"
@@ -473,48 +473,48 @@
                 </div>
 
                 <!-- Add food inline dropdown -->
-                <div v-if="showAddFoodForm" class="p-3 rounded-xl bg-slate-950/80 border border-indigo-500/20 space-y-3">
+                <div v-if="showAddFoodForm" class="p-3 rounded-xl bg-white border border-indigo-200 space-y-3">
                   <div class="space-y-1.5">
-                    <label class="text-[10px] text-slate-400 font-bold uppercase">{{ cashierStore.t('taom_tanlang') }}</label>
-                    <select 
+                    <label class="text-[10px] text-slate-500 font-bold uppercase">{{ cashierStore.t('taom_tanlang') }}</label>
+                    <select
                       v-model="addFoodForm.food_id"
-                      class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-xs text-white focus:outline-none focus:border-indigo-500"
+                      class="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-indigo-500"
                     >
                       <option value="" disabled>{{ cashierStore.t('select_food_placeholder') }}</option>
                       <option v-for="f in allFoods" :key="f.id" :value="f.id">
-                        {{ cashierStore.t(f.name.toLowerCase()) }} - {{ formatCurrency(f.price) }}
+                        {{ f.name }} - {{ formatCurrency(f.price) }}
                       </option>
                     </select>
                   </div>
-                  
+
                   <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1">
-                      <label class="text-[10px] text-slate-400 font-bold uppercase">{{ cashierStore.t('soni') }}</label>
-                      <input 
+                      <label class="text-[10px] text-slate-500 font-bold uppercase">{{ cashierStore.t('soni') }}</label>
+                      <input
                         v-model.number="addFoodForm.quantity"
                         type="number"
                         min="1"
-                        class="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-xs text-white font-mono focus:outline-none focus:border-indigo-500"
+                        class="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-900 font-mono focus:outline-none focus:border-indigo-500"
                       />
                     </div>
                     <div class="flex items-end justify-end space-x-2">
-                      <button @click="showAddFoodForm = false" class="px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] font-bold text-slate-300">{{ cashierStore.t('bekor_qilish') }}</button>
-                      <button @click="addFoodToOrder" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-550 text-[10px] font-bold text-white">{{ cashierStore.t('taom_qo_shish') }}</button>
+                      <button @click="showAddFoodForm = false" class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-[10px] font-bold text-slate-600">{{ cashierStore.t('bekor_qilish') }}</button>
+                      <button @click="addFoodToOrder" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-[10px] font-bold text-white">{{ cashierStore.t('taom_qo_shish') }}</button>
                     </div>
                   </div>
                 </div>
 
                 <!-- Items list -->
-                <div class="divide-y divide-white/5 max-h-32 overflow-y-auto space-y-1.5 pr-1">
-                  <div 
-                    v-for="(item, index) in selectedOrderDetails.items" 
-                    :key="index" 
+                <div class="divide-y divide-slate-200 max-h-32 overflow-y-auto space-y-1.5 pr-1">
+                  <div
+                    v-for="(item, index) in selectedOrderDetails.items"
+                    :key="index"
                     class="flex justify-between items-center text-xs pt-1.5"
                   >
-                    <span class="text-slate-300 truncate max-w-[200px]">{{ item.food?.name || cashierStore.t('unknown_item') }} <span class="text-slate-500">x{{ item.quantity }}</span></span>
+                    <span class="text-slate-600 truncate max-w-[200px]">{{ item.food?.name || cashierStore.t('unknown_item') }} <span class="text-slate-400">x{{ item.quantity }}</span></span>
                     <div class="flex items-center space-x-3">
-                      <span class="font-semibold text-white font-mono">{{ formatCurrency(item.quantity * (item.price || item.food?.price)) }}</span>
-                      <button @click="removeFoodFromOrder(index)" class="text-rose-400 hover:text-rose-300 transition" :title="settingsStore.t('delete')">
+                      <span class="font-semibold text-slate-900 font-mono">{{ formatCurrency(item.quantity * (item.price || item.food?.price)) }}</span>
+                      <button @click="removeFoodFromOrder(index)" class="text-rose-500 hover:text-rose-600 transition" :title="settingsStore.t('delete')">
                         <X class="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -523,27 +523,27 @@
                     {{ cashierStore.t('no_items_yet') }}
                   </div>
                 </div>
-                
+
                 <!-- Financial details calculation -->
-                <div class="border-t border-white/10 pt-3 space-y-1.5 text-xs font-semibold">
+                <div class="border-t border-slate-200 pt-3 space-y-1.5 text-xs font-semibold">
                   <div class="flex justify-between">
-                    <span class="text-slate-400">{{ cashierStore.t('oraliq_jami') }}:</span>
-                    <span class="font-mono text-white">{{ formatCurrency(orderCalculations.subtotal) }}</span>
+                    <span class="text-slate-500">{{ cashierStore.t('oraliq_jami') }}:</span>
+                    <span class="font-mono text-slate-900">{{ formatCurrency(orderCalculations.subtotal) }}</span>
                   </div>
                   <div class="flex justify-between text-emerald-400" v-if="orderCalculations.discount > 0">
                     <span>{{ cashierStore.t('chegirma') }}:</span>
                     <span class="font-mono">-{{ formatCurrency(orderCalculations.discount) }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-slate-400">{{ cashierStore.t('xizmat_haqi') }} ({{ serviceChargeRate }}%):</span>
-                    <span class="font-mono text-white">{{ formatCurrency(orderCalculations.service) }}</span>
+                    <span class="text-slate-500">{{ cashierStore.t('xizmat_haqi') }} ({{ serviceChargeRate }}%):</span>
+                    <span class="font-mono text-slate-900">{{ formatCurrency(orderCalculations.service) }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-slate-400">{{ cashierStore.t('qqs') }} ({{ taxRate }}%):</span>
-                    <span class="font-mono text-white">{{ formatCurrency(orderCalculations.tax) }}</span>
+                    <span class="text-slate-500">{{ cashierStore.t('qqs') }} ({{ taxRate }}%):</span>
+                    <span class="font-mono text-slate-900">{{ formatCurrency(orderCalculations.tax) }}</span>
                   </div>
-                  <div class="border-t border-dashed border-white/10 my-1"></div>
-                  <div class="flex justify-between text-sm font-black text-indigo-300">
+                  <div class="border-t border-dashed border-slate-200 my-1"></div>
+                  <div class="flex justify-between text-sm font-black text-indigo-600">
                     <span>{{ cashierStore.t('jami_to_lov') }}:</span>
                     <span class="font-mono text-base">{{ formatCurrency(orderCalculations.total) }}</span>
                   </div>
@@ -553,20 +553,20 @@
               <!-- 2. Select Customer (Loyalty) -->
               <div class="space-y-1.5">
                 <div class="flex justify-between items-center">
-                  <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">{{ cashierStore.t('customer_loyalty_label') }}</label>
-                  <span class="text-[10px] text-indigo-400 font-bold" v-if="selectedCustomer">
+                  <label class="text-xxs text-slate-500 font-bold uppercase tracking-wider">{{ cashierStore.t('customer_loyalty_label') }}</label>
+                  <span class="text-[10px] text-indigo-600 font-bold" v-if="selectedCustomer">
                     {{ cashierStore.t('bonus_label') }} {{ formatCurrency(selectedCustomer.bonus_balance) }}
                   </span>
                 </div>
-                <select 
-                  v-model="newPaymentForm.customer_id" 
+                <select
+                  v-model="newPaymentForm.customer_id"
                   @change="handleCustomerSelect"
-                  class="w-full px-4 py-2.5 rounded-xl bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+                  class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
                 >
                   <option :value="null">{{ cashierStore.t('mehmon') }}</option>
-                  <option 
-                    v-for="c in customers" 
-                    :key="c.id" 
+                  <option
+                    v-for="c in customers"
+                    :key="c.id"
                     :value="c.id"
                   >
                     {{ c.name }} ({{ c.phone }})
@@ -576,11 +576,11 @@
 
               <!-- 3. Payment Method -->
               <div class="space-y-1.5">
-                <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">{{ cashierStore.t('tolov_shakli') }}</label>
-                <select 
-                  v-model="newPaymentForm.payment_method" 
+                <label class="text-xxs text-slate-500 font-bold uppercase tracking-wider">{{ cashierStore.t('tolov_shakli') }}</label>
+                <select
+                  v-model="newPaymentForm.payment_method"
                   @change="handlePaymentMethodChange"
-                  class="w-full px-4 py-2.5 rounded-xl bg-slate-950/60 border border-white/10 focus:border-indigo-500 text-sm text-white focus:outline-none transition"
+                  class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
                 >
                   <option value="cash">{{ cashierStore.t('naqd') }}</option>
                   <option value="card">{{ cashierStore.t('karta') }}</option>
@@ -590,73 +590,73 @@
               </div>
 
               <!-- Split Amount Inputs -->
-              <div class="p-3 rounded-2xl bg-white/5 border border-white/5 space-y-3.5 text-xs">
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-3.5 text-xs">
                 <!-- Cash Amount -->
                 <div class="grid grid-cols-3 items-center gap-2" v-if="newPaymentForm.payment_method === 'cash' || newPaymentForm.payment_method === 'mixed'">
-                  <span class="text-slate-400 font-semibold">{{ cashierStore.t('cash_amount_label') }}</span>
-                  <input 
+                  <span class="text-slate-500 font-semibold">{{ cashierStore.t('cash_amount_label') }}</span>
+                  <input
                     v-model.number="newPaymentForm.cash_amount"
                     type="number"
                     placeholder="0"
                     :disabled="newPaymentForm.payment_method === 'cash'"
-                    class="col-span-2 px-3 py-1.5 rounded-lg bg-slate-950/40 border border-white/10 text-white text-xs font-mono focus:outline-none focus:border-indigo-500"
+                    class="col-span-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-900 text-xs font-mono focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <!-- Card Amount -->
                 <div class="grid grid-cols-3 items-center gap-2" v-if="newPaymentForm.payment_method === 'card' || newPaymentForm.payment_method === 'mixed'">
-                  <span class="text-slate-400 font-semibold">{{ cashierStore.t('card_amount_label') }}</span>
-                  <input 
+                  <span class="text-slate-500 font-semibold">{{ cashierStore.t('card_amount_label') }}</span>
+                  <input
                     v-model.number="newPaymentForm.card_amount"
                     type="number"
                     placeholder="0"
                     :disabled="newPaymentForm.payment_method === 'card'"
-                    class="col-span-2 px-3 py-1.5 rounded-lg bg-slate-950/40 border border-white/10 text-white text-xs font-mono focus:outline-none focus:border-indigo-500"
+                    class="col-span-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-900 text-xs font-mono focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <!-- QR Amount -->
                 <div class="grid grid-cols-3 items-center gap-2" v-if="newPaymentForm.payment_method === 'qr' || newPaymentForm.payment_method === 'mixed'">
-                  <span class="text-slate-400 font-semibold">{{ cashierStore.t('qr_amount_label') }}</span>
-                  <input 
+                  <span class="text-slate-500 font-semibold">{{ cashierStore.t('qr_amount_label') }}</span>
+                  <input
                     v-model.number="newPaymentForm.qr_amount"
                     type="number"
                     placeholder="0"
                     :disabled="newPaymentForm.payment_method === 'qr'"
-                    class="col-span-2 px-3 py-1.5 rounded-lg bg-slate-950/40 border border-white/10 text-white text-xs font-mono focus:outline-none focus:border-indigo-500"
+                    class="col-span-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-900 text-xs font-mono focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <!-- Bonus used -->
                 <div class="grid grid-cols-3 items-center gap-2" v-if="selectedCustomer && selectedCustomer.bonus_balance > 0">
-                  <span class="text-slate-400 font-semibold">{{ cashierStore.t('bonus_amount_label') }}</span>
-                  <input 
+                  <span class="text-slate-500 font-semibold">{{ cashierStore.t('bonus_amount_label') }}</span>
+                  <input
                     v-model.number="newPaymentForm.bonus_used"
                     type="number"
                     placeholder="0"
                     :max="Math.min(selectedCustomer.bonus_balance, orderCalculations.total)"
-                    class="col-span-2 px-3 py-1.5 rounded-lg bg-slate-950/40 border border-white/10 text-white text-xs font-mono focus:outline-none focus:border-indigo-500"
+                    class="col-span-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-900 text-xs font-mono focus:outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
 
               <!-- Validation Balance warning -->
-              <div 
+              <div
                 v-if="!isSplitAmountValid && newPaymentForm.payment_method === 'mixed'"
-                class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xxs text-amber-400 font-semibold"
+                class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xxs text-amber-700 font-semibold"
               >
                 {{ cashierStore.t('split_warning_prefix') }} {{ formatCurrency(totalEnteredAmount) }} ({{ cashierStore.t('split_warning_total') }} {{ formatCurrency(orderCalculations.total) }}).
               </div>
             </template>
           </div>
 
-          <div class="flex justify-end space-x-2 pt-2 border-t border-white/5">
-            <button 
+          <div class="flex justify-end space-x-2 pt-2 border-t border-slate-200">
+            <button
               v-if="selectedOrderDetails && selectedOrderDetails.id"
               type="button"
               @click="triggerVoidFlow(selectedOrderDetails.id)"
-              class="px-4 py-2 bg-rose-500/10 hover:bg-rose-500 border border-rose-500/20 rounded-xl text-xs font-semibold text-rose-400 hover:text-white transition mr-auto"
+              class="px-4 py-2 bg-rose-50 hover:bg-rose-500 border border-rose-200 rounded-xl text-xs font-semibold text-rose-600 hover:text-white transition mr-auto"
             >
               {{ cashierStore.t('void_order_button') }}
             </button>
-            <button @click="showPaymentModal = false" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-semibold text-slate-300 transition">
+            <button @click="showPaymentModal = false" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 transition">
               {{ cashierStore.t('bekor_qilish') }}
             </button>
             <button 
@@ -675,29 +675,29 @@
     <Transition name="fade">
       <div 
         v-if="showVoidModal" 
-        class="fixed inset-0 z-[60] backdrop-blur-md bg-black/70 flex items-center justify-center p-6"
+        class="fixed inset-0 z-[60] backdrop-blur-md bg-slate-900/40 flex items-center justify-center p-6"
         @click.self="showVoidModal = false"
       >
-        <div class="w-full max-w-sm backdrop-blur-xl bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4 text-left text-white animate-scaleIn">
-          <div class="flex justify-between items-center border-b border-white/5 pb-2">
-            <h3 class="text-sm font-bold text-rose-400 flex items-center space-x-1.5">
+        <div class="w-full max-w-sm backdrop-blur-xl bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-4 text-left text-slate-900 animate-scaleIn">
+          <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+            <h3 class="text-sm font-bold text-rose-600 flex items-center space-x-1.5">
               <span>⚠️ {{ cashierStore.t('void_modal_title') }}</span>
             </h3>
-            <button @click="showVoidModal = false" class="text-slate-400 hover:text-white">
+            <button @click="showVoidModal = false" class="text-slate-500 hover:text-slate-900">
               <X class="w-4 h-4" />
             </button>
           </div>
 
           <div class="space-y-3.5">
-            <p class="text-xxs text-slate-400 leading-normal">
+            <p class="text-xxs text-slate-500 leading-normal">
               {{ cashierStore.t('void_modal_desc') }}
             </p>
 
             <div class="space-y-1.5">
-              <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">{{ cashierStore.t('void_reason_label') }}</label>
+              <label class="text-xxs text-slate-500 font-bold uppercase tracking-wider">{{ cashierStore.t('void_reason_label') }}</label>
               <select
                 v-model="voidForm.reasonSelect"
-                class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-xs text-white focus:outline-none focus:border-rose-500"
+                class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-rose-500"
               >
                 <option value="">{{ cashierStore.t('void_reason_placeholder') }}</option>
                 <option value="Mijoz shoshilganligi sababli">{{ cashierStore.t('void_reason_1') }}</option>
@@ -708,18 +708,18 @@
             </div>
 
             <div class="space-y-1.5">
-              <label class="text-xxs text-slate-400 font-bold uppercase tracking-wider">{{ cashierStore.t('void_extra_note_label') }}</label>
+              <label class="text-xxs text-slate-500 font-bold uppercase tracking-wider">{{ cashierStore.t('void_extra_note_label') }}</label>
               <textarea
                 v-model="voidForm.reasonText"
                 rows="2"
                 :placeholder="cashierStore.t('void_extra_note_placeholder')"
-                class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-rose-500 transition resize-none"
+                class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-rose-500 transition resize-none"
               ></textarea>
             </div>
           </div>
 
-          <div class="flex justify-end space-x-2 pt-2 border-t border-white/5">
-            <button @click="showVoidModal = false" class="px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xxs font-semibold text-slate-300">
+          <div class="flex justify-end space-x-2 pt-2 border-t border-slate-200">
+            <button @click="showVoidModal = false" class="px-3.5 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-xxs font-semibold text-slate-600">
               {{ cashierStore.t('back_button') }}
             </button>
             <button

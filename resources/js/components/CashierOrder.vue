@@ -19,7 +19,7 @@
           class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200 shrink-0 border"
           :class="selectedCategory === cat.id ? 'bg-indigo-600 border-indigo-650 text-white font-black shadow-sm' : 'bg-slate-100 border border-slate-300 text-slate-700 hover:bg-slate-200'"
         >
-          {{ cashierStore.t(cat.name.toLowerCase()) }}
+          {{ cat.name }}
         </button>
       </div>
 
@@ -45,10 +45,10 @@
             <div class="space-y-2 relative z-10">
               <!-- Category Badge -->
               <span class="text-[9px] uppercase font-extrabold tracking-widest text-indigo-600">
-                {{ cashierStore.t(food.category?.name?.toLowerCase() || 'menyu') }}
+                {{ food.category?.name || 'Menyu' }}
               </span>
               <h3 class="text-sm font-black text-slate-900 tracking-wide truncate max-w-full">
-                {{ cashierStore.t(food.name.toLowerCase()) }}
+                {{ food.name }}
               </h3>
             </div>
 
@@ -98,7 +98,7 @@
           >
             <div @click="triggerEditFlow(item)" class="space-y-0.5 truncate max-w-[180px] cursor-pointer group">
               <h4 class="font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors flex items-center gap-1">
-                {{ cashierStore.t(item.name.toLowerCase()) }}
+                {{ item.name }}
                 <span v-if="item.size_name" class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold">
                   {{ item.size_name }}
                 </span>
