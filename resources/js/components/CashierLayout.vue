@@ -123,8 +123,10 @@
     </header>
 
     <!-- Main Viewport Router Container -->
-    <main class="flex-grow min-h-0 overflow-y-auto relative p-4 md:p-8 z-10 print-viewport">
-      <router-view />
+    <main class="flex-grow min-h-0 flex flex-col relative p-4 md:p-8 z-10 print-viewport">
+      <div class="flex-1 min-h-0 overflow-auto">
+        <router-view />
+      </div>
     </main>
 
     <!-- MODAL: SHIFT SESSION MANAGEMENT -->
