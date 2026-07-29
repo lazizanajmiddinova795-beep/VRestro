@@ -190,8 +190,8 @@ router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
     const isAuthenticated = authStore.isAuthenticated();
 
-    // 1. If route is landing page or guest-only and user is already logged in, redirect to respective dashboard
-    if ((to.path === '/' || to.matched.some(record => record.meta.guestOnly)) && isAuthenticated) {
+    // 1. If route is the landing page and user is authenticated, redirect to their dashboard
+    if (to.path === '/' && isAuthenticated) {
         let dashboardName = 'admin-dashboard';
         const roles = authStore.user?.roles || [];
         if (roles.includes('Admin')) {
@@ -206,6 +206,13 @@ router.beforeEach((to, from, next) => {
             dashboardName = 'orders';
         }
         return next({ name: dashboardName });
+    }
+
+    // 1b. If user navigates to /login while already authenticated, log them out first
+    //     so a different staff member can log in on the same device
+    if (to.matched.some(record => record.meta.guestOnly) && isAuthenticated) {
+        authStore.logout();
+        return next();
     }
 
     // 2. If route requires authentication and user is not logged in, force redirect to login

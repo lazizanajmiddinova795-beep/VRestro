@@ -30,7 +30,12 @@ export const useDashboardStore = defineStore('dashboard', () => {
                 throw new Error(data.message || 'Tahliliy ma\'lumotlarni yuklashda xatolik yuz berdi.');
             }
 
-            metrics.value = data;
+            // Ensure data has expected shape before setting metrics
+            if (data && data.widgets) {
+                metrics.value = data;
+            } else {
+                throw new Error('Server noto\'g\'ri format qaytardi. Qayta urinib ko\'ring.');
+            }
         } catch (err) {
             error.value = err.message;
         } finally {

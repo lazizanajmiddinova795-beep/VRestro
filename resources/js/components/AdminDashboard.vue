@@ -249,6 +249,15 @@
 
           </div>
         </div>
+
+        <!-- Fallback: metrics are null (API failed silently or returned unexpected response) -->
+        <div v-else class="flex flex-col items-center justify-center py-32 space-y-4">
+          <AlertTriangle class="w-12 h-12 text-amber-400" />
+          <p class="text-slate-500 text-sm font-bold">Ma'lumotlar yuklanmadi</p>
+          <button @click="dashboardStore.fetchAnalytics()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition duration-200 shadow-md">
+            Qayta urinish
+          </button>
+        </div>
       </div>
 
       <!-- Tab 2: Analytics & Reports Dashboard -->
