@@ -81,13 +81,13 @@
     },
     {
       "name": "dio",
-      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.10.0",
+      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.11.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "dio_web_adapter",
-      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/dio_web_adapter-2.2.0",
+      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/dio_web_adapter-2.2.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -225,13 +225,19 @@
     },
     {
       "name": "jni",
-      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/jni-1.0.0",
+      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/jni-1.0.2",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "jni_flutter",
-      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/jni_flutter-1.0.1",
+      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/jni_flutter-1.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "jni_util",
+      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/jni_util-1.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -303,7 +309,7 @@
     },
     {
       "name": "objective_c",
-      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.4.1",
+      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.5.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -315,9 +321,9 @@
     },
     {
       "name": "package_config",
-      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/package_config-2.2.0",
+      "rootUri": "file:///C:/Users/laziza/AppData/Local/Pub/Cache/hosted/pub.dev/package_config-3.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "3.11"
     },
     {
       "name": "path",

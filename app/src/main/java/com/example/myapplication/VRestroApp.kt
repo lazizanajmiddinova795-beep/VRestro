@@ -2,155 +2,58 @@ package com.example.myapplication
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.*
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.auth.AuthState
+import com.example.myapplication.auth.AuthViewModel
+import com.example.myapplication.auth.LoginScreen
+import com.example.myapplication.cashier.CashierScreen
+import com.example.myapplication.kitchen.KitchenScreen
+import com.example.myapplication.ui.theme.Background
+import com.example.myapplication.ui.theme.Primary
+import com.example.myapplication.waiter.WaiterScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
-@PreviewScreenSizes
 @Composable
 fun VRestroApp() {
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
+    val authVm: AuthViewModel = viewModel()
+    val state by authVm.state.collectAsStateWithLifecycle()
 
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach {
-                item(
-                    icon = {
-                        Icon(
-                            painterResource(it.icon),
-                            contentDescription = it.label
-                        )
-                    },
-                    label = { Text(it.label) },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it }
-                )
-            }
-        }
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = {
-                CenterAlignedTopAppBar(
-                    title = { Text("VRestro") }
-                )
-            }
-        ) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                when (currentDestination) {
-                    AppDestinations.HOME -> ResponsiveMainScreen()
-                    AppDestinations.FAVORITES -> PlaceholderScreen("Favorites")
-                    AppDestinations.PROFILE -> PlaceholderScreen("Profile")
-                }
-            }
-        }
-    }
-}
+    LaunchedEffect(Unit) { authVm.checkAuthStatus() }
 
-@Composable
-fun ResponsiveMainScreen() {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.primaryContainer,
-            tonalElevation = 8.dp
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Welcome to VRestro",
-                    style = MaterialTheme.typography.displaySmall
-                )
-                Text(
-                    text = "Find the best food in town",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
+    when (val s = state) {
+        is AuthState.Idle,
+        is AuthState.Error,
+        is AuthState.OtpRequired -> {
+            LoginScreen(viewModel = authVm)
         }
 
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 280.dp),
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.weight(1f)
-        ) {
-            items(12) { index ->
-                RestaurantCard(index)
-            }
-        }
-    }
-}
-
-@Composable
-fun RestaurantCard(index: Int) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column {
+        is AuthState.Loading -> {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
-                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                Modifier.fillMaxSize().background(Background),
                 contentAlignment = Alignment.Center
             ) {
-                // In a real CMP app, you'd use a shared resource loader here
-                Icon(
-                    painter = painterResource(id = android.R.drawable.ic_menu_gallery),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer
-                )
+                CircularProgressIndicator(color = Primary)
             }
+        }
 
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Restaurant Name $index",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Italian • Pizza • 4.5 ★",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { /* TODO */ }) {
-                    Text("View Menu")
-                }
+        is AuthState.Authenticated -> {
+            val role = s.user.role.lowercase()
+            when {
+                role.contains("cashier") || role.contains("kassir") ->
+                    CashierScreen(onLogout = { authVm.logout() })
+
+                role.contains("chef") || role.contains("oshpaz") ||
+                role.contains("kitchen") || role.contains("cook") ->
+                    KitchenScreen(onLogout = { authVm.logout() })
+
+                else ->
+                    // Default: Waiter / ofitsiant
+                    WaiterScreen(onLogout = { authVm.logout() })
             }
         }
     }
-}
-
-@Composable
-fun PlaceholderScreen(name: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = name, style = MaterialTheme.typography.displayMedium)
-    }
-}
-
-enum class AppDestinations(
-    val label: String,
-    val icon: Int,
-) {
-    HOME("Home", R.drawable.ic_home),
-    FAVORITES("Favorites", R.drawable.ic_favorite),
-    PROFILE("Profile", R.drawable.ic_account_box),
 }

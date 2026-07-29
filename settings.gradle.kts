@@ -22,7 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "My Application"
-include(":app")
-include(":app")
+rootProject.name = "VRestro"
 include(":app")
