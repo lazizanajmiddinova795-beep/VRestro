@@ -1880,6 +1880,10 @@ export const useSettingsStore = defineStore('settings', () => {
         fontSize,
         branding,
         rawSettings,
+        // Alias expected by several components (CashierOrder, ReceiptPreview,
+        // SettingsManagement, SidebarLayout) that read settings via
+        // `settingStore.settings.*` - keep this in sync with rawSettings.
+        settings: rawSettings,
         translations,
         t,
         setTheme,
