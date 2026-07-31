@@ -741,6 +741,7 @@
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
 import { ref, onMounted, computed, watch, markRaw } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { RotateCw, Printer, Receipt, FileText, FileSpreadsheet, Plus, X, HelpCircle, CheckCircle } from 'lucide-vue-next';
 import { useReceiptsStore } from '@/stores/receipts';
 import { useAuthStore } from '@/stores/auth';
@@ -753,6 +754,8 @@ const authStore = useAuthStore();
 const settingStore = useSettingStore();
 const cashierTablesStore = useCashierTablesStore();
 const cashierStore = useCashierStore();
+const route = useRoute();
+const router = useRouter();
 
 // States
 const selectedPayment = ref(null);
@@ -1193,9 +1196,21 @@ const closeModal = () => {
   modal.value.show = false;
 };
 
-onMounted(() => {
-  receiptsStore.fetchPayments();
+onMounted(async () => {
   settingStore.fetchSettings();
+  await receiptsStore.fetchPayments();
+
+  // Coming straight from a just-completed POS checkout (CashierOrder.vue) -
+  // auto-select and print that receipt instead of leaving the cashier to
+  // find it in the list themselves.
+  const printPaymentId = route.query.print;
+  if (printPaymentId) {
+    const payment = receiptsStore.payments.find(p => String(p.id) === String(printPaymentId));
+    if (payment) {
+      triggerDirectPrint(payment, 'invoice');
+    }
+    router.replace({ path: '/cashier/receipts' });
+  }
 });
 </script>
 

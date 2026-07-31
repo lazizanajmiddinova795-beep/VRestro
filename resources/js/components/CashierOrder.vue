@@ -604,8 +604,9 @@ const submitCheckout = async () => {
     cashierStore.clearCart();
     showCheckoutModal.value = false;
 
-    // Directly navigate to receipts to print the check (skip success modal)
-    router.push('/cashier/receipts');
+    // Directly navigate to receipts and auto-select/print the just-created
+    // receipt, so the cashier doesn't have to find it in the list manually.
+    router.push({ path: '/cashier/receipts', query: { print: payData.payment.id } });
 
   } catch (err) {
     alert(err.message);
