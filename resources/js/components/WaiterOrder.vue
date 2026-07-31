@@ -118,6 +118,7 @@
       :food="activeCustomFood"
       :initialSizeName="editingCartItem ? editingCartItem.size_name : null"
       :initialNotes="editingCartItem ? editingCartItem.notes : ''"
+      :initialQuantity="editingCartItem ? editingCartItem.quantity : 1"
       @close="activeCustomFood = null"
       @add="handleCustomAdd"
     />
@@ -381,11 +382,12 @@ const handleCustomAdd = (payload) => {
       editingCartItem.value.size_name,
       payload.size_name,
       payload.price,
-      payload.notes
+      payload.notes,
+      payload.quantity
     );
   } else {
     // Add action
-    waiterCartStore.addToCart(tableId.value, activeCustomFood.value, payload.size_name, payload.price, payload.notes);
+    waiterCartStore.addToCart(tableId.value, activeCustomFood.value, payload.size_name, payload.price, payload.notes, payload.quantity);
   }
   activeCustomFood.value = null;
   editingCartItem.value = null;

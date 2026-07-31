@@ -97,7 +97,8 @@ import { X } from 'lucide-vue-next';
 const props = defineProps({
   food: { type: Object, required: true },
   initialSizeName: { type: String, default: null },
-  initialNotes: { type: String, default: '' }
+  initialNotes: { type: String, default: '' },
+  initialQuantity: { type: Number, default: 1 }
 });
 
 const emit = defineEmits(['close', 'add']);
@@ -210,7 +211,7 @@ const findInitialSize = () => {
 };
 
 const selectedSize = ref(findInitialSize());
-const quantity = ref(1);
+const quantity = ref(props.initialQuantity && props.initialQuantity > 0 ? props.initialQuantity : 1);
 
 const changeQty = (delta) => {
   if (quantity.value + delta >= 1) quantity.value += delta;
@@ -261,7 +262,8 @@ const confirmAdd = () => {
   emit('add', {
     size_name: selectedSize.value.name,
     price: parseFloat(selectedSize.value.price),
-    notes: notesList.join(', ')
+    notes: notesList.join(', '),
+    quantity: quantity.value
   });
 };
 </script>

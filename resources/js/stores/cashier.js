@@ -528,11 +528,12 @@ export const useCashierStore = defineStore('cashier', () => {
     };
 
     // Cart operations
-    const addToCart = (food, sizeName = null, price = null, notes = '') => {
+    const addToCart = (food, sizeName = null, price = null, notes = '', quantity = 1) => {
         const finalPrice = price !== null ? parseFloat(price) : parseFloat(food.price);
+        const finalQuantity = quantity > 0 ? quantity : 1;
         const existing = cart.value.find(item => item.food_id === food.id && (item.size_name || null) === sizeName);
         if (existing) {
-            existing.quantity++;
+            existing.quantity += finalQuantity;
         } else {
             cart.value.push({
                 food_id: food.id,
@@ -540,7 +541,7 @@ export const useCashierStore = defineStore('cashier', () => {
                 price: finalPrice,
                 size_name: sizeName,
                 notes: notes || '',
-                quantity: 1,
+                quantity: finalQuantity,
                 food: food
             });
         }
@@ -564,12 +565,15 @@ export const useCashierStore = defineStore('cashier', () => {
         }
     };
 
-    const editCartItem = (foodId, oldSizeName, newSizeName, newPrice, newNotes) => {
+    const editCartItem = (foodId, oldSizeName, newSizeName, newPrice, newNotes, newQuantity = null) => {
         const item = cart.value.find(item => item.food_id === foodId && (item.size_name || null) === oldSizeName);
         if (item) {
             item.size_name = newSizeName;
             item.price = parseFloat(newPrice);
             item.notes = newNotes || '';
+            if (newQuantity > 0) {
+                item.quantity = newQuantity;
+            }
         }
     };
 

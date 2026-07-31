@@ -204,6 +204,7 @@
       :food="activeCustomFood"
       :initialSizeName="editingCartItem ? editingCartItem.size_name : null"
       :initialNotes="editingCartItem ? editingCartItem.notes : ''"
+      :initialQuantity="editingCartItem ? editingCartItem.quantity : 1"
       @close="activeCustomFood = null; editingCartItem = null"
       @add="handleCustomAdd"
     />
@@ -394,7 +395,7 @@
 <script setup>
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
-import { ref, onMounted, computed, markRaw } from 'vue';
+import { ref, onMounted, computed, watch, markRaw } from 'vue';
 import { Plus, Trash2, Receipt, X, CheckCircle } from 'lucide-vue-next';
 import { useCashierStore } from '@/stores/cashier';
 import { useAuthStore } from '@/stores/auth';
@@ -425,10 +426,11 @@ const handleCustomAdd = (payload) => {
       editingCartItem.value.size_name,
       payload.size_name,
       payload.price,
-      payload.notes
+      payload.notes,
+      payload.quantity
     );
   } else {
-    cashierStore.addToCart(activeCustomFood.value, payload.size_name, payload.price, payload.notes);
+    cashierStore.addToCart(activeCustomFood.value, payload.size_name, payload.price, payload.notes, payload.quantity);
   }
   activeCustomFood.value = null;
   editingCartItem.value = null;
@@ -556,20 +558,32 @@ const handleCustomerSelect = () => {
 
 const handlePaymentMethodChange = () => {
   const method = checkoutForm.value.payment_method;
-  const grandTotal = totals.value.total;
-  
+  const remaining = Math.max(0, totals.value.total - (parseFloat(checkoutForm.value.bonus_used) || 0));
+
   checkoutForm.value.cash_amount = 0;
   checkoutForm.value.card_amount = 0;
   checkoutForm.value.qr_amount = 0;
-  
+
   if (method === 'cash') {
-    checkoutForm.value.cash_amount = grandTotal;
+    checkoutForm.value.cash_amount = remaining;
   } else if (method === 'card') {
-    checkoutForm.value.card_amount = grandTotal;
+    checkoutForm.value.card_amount = remaining;
   } else if (method === 'qr') {
-    checkoutForm.value.qr_amount = grandTotal;
+    checkoutForm.value.qr_amount = remaining;
   }
 };
+
+// Keep the active single-method amount in sync when a bonus is entered/changed,
+// so cash/card/qr always reflects (total - bonus) instead of the full total
+// while the bonus is silently deducted underneath.
+watch(() => checkoutForm.value.bonus_used, (newBonus) => {
+  const method = checkoutForm.value.payment_method;
+  if (method === 'mixed') return;
+  const remaining = Math.max(0, totals.value.total - (parseFloat(newBonus) || 0));
+  if (method === 'cash') checkoutForm.value.cash_amount = remaining;
+  else if (method === 'card') checkoutForm.value.card_amount = remaining;
+  else if (method === 'qr') checkoutForm.value.qr_amount = remaining;
+});
 
 const submitCheckout = async () => {
   if (cashierStore.cart.length === 0) return;

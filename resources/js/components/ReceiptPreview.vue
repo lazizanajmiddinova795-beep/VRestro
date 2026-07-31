@@ -1104,21 +1104,31 @@ const handleCustomerSelect = () => {
 
 const handlePaymentMethodChange = () => {
   const method = newPaymentForm.value.payment_method;
-  const grandTotal = orderCalculations.value.total;
-  
+  const remaining = Math.max(0, orderCalculations.value.total - (parseFloat(newPaymentForm.value.bonus_used) || 0));
+
   // Reset all
   newPaymentForm.value.cash_amount = 0;
   newPaymentForm.value.card_amount = 0;
   newPaymentForm.value.qr_amount = 0;
-  
+
   if (method === 'cash') {
-    newPaymentForm.value.cash_amount = grandTotal;
+    newPaymentForm.value.cash_amount = remaining;
   } else if (method === 'card') {
-    newPaymentForm.value.card_amount = grandTotal;
+    newPaymentForm.value.card_amount = remaining;
   } else if (method === 'qr') {
-    newPaymentForm.value.qr_amount = grandTotal;
+    newPaymentForm.value.qr_amount = remaining;
   }
 };
+
+// Keep the active single-method amount in sync when a bonus is entered/changed.
+watch(() => newPaymentForm.value.bonus_used, (newBonus) => {
+  const method = newPaymentForm.value.payment_method;
+  if (method === 'mixed') return;
+  const remaining = Math.max(0, orderCalculations.value.total - (parseFloat(newBonus) || 0));
+  if (method === 'cash') newPaymentForm.value.cash_amount = remaining;
+  else if (method === 'card') newPaymentForm.value.card_amount = remaining;
+  else if (method === 'qr') newPaymentForm.value.qr_amount = remaining;
+});
 
 const submitPayment = async () => {
   if (!selectedOrderDetails.value || selectedOrderDetails.value.items.length === 0) return;

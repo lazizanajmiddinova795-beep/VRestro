@@ -13,17 +13,18 @@ export const useWaiterCartStore = defineStore('waiterCart', () => {
         return carts.value[tableId] || [];
     };
 
-    const addToCart = (tableId, food, sizeName = null, price = null, extraNotes = '') => {
+    const addToCart = (tableId, food, sizeName = null, price = null, extraNotes = '', quantity = 1) => {
         if (!carts.value[tableId]) {
             carts.value[tableId] = [];
         }
 
         const finalPrice = price !== null ? price : food.price;
         const finalSizeName = sizeName;
+        const finalQuantity = quantity > 0 ? quantity : 1;
 
         const existingItem = carts.value[tableId].find(item => item.food_id === food.id && item.size_name === finalSizeName);
         if (existingItem) {
-            existingItem.quantity += 1;
+            existingItem.quantity += finalQuantity;
             if (extraNotes) {
                 existingItem.notes = existingItem.notes ? `${existingItem.notes}, ${extraNotes}` : extraNotes;
             }
@@ -32,7 +33,7 @@ export const useWaiterCartStore = defineStore('waiterCart', () => {
                 food_id: food.id,
                 name: food.name,
                 price: finalPrice,
-                quantity: 1,
+                quantity: finalQuantity,
                 notes: extraNotes,
                 size_name: finalSizeName
             });
@@ -54,17 +55,18 @@ export const useWaiterCartStore = defineStore('waiterCart', () => {
         saveToStorage();
     };
 
-    const editCartItem = (tableId, foodId, oldSizeName, newSizeName, newPrice, newNotes) => {
+    const editCartItem = (tableId, foodId, oldSizeName, newSizeName, newPrice, newNotes, newQuantity = null) => {
         if (!carts.value[tableId]) return;
 
         const itemIndex = carts.value[tableId].findIndex(item => item.food_id === foodId && item.size_name === oldSizeName);
         if (itemIndex > -1) {
             // Check if we already have an item with the new size name to merge, or if size name didn't change
             const targetIndex = carts.value[tableId].findIndex((item, idx) => item.food_id === foodId && item.size_name === newSizeName && idx !== itemIndex);
-            
+            const editedQuantity = newQuantity > 0 ? newQuantity : carts.value[tableId][itemIndex].quantity;
+
             if (targetIndex > -1) {
                 // Merge quantity with existing target size item
-                carts.value[tableId][targetIndex].quantity += carts.value[tableId][itemIndex].quantity;
+                carts.value[tableId][targetIndex].quantity += editedQuantity;
                 if (newNotes) {
                     const existingNotes = carts.value[tableId][targetIndex].notes;
                     carts.value[tableId][targetIndex].notes = existingNotes ? `${existingNotes}, ${newNotes}` : newNotes;
@@ -77,6 +79,7 @@ export const useWaiterCartStore = defineStore('waiterCart', () => {
                 item.size_name = newSizeName;
                 item.price = newPrice;
                 item.notes = newNotes;
+                item.quantity = editedQuantity;
             }
             saveToStorage();
         }
