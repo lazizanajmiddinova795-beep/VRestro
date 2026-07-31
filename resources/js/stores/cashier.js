@@ -473,21 +473,12 @@ export const useCashierStore = defineStore('cashier', () => {
             html.classList.add('dark');
         }
 
-        // Night Filter (Ko'z himoyasi)
-        if (settings.nightFilter) {
-            html.classList.add('night-filter');
-        } else {
-            html.classList.remove('night-filter');
-        }
-
-        // Font size scaling on root HTML element
-        if (settings.fontSize === 'small') {
-            html.style.fontSize = '14px';
-        } else if (settings.fontSize === 'large') {
-            html.style.fontSize = '18px';
-        } else {
-            html.style.fontSize = '16px';
-        }
+        // Night Filter and Font Size are owned by settingsStore (Sozlamalar page) -
+        // that store already applies both to <html> (night-filter class and
+        // data-font-size attribute) as soon as it's instantiated and reactively
+        // on every change. This store used to keep its own disconnected copies
+        // and force them here via inline styles/classes, which always won over
+        // settingsStore's changes and made the Sozlamalar buttons look broken.
 
         // Zoom scale
         const body = document.body;
