@@ -87,7 +87,35 @@
     <!-- Receipt Wrapper (Savatcha qismi): bg-white border-l border-slate-200 p-6 -->
     <div class="w-full lg:w-2/5 flex flex-col h-full overflow-hidden bg-white border-l border-slate-200 p-6 shadow-md justify-between">
       <div class="flex-grow flex flex-col overflow-hidden">
-        <h3 class="text-xs font-extrabold uppercase text-slate-700 tracking-wider shrink-0 mb-4">{{ settingsStore.t('app_title') }} - {{ cashierStore.t('savatcha') }}</h3>
+        <h3 class="text-xs font-extrabold uppercase text-slate-700 tracking-wider shrink-0 mb-3">{{ cashierStore.t('savatcha') }}</h3>
+
+        <!-- Table / Takeaway selector - visible while building the order, not just at checkout -->
+        <div class="shrink-0 mb-4 space-y-1.5">
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ cashierStore.t('stol') }}</label>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              @click="selectedTableId = null"
+              class="px-3 py-2 rounded-xl text-xs font-bold border transition shrink-0"
+              :class="selectedTableId === null ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200'"
+            >
+              {{ cashierStore.t('olib_ketish') }}
+            </button>
+            <select
+              v-model="selectedTableId"
+              class="flex-grow px-3 py-2 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-xs font-bold text-slate-900 focus:outline-none transition"
+            >
+              <option :value="null">{{ cashierStore.t('olib_ketish') }}</option>
+              <option
+                v-for="t in allTablesList"
+                :key="t.id"
+                :value="t.id"
+              >
+                {{ t.table_number }} ({{ t.status === 'occupied' ? cashierStore.t('band') : cashierStore.t('bo_sh') }})
+              </option>
+            </select>
+          </div>
+        </div>
 
         <!-- Cart Items List -->
         <div class="flex-grow overflow-y-auto pr-1 divide-y divide-slate-200 space-y-2 mb-4">
@@ -418,6 +446,7 @@ const customers = ref([]);
 const allTablesList = ref([]);
 const loading = ref(false);
 const selectedCategory = ref('all');
+const selectedTableId = ref(null);
 
 // Checkout modal states
 const showCheckoutModal = ref(false);
@@ -482,7 +511,7 @@ const formatCurrency = (val) => {
 
 const openCheckout = async () => {
   checkoutForm.value = {
-    table_id: null,
+    table_id: selectedTableId.value,
     customer_id: null,
     payment_method: 'cash',
     cash_amount: totals.value.total,
@@ -602,6 +631,7 @@ const submitCheckout = async () => {
 
     // Clear cart and close modal
     cashierStore.clearCart();
+    selectedTableId.value = null;
     showCheckoutModal.value = false;
 
     // Directly navigate to receipts and auto-select/print the just-created
@@ -645,6 +675,19 @@ onMounted(async () => {
     console.error(err);
   } finally {
     loading.value = false;
+  }
+
+  // Load tables so the table/takeaway selector is populated right away,
+  // not only once the checkout modal is opened.
+  try {
+    const res = await fetch('/api/tables', {
+      headers: { 'Authorization': `Bearer ${authStore.token}`, 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      allTablesList.value = await res.json();
+    }
+  } catch (err) {
+    console.error(err);
   }
 
   settingStore.fetchSettings();
