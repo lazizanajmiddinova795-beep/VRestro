@@ -604,12 +604,8 @@ const submitCheckout = async () => {
     cashierStore.clearCart();
     showCheckoutModal.value = false;
 
-    // Show success dialog
-    modal.value = {
-      show: true,
-      title: 'POS To\'lov bajarildi',
-      message: 'Muvaffaqiyatli! Buyurtma to\'landi va kassa cheki yaratildi.'
-    };
+    // Directly navigate to receipts to print the check (skip success modal)
+    router.push('/cashier/receipts');
 
   } catch (err) {
     alert(err.message);
@@ -620,7 +616,6 @@ const submitCheckout = async () => {
 
 const closeModal = () => {
   modal.value.show = false;
-  router.push('/cashier/receipts'); // Redirect to receipts list to view/print new invoice!
 };
 
 onMounted(async () => {
