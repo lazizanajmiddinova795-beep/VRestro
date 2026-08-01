@@ -18,7 +18,7 @@
               <span class="text-xxs font-black uppercase tracking-widest bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded-md">
                 Kassir
               </span>
-              <button 
+              <button
                 @click="showShiftModal = true"
                 class="text-xxs text-slate-700 font-bold hover:text-indigo-600 bg-slate-100 border border-slate-200 hover:bg-slate-200 px-2 py-0.5 rounded-md flex items-center gap-1 transition"
                 title="Smena boshqaruvi"
@@ -26,6 +26,64 @@
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
                 <span>{{ cashierStore.t('smena_nazorati') }}</span>
               </button>
+
+              <!-- Ready-order notification bell -->
+              <div class="relative">
+                <button
+                  @click="showNotifDropdown = !showNotifDropdown"
+                  class="relative p-1.5 rounded-md bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 hover:text-indigo-600 transition"
+                  :title="cashierStore.t('taom_tayyor_bildirishnomalar')"
+                >
+                  <Bell class="w-3.5 h-3.5" />
+                  <span
+                    v-if="cashierStore.notificationHistory.length > 0"
+                    class="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-rose-600 text-white text-[9px] font-black flex items-center justify-center"
+                  >
+                    {{ cashierStore.notificationHistory.length }}
+                  </span>
+                </button>
+
+                <!-- Click-outside backdrop -->
+                <div v-if="showNotifDropdown" class="fixed inset-0 z-40" @click="showNotifDropdown = false"></div>
+
+                <!-- Dropdown history panel -->
+                <div
+                  v-if="showNotifDropdown"
+                  class="absolute left-0 md:left-auto md:right-0 top-full mt-2 w-80 max-w-[90vw] bg-white border-2 border-slate-200 rounded-2xl shadow-2xl z-50 overflow-hidden text-left"
+                >
+                  <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+                    <span class="text-xs font-black text-slate-900 uppercase tracking-wider">{{ cashierStore.t('taom_tayyor_bildirishnomalar') }}</span>
+                    <button
+                      v-if="cashierStore.notificationHistory.length > 0"
+                      @click="cashierStore.clearAllNotifications()"
+                      class="text-3xs font-bold text-indigo-600 hover:text-indigo-700"
+                    >
+                      {{ cashierStore.t('hammasini_tozalash') }}
+                    </button>
+                  </div>
+                  <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                    <div
+                      v-for="notif in cashierStore.notificationHistory"
+                      :key="notif.id"
+                      class="p-4 flex items-start space-x-3 hover:bg-slate-50"
+                    >
+                      <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0">
+                        <CheckCircle2 class="w-4 h-4" />
+                      </div>
+                      <div class="flex-grow min-w-0">
+                        <p v-if="notif.orderNumber" class="text-sm font-black text-emerald-700 leading-tight">№{{ notif.orderNumber }}</p>
+                        <p class="text-xs text-slate-600 font-semibold mt-0.5">{{ notif.message }}</p>
+                      </div>
+                      <button @click="cashierStore.clearNotification(notif.id)" class="text-slate-400 hover:text-slate-700 shrink-0">
+                        <X class="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <div v-if="cashierStore.notificationHistory.length === 0" class="p-6 text-center text-xs text-slate-400 font-semibold">
+                      {{ cashierStore.t('bildirishnoma_yoq') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -230,7 +288,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { LogOut, X, CheckCircle2 } from 'lucide-vue-next';
+import { LogOut, X, CheckCircle2, Bell } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 import { useCashierTablesStore } from '@/stores/cashierTables';
 import { useCashierStore } from '@/stores/cashier';
@@ -251,6 +309,7 @@ const currentDate = ref('');
 let clockInterval = null;
 
 const showShiftModal = ref(false);
+const showNotifDropdown = ref(false);
 
 const updateClock = () => {
   const now = new Date();

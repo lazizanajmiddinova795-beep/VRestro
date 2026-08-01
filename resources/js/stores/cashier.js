@@ -48,6 +48,9 @@ export const useCashierStore = defineStore('cashier', () => {
             chiqish: "Chiqish",
             tizimdan_chiqish: "Tizimdan chiqish",
             smena_nazorati: "Smena nazorati",
+            taom_tayyor_bildirishnomalar: "Tayyor bo'lgan buyurtmalar",
+            hammasini_tozalash: "Hammasini tozalash",
+            bildirishnoma_yoq: "Hozircha bildirishnoma yo'q",
             bo_sh: "Bo'sh",
             band: "Band",
             bron: "Bron",
@@ -184,6 +187,9 @@ export const useCashierStore = defineStore('cashier', () => {
             chiqish: "Выход",
             tizimdan_chiqish: "Выйти из системы",
             smena_nazorati: "Контроль смены",
+            taom_tayyor_bildirishnomalar: "Готовые заказы",
+            hammasini_tozalash: "Очистить все",
+            bildirishnoma_yoq: "Пока нет уведомлений",
             bo_sh: "Свободно",
             band: "Занято",
             bron: "Бронь",
@@ -320,6 +326,9 @@ export const useCashierStore = defineStore('cashier', () => {
             chiqish: "Logout",
             tizimdan_chiqish: "Logout of System",
             smena_nazorati: "Shift Controls",
+            taom_tayyor_bildirishnomalar: "Ready Orders",
+            hammasini_tozalash: "Clear All",
+            bildirishnoma_yoq: "No notifications yet",
             bo_sh: "Empty",
             band: "Occupied",
             bron: "Reserved",
@@ -518,11 +527,18 @@ export const useCashierStore = defineStore('cashier', () => {
         }
     };
 
-    // "Taom tayyor" toast card notifications - polled from the shared
+    // "Taom tayyor" ready-order notifications - polled from the shared
     // SystemNotification feed (created by the kitchen when an order's
-    // items are all marked ready) so the cashier gets an actionable
-    // card + sound instead of having to watch the Bildirishnomalar list.
+    // items are all marked ready). Two views on the same data:
+    //   - readyToasts: transient floating cards, auto-disappear after 10s
+    //     (just an attention-grabbing animation, doesn't affect read state)
+    //   - notificationHistory: persists until the cashier explicitly
+    //     dismisses it, so a notification missed while busy with a
+    //     customer can still be found later via the bell dropdown.
+    // The underlying SystemNotification stays unread server-side until the
+    // cashier dismisses it from the history (not just when the toast fades).
     const readyToasts = ref([]);
+    const notificationHistory = ref([]);
     let notificationPollInterval = null;
 
     const pollReadyNotifications = async () => {
@@ -534,23 +550,24 @@ export const useCashierStore = defineStore('cashier', () => {
             if (!res.ok) return;
             const notifications = await res.json();
             const list = Array.isArray(notifications) ? notifications : (notifications.data || []);
+            const knownIds = new Set(notificationHistory.value.map(n => n.id));
 
             for (const notif of list) {
-                readyToasts.value.push({
+                if (knownIds.has(notif.id)) continue;
+
+                const entry = {
                     id: notif.id,
                     title: notif.title,
                     orderNumber: notif.meta_data?.order_number || '',
-                    message: notif.message
-                });
+                    message: notif.message,
+                    created_at: notif.created_at
+                };
+
+                notificationHistory.value.unshift(entry);
+                readyToasts.value.push(entry);
                 playNotificationBeep();
 
-                // Mark as read so it doesn't reappear on the next poll
-                fetch(`/api/notifications/${notif.id}/read`, {
-                    method: 'PATCH',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-                }).catch(() => {});
-
-                // Auto-dismiss the card after 10 seconds
+                // Auto-dismiss only the floating card, not the history entry
                 setTimeout(() => {
                     readyToasts.value = readyToasts.value.filter(t => t.id !== notif.id);
                 }, 10000);
@@ -562,6 +579,35 @@ export const useCashierStore = defineStore('cashier', () => {
 
     const dismissReadyToast = (id) => {
         readyToasts.value = readyToasts.value.filter(t => t.id !== id);
+    };
+
+    const clearNotification = async (id) => {
+        notificationHistory.value = notificationHistory.value.filter(n => n.id !== id);
+        readyToasts.value = readyToasts.value.filter(t => t.id !== id);
+        try {
+            const token = localStorage.getItem('vrestro_token');
+            await fetch(`/api/notifications/${id}/read`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+        } catch (e) {
+            console.error('Failed to mark notification as read:', e);
+        }
+    };
+
+    const clearAllNotifications = async () => {
+        const ids = notificationHistory.value.map(n => n.id);
+        notificationHistory.value = [];
+        readyToasts.value = [];
+        try {
+            const token = localStorage.getItem('vrestro_token');
+            await Promise.all(ids.map(id => fetch(`/api/notifications/${id}/read`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            })));
+        } catch (e) {
+            console.error('Failed to mark notifications as read:', e);
+        }
     };
 
     const startNotificationPolling = () => {
@@ -665,8 +711,11 @@ export const useCashierStore = defineStore('cashier', () => {
 
         // "Taom tayyor" ready notifications
         readyToasts,
+        notificationHistory,
         startNotificationPolling,
         stopNotificationPolling,
-        dismissReadyToast
+        dismissReadyToast,
+        clearNotification,
+        clearAllNotifications
     };
 });
