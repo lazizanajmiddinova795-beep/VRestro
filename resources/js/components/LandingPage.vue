@@ -1,23 +1,23 @@
 <template>
-  <div class="min-h-screen bg-transparent text-slate-100 flex flex-col font-sans overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+  <div class="min-h-screen bg-transparent text-slate-900 flex flex-col font-sans overflow-x-hidden selection:bg-indigo-500 selection:text-white">
     <!-- Header -->
-    <header class="sticky top-0 z-50 backdrop-blur-md border-b border-white/5 bg-slate-950/40 px-6 py-4 transition-all duration-300">
+    <header class="sticky top-0 z-50 backdrop-blur-md border-b border-slate-200 bg-white/80 px-6 py-4 transition-all duration-300">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
             <ChefHat class="w-6 h-6 text-white" />
           </div>
-          <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400 tracking-wider">
+          <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 tracking-wider">
             VRestro
           </span>
         </div>
         <div class="flex items-center space-x-4">
           <template v-if="authStore.isAuthenticated()">
             <div class="flex items-center space-x-3 mr-4">
-              <span class="text-xs bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 px-2.5 py-1 rounded-full font-medium">
+              <span class="text-xs bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-1 rounded-full font-medium">
                 {{ authStore.user?.roles?.[0] || 'Xodim' }}
               </span>
-              <span class="text-sm font-medium text-slate-300">{{ authStore.user?.name }}</span>
+              <span class="text-sm font-medium text-slate-600">{{ authStore.user?.name }}</span>
             </div>
             <router-link v-if="authStore.user?.roles?.includes('Admin')" to="/admin/dashboard" class="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 mr-2 transition duration-300">
               Boshqaruv paneli
@@ -31,7 +31,7 @@
             <router-link v-else to="/orders" class="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 mr-2 transition duration-300">
               Buyurtmalar
             </router-link>
-            <button @click="handleLogout" class="px-4 py-2 text-xs font-semibold rounded-lg bg-white/5 border border-white/10 hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-400 transition duration-300">
+            <button @click="handleLogout" class="px-4 py-2 text-xs font-semibold rounded-lg bg-slate-50 border border-slate-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition duration-300">
               Chiqish
             </button>
           </template>
@@ -53,21 +53,21 @@
 
       <div class="max-w-5xl text-center space-y-12 relative z-10">
         <!-- Badge -->
-        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-inner animate-pulse">
-          <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-          <span class="text-xs font-medium text-slate-300 tracking-wide">Phase 1: Ecosystem Infrastructure initialized</span>
+        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm animate-pulse">
+          <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+          <span class="text-xs font-medium text-slate-600 tracking-wide">Phase 1: Ecosystem Infrastructure initialized</span>
         </div>
 
         <!-- Title -->
-        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight max-w-4xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 leading-tight max-w-4xl mx-auto">
           Restoran Boshqaruvida
-          <span class="block bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400">
+          <span class="block bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-600">
             Yangi Davr Texnologiyasi
           </span>
         </h1>
 
         <!-- Subtitle -->
-        <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
           Moliya, buyurtmalar, oshxona texnologiyalari va xizmat ko'rsatishni yagona oynada boshqaruvchi restoran va oshxonalar uchun keyingi avlod ekotizimi.
         </p>
 
@@ -89,7 +89,7 @@
             <router-link v-else to="/orders" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white shadow-lg shadow-indigo-600/40 hover:shadow-indigo-600/60 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 w-full sm:w-auto">
               Tizimga o'tish
             </router-link>
-            <div class="px-8 py-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 font-bold text-indigo-300 backdrop-blur-md w-full sm:w-auto">
+            <div class="px-8 py-4 rounded-xl bg-indigo-50 border border-indigo-200 font-bold text-indigo-700 w-full sm:w-auto">
               Tizimga muvaffaqiyatli kirildi!
             </div>
           </div>
@@ -98,30 +98,30 @@
         <!-- Features Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 pt-16 text-left">
           <!-- Card 1 -->
-          <div class="group relative rounded-2xl border border-white/5 bg-slate-900/40 p-6 backdrop-blur-md shadow-2xl transition-all duration-300 hover:border-violet-500/20 hover:bg-slate-900/60 hover:-translate-y-1">
-            <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center border border-violet-500/20 text-violet-400 mb-5 group-hover:bg-violet-500 group-hover:text-white transition-all duration-300">
+          <div class="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-md transition-all duration-300 hover:border-violet-300 hover:shadow-lg hover:-translate-y-1">
+            <div class="w-12 h-12 rounded-xl bg-violet-50 flex items-center justify-center border border-violet-200 text-violet-600 mb-5 group-hover:bg-violet-500 group-hover:text-white transition-all duration-300">
               <Layers class="w-6 h-6" />
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">{{ settingsStore.t('app_title') }} - Barchasi Bir Oynada</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Buyurtmalar, stollar joylashuvi va xizmatchilar navbati hammasi real vaqtda yangilanadi.</p>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">{{ settingsStore.t('app_title') }} - Barchasi Bir Oynada</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">Buyurtmalar, stollar joylashuvi va xizmatchilar navbati hammasi real vaqtda yangilanadi.</p>
           </div>
 
           <!-- Card 2 -->
-          <div class="group relative rounded-2xl border border-white/5 bg-slate-900/40 p-6 backdrop-blur-md shadow-2xl transition-all duration-300 hover:border-indigo-500/20 hover:bg-slate-900/60 hover:-translate-y-1">
-            <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-indigo-400 mb-5 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-300">
+          <div class="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-md transition-all duration-300 hover:border-indigo-300 hover:shadow-lg hover:-translate-y-1">
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-200 text-indigo-600 mb-5 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-300">
               <DollarSign class="w-6 h-6" />
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Moliya & Hisobotlar</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Kassa operatsiyalari, kundalik tushumlar va foyda-zarar tahlilini tezkor hisoblash.</p>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Moliya & Hisobotlar</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">Kassa operatsiyalari, kundalik tushumlar va foyda-zarar tahlilini tezkor hisoblash.</p>
           </div>
 
           <!-- Card 3 -->
-          <div class="group relative rounded-2xl border border-white/5 bg-slate-900/40 p-6 backdrop-blur-md shadow-2xl transition-all duration-300 hover:border-cyan-500/20 hover:bg-slate-900/60 hover:-translate-y-1">
-            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20 text-cyan-400 mb-5 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
+          <div class="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-md transition-all duration-300 hover:border-cyan-300 hover:shadow-lg hover:-translate-y-1">
+            <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center border border-cyan-200 text-cyan-600 mb-5 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
               <ChefHat class="w-6 h-6" />
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Oshxona Nazorati</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Shef-povar va oshxona xodimlari uchun tayyorlanayotgan taomlar monitori integratsiyasi.</p>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Oshxona Nazorati</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">Shef-povar va oshxona xodimlari uchun tayyorlanayotgan taomlar monitori integratsiyasi.</p>
           </div>
 
         </div>
@@ -129,7 +129,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-white/5 py-8 text-center text-xs text-slate-500">
+    <footer class="border-t border-slate-200 py-8 text-center text-xs text-slate-400">
       <div class="max-w-7xl mx-auto px-6">
         &copy; 2026 VRestro. Barcha huquqlar himoyalangan. Next-Gen Restoran Ekotizimi.
       </div>

@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-transparent text-slate-100 flex items-center justify-center p-6 relative font-sans">
+  <div class="min-h-screen bg-transparent text-slate-900 flex items-center justify-center p-6 relative font-sans">
     <!-- Background glow decoration -->
-    <div class="absolute w-96 h-96 rounded-full bg-violet-600/10 blur-[100px] -top-12 -left-12 pointer-events-none"></div>
-    <div class="absolute w-96 h-96 rounded-full bg-indigo-600/10 blur-[100px] -bottom-12 -right-12 pointer-events-none"></div>
+    <div class="absolute w-96 h-96 rounded-full bg-violet-500/10 blur-[100px] -top-12 -left-12 pointer-events-none"></div>
+    <div class="absolute w-96 h-96 rounded-full bg-indigo-500/10 blur-[100px] -bottom-12 -right-12 pointer-events-none"></div>
 
     <div class="w-full max-w-md relative z-10">
       <!-- Logo header -->
@@ -11,68 +11,68 @@
           <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
             <ChefHat class="w-7 h-7 text-white" />
           </div>
-          <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400 tracking-wider">
+          <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 tracking-wider">
             VRestro
           </span>
         </router-link>
-        <p class="text-slate-400 text-sm mt-2">Tizimga kirish va autentifikatsiya</p>
+        <p class="text-slate-500 text-sm mt-2">Tizimga kirish va autentifikatsiya</p>
       </div>
 
-      <!-- Glassmorphic Login Card -->
-      <div class="backdrop-blur-xl bg-slate-900/65 border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/50 transition-all duration-500 overflow-hidden relative">
-        
+      <!-- Login Card -->
+      <div class="backdrop-blur-xl bg-white border border-slate-200 rounded-3xl p-8 shadow-2xl transition-all duration-500 overflow-hidden relative">
+
         <!-- STEP 1: Credentials Form -->
         <div v-if="authStore.loginStep === 'credentials'" class="space-y-6">
           <div class="space-y-1">
-            <h2 class="text-xl font-bold text-white">{{ settingsStore.t('app_title') }} - Xush kelibsiz</h2>
-            <p class="text-xs text-slate-400">Davom etish uchun login va parolingizni kiriting</p>
+            <h2 class="text-xl font-bold text-slate-900">{{ settingsStore.t('app_title') }} - Xush kelibsiz</h2>
+            <p class="text-xs text-slate-500">Davom etish uchun login va parolingizni kiriting</p>
           </div>
 
           <form @submit.prevent="handleCredentialsSubmit" class="space-y-5">
             <!-- Login Field -->
             <div class="space-y-2">
-              <label for="login" class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Login</label>
+              <label for="login" class="text-xs font-semibold tracking-wider text-slate-500 uppercase">Login</label>
               <div class="relative">
-                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
                   <User class="w-5 h-5" />
                 </span>
-                <input 
-                  type="text" 
-                  id="login" 
+                <input
+                  type="text"
+                  id="login"
                   v-model="login"
                   required
-                  placeholder="admin" 
-                  class="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 transition duration-200"
+                  placeholder="admin"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition duration-200"
                 />
               </div>
             </div>
 
             <!-- Password Field -->
             <div class="space-y-2">
-              <label for="password" class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Parol</label>
+              <label for="password" class="text-xs font-semibold tracking-wider text-slate-500 uppercase">Parol</label>
               <div class="relative">
-                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
                   <Lock class="w-5 h-5" />
                 </span>
-                <input 
-                  type="password" 
-                  id="password" 
+                <input
+                  type="password"
+                  id="password"
                   v-model="password"
                   required
-                  placeholder="••••••••" 
-                  class="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 transition duration-200"
+                  placeholder="••••••••"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition duration-200"
                 />
               </div>
             </div>
 
             <!-- Display Errors -->
-            <div v-if="error" class="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400 font-medium">
+            <div v-if="error" class="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-600 font-medium">
               {{ error }}
             </div>
 
             <!-- Submit Button -->
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               :disabled="loading"
               class="w-full relative group py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white text-sm shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -85,32 +85,32 @@
           </form>
 
           <div class="text-center pt-2">
-            <router-link to="/" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition duration-200">
+            <router-link to="/" class="text-xs text-indigo-600 hover:text-indigo-700 font-medium transition duration-200">
               Bosh sahifaga qaytish
             </router-link>
           </div>
 
           <!-- Mobile App Download Buttons -->
           <div class="flex items-center justify-center gap-3 pt-3">
-            <a 
-              href="https://play.google.com" 
+            <a
+              href="https://play.google.com"
               target="_blank"
-              class="flex items-center space-x-2 px-4 py-2.5 bg-slate-950/60 hover:bg-slate-900/80 border border-white/10 rounded-xl text-white transition hover:scale-105 shadow-md group"
+              class="flex items-center space-x-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-900 transition hover:scale-105 shadow-sm group"
             >
-              <Play class="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition" />
+              <Play class="w-5 h-5 text-emerald-600 group-hover:text-emerald-500 transition" />
               <div class="text-left">
-                <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold leading-tight">Yuklab olish</span>
+                <span class="block text-[9px] uppercase tracking-wider text-slate-500 font-bold leading-tight">Yuklab olish</span>
                 <span class="block text-xs font-black leading-tight">Android APK</span>
               </div>
             </a>
-            <a 
-              href="https://apps.apple.com" 
+            <a
+              href="https://apps.apple.com"
               target="_blank"
-              class="flex items-center space-x-2 px-4 py-2.5 bg-slate-950/60 hover:bg-slate-900/80 border border-white/10 rounded-xl text-white transition hover:scale-105 shadow-md group"
+              class="flex items-center space-x-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-900 transition hover:scale-105 shadow-sm group"
             >
-              <Apple class="w-5 h-5 text-white group-hover:text-indigo-400 transition" />
+              <Apple class="w-5 h-5 text-slate-900 group-hover:text-indigo-600 transition" />
               <div class="text-left">
-                <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold leading-tight">Yuklab olish</span>
+                <span class="block text-[9px] uppercase tracking-wider text-slate-500 font-bold leading-tight">Yuklab olish</span>
                 <span class="block text-xs font-black leading-tight">App Store</span>
               </div>
             </a>
@@ -120,34 +120,34 @@
         <!-- STEP 2: Telegram OTP Verification -->
         <div v-else-if="authStore.loginStep === 'biometrics'" class="space-y-6 flex flex-col items-center">
           <div class="text-center space-y-1 w-full">
-            <h2 class="text-xl font-bold text-white">Telegram orqali tasdiqlash</h2>
-            <p class="text-xs text-slate-400">Telegram kanalga yuborilgan 8 xonali kodni kiriting</p>
+            <h2 class="text-xl font-bold text-slate-900">Telegram orqali tasdiqlash</h2>
+            <p class="text-xs text-slate-500">Telegram kanalga yuborilgan 8 xonali kodni kiriting</p>
           </div>
 
           <!-- OTP Input Field -->
           <div class="w-full space-y-2 py-4">
             <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
                 <KeyRound class="w-5 h-5" />
               </span>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 v-model="otpCode"
                 maxlength="8"
                 required
-                placeholder="Tasdiqlash kodi" 
-                class="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-center tracking-widest font-black text-lg text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 transition duration-200"
+                placeholder="Tasdiqlash kodi"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 text-center tracking-widest font-black text-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition duration-200"
               />
             </div>
           </div>
 
           <div class="w-full text-center text-xs px-4">
-            <span class="text-slate-400 font-medium">Tizimga kirayotgan xodim:</span>
-            <span class="block text-indigo-300 font-bold mt-1 text-sm">{{ authStore.tempUser?.name }}</span>
+            <span class="text-slate-500 font-medium">Tizimga kirayotgan xodim:</span>
+            <span class="block text-indigo-600 font-bold mt-1 text-sm">{{ authStore.tempUser?.name }}</span>
           </div>
 
           <!-- Display Errors -->
-          <div v-if="error" class="w-full p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400 font-medium text-center">
+          <div v-if="error" class="w-full p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-600 font-medium text-center">
             {{ error }}
           </div>
 
@@ -156,7 +156,7 @@
             <button
               @click="handleResendOtp"
               :disabled="resendingOtp || submittingOtp"
-              class="text-xs text-indigo-400 hover:text-indigo-300 underline underline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              class="text-xs text-indigo-600 hover:text-indigo-700 underline underline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               <span v-if="resendingOtp">Yangi kod yuborilmoqda...</span>
               <span v-else>Yangi kod so'rash</span>
@@ -165,8 +165,8 @@
 
           <!-- Actions -->
           <div class="w-full space-y-3">
-            <button 
-              @click="handleOtpSubmit" 
+            <button
+              @click="handleOtpSubmit"
               :disabled="submittingOtp || success || otpCode.length !== 8"
               class="w-full py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white text-sm shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -178,10 +178,10 @@
               </span>
             </button>
 
-            <button 
-              @click="handleBackToCredentials" 
+            <button
+              @click="handleBackToCredentials"
               :disabled="submittingOtp || success"
-              class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:bg-white/10 transition duration-200 disabled:opacity-50"
+              class="w-full py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition duration-200 disabled:opacity-50"
             >
               Orqaga
             </button>
@@ -190,14 +190,14 @@
 
         <!-- STEP 3: SUCCESS STATE -->
         <div v-else-if="authStore.loginStep === 'success'" class="space-y-6 text-center py-6">
-          <div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto animate-bounce">
+          <div class="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mx-auto animate-bounce">
             <CheckCircle class="w-10 h-10" />
           </div>
           <div class="space-y-2">
-            <h2 class="text-2xl font-bold text-white">Xush kelibsiz!</h2>
-            <p class="text-sm text-slate-400">Tizimga kirish muvaffaqiyatli yakunlandi.</p>
+            <h2 class="text-2xl font-bold text-slate-900">Xush kelibsiz!</h2>
+            <p class="text-sm text-slate-500">Tizimga kirish muvaffaqiyatli yakunlandi.</p>
           </div>
-          <p class="text-xs text-slate-500 animate-pulse">Siz avtomatik tarzda boshqaruv paneliga yo'naltirilmoqdasiz...</p>
+          <p class="text-xs text-slate-400 animate-pulse">Siz avtomatik tarzda boshqaruv paneliga yo'naltirilmoqdasiz...</p>
         </div>
 
       </div>
