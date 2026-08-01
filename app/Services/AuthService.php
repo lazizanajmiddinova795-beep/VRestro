@@ -26,9 +26,9 @@ class AuthService
      */
     public function verifyCredentials(string $login, string $password): array
     {
-        $user = $this->userRepository->findByLogin($login);
+        $user = $this->userRepository->findByLogin(trim($login));
 
-        if (!$user || !Hash::check($password, $user->password)) {
+        if (!$user || !Hash::check(trim($password), $user->password)) {
             throw ValidationException::withMessages([
                 'login' => ['Tizimga kirish ma\'lumotlari noto\'g\'ri.'],
             ]);

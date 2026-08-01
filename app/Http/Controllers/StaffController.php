@@ -73,8 +73,9 @@ class StaffController extends Controller
             $data['avatar_url'] = asset(Storage::url($request->file('avatar')->store('avatars', 'public')));
         }
 
-        $data['name'] = strip_tags($data['name']);
-        $data['login'] = strip_tags($data['login']);
+        $data['name'] = strip_tags(trim($data['name']));
+        $data['login'] = trim(strip_tags($data['login']));
+        $data['password'] = trim($data['password']);
 
         $user = $this->staffService->createStaff($request->user()->id, $data);
 
@@ -116,8 +117,11 @@ class StaffController extends Controller
             $data['avatar_url'] = asset(Storage::url($request->file('avatar')->store('avatars', 'public')));
         }
 
-        $data['name'] = strip_tags($data['name']);
-        $data['login'] = strip_tags($data['login']);
+        $data['name'] = strip_tags(trim($data['name']));
+        $data['login'] = trim(strip_tags($data['login']));
+        if (!empty($data['password'])) {
+            $data['password'] = trim($data['password']);
+        }
 
         $user = $this->staffService->updateStaff($request->user()->id, $id, $data);
 
