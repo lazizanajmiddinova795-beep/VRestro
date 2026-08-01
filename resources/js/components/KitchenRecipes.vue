@@ -38,9 +38,12 @@
         <div
           v-for="food in filteredFoods"
           :key="food.id"
+          :id="`food-card-${food.id}`"
           class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-slate-300 transition duration-200"
-          :class="{'border-indigo-200 bg-indigo-50/30': expandedFoodId === food.id}"
-        >
+          :class="{
+            'border-indigo-200 bg-indigo-50/30': expandedFoodId === food.id,
+            'ring-4 ring-emerald-300/60 border-emerald-300': flashFoodId === food.id
+          }">
           <div
             class="flex items-center space-x-3 p-4 md:p-5 md:pb-3 md:border-b md:border-slate-100 cursor-pointer md:cursor-default"
             @click="toggleFood(food.id)"
@@ -108,71 +111,132 @@
     <!-- MODAL: Edit Recipe (Admin / Chef with permission) -->
     <div
       v-if="showEditModal"
-      class="fixed inset-0 z-50 backdrop-blur-sm bg-slate-900/30 flex items-center justify-center p-6"
+      class="fixed inset-0 z-50 backdrop-blur-sm bg-slate-900/40 flex items-center justify-center p-4 md:p-6"
       @click.self="showEditModal = false"
     >
-      <div class="w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleIn max-h-[85vh] flex flex-col">
-        <div class="flex justify-between items-center border-b border-slate-100 pb-3 shrink-0">
-          <h3 class="text-base font-bold text-slate-900">{{ editingFood?.name }} — Retseptni Tahrirlash</h3>
-          <button @click="showEditModal = false" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 transition">
+      <div class="w-full max-w-xl bg-white border border-slate-200 rounded-3xl shadow-2xl animate-scaleIn max-h-[90vh] flex flex-col overflow-hidden">
+
+        <!-- Header -->
+        <div class="flex items-start justify-between gap-4 px-6 py-5 border-b border-slate-100 shrink-0 bg-gradient-to-br from-indigo-50/60 to-white">
+          <div class="flex items-center space-x-3.5 min-w-0">
+            <div class="w-11 h-11 rounded-2xl bg-white border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
+              <img v-if="editingFood?.image_url" :src="editingFood.image_url" :alt="editingFood.name" class="w-full h-full object-cover" />
+              <Utensils v-else class="w-5 h-5 text-slate-400" />
+            </div>
+            <div class="min-w-0">
+              <h3 class="text-base font-black text-slate-900 truncate">{{ editingFood?.name }}</h3>
+              <p class="text-xs text-slate-500 font-bold mt-0.5">
+                Retsept tarkibi &middot; {{ validRowCount }} ta masalliq
+              </p>
+            </div>
+          </div>
+          <button @click="showEditModal = false" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-900 hover:border-slate-300 transition shrink-0">
             <X class="w-4 h-4" />
           </button>
         </div>
 
-        <div class="flex-grow overflow-y-auto space-y-3 pr-1">
+        <!-- Column labels -->
+        <div v-if="editRows.length > 0" class="hidden sm:flex items-center gap-2.5 px-6 pt-4 shrink-0 text-3xs font-extrabold uppercase tracking-wider text-slate-400">
+          <span class="w-6"></span>
+          <span class="flex-grow">Masalliq</span>
+          <span class="w-32">Miqdori</span>
+          <span class="w-8"></span>
+        </div>
+
+        <!-- Ingredient Rows -->
+        <div class="flex-grow overflow-y-auto px-6 py-3 space-y-2.5">
           <div
             v-for="(row, idx) in editRows"
             :key="idx"
-            class="flex gap-2 items-center bg-slate-50 border border-slate-200 rounded-xl p-2.5"
+            class="flex gap-2.5 items-center bg-slate-50 border rounded-2xl p-3 transition-colors"
+            :class="isDuplicateRow(row, idx) ? 'border-rose-300 bg-rose-50' : 'border-slate-200'"
           >
+            <span class="w-6 h-6 rounded-full bg-white border border-slate-200 text-slate-400 text-3xs font-black flex items-center justify-center shrink-0">
+              {{ idx + 1 }}
+            </span>
             <select
               v-model.number="row.ingredient_id"
-              class="flex-grow px-2 py-1.5 rounded-lg bg-white border border-slate-200 focus:border-indigo-500 text-xs text-slate-900 focus:outline-none transition"
+              class="flex-grow px-3 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-xs font-semibold text-slate-900 focus:outline-none transition"
             >
               <option value="" disabled>Masalliqni tanlang...</option>
               <option v-for="ing in ingredientsStore.ingredients" :key="ing.id" :value="ing.id">
-                {{ ing.name }} ({{ ing.unit }})
+                {{ ing.name }}
               </option>
             </select>
-            <input
-              v-model.number="row.quantity_required"
-              type="number"
-              step="0.001"
-              min="0"
-              placeholder="Miqdori..."
-              class="w-28 px-2 py-1.5 rounded-lg bg-white border border-slate-200 focus:border-indigo-500 text-xs text-slate-900 focus:outline-none transition"
-            />
+            <div class="w-32 relative shrink-0">
+              <input
+                v-model.number="row.quantity_required"
+                type="number"
+                step="0.001"
+                min="0"
+                placeholder="0"
+                class="w-full pl-3 pr-12 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-xs font-bold text-slate-900 focus:outline-none transition"
+              />
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-3xs font-extrabold text-slate-400 uppercase">
+                {{ unitFor(row.ingredient_id) }}
+              </span>
+            </div>
             <button
               type="button"
               @click="editRows.splice(idx, 1)"
-              class="p-1.5 rounded-lg bg-red-50 border border-red-100 text-red-500 hover:bg-red-500 hover:text-white transition shrink-0"
+              class="p-2 rounded-xl bg-white border border-red-100 text-red-500 hover:bg-red-500 hover:text-white hover:border-red-500 transition shrink-0"
+              title="O'chirish"
             >
               <Trash2 class="w-3.5 h-3.5" />
             </button>
           </div>
+
+          <!-- Empty state -->
+          <div v-if="editRows.length === 0" class="text-center py-10 space-y-2">
+            <div class="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto">
+              <ChefHat class="w-6 h-6 text-slate-400" />
+            </div>
+            <p class="text-xs font-bold text-slate-400">Retsept hali bo'sh — birinchi masalliqni qo'shing</p>
+          </div>
+
+          <div v-if="hasDuplicateRows" class="flex items-center space-x-2 px-3 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-3xs font-bold">
+            <AlertTriangle class="w-3.5 h-3.5 shrink-0" />
+            <span>Bir xil masalliq bir necha marta tanlangan — qizil qatorlarni birlashtiring yoki o'chiring.</span>
+          </div>
+
           <button
             type="button"
             @click="editRows.push({ ingredient_id: '', quantity_required: '' })"
-            class="w-full px-3 py-2 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white text-xs font-bold transition"
+            class="w-full px-3 py-3 rounded-xl bg-indigo-50 border border-dashed border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white hover:border-solid text-xs font-bold transition flex items-center justify-center space-x-1.5"
           >
-            + Masalliq qo'shish
+            <Plus class="w-4 h-4" />
+            <span>Masalliq qo'shish</span>
           </button>
         </div>
 
-        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100 shrink-0">
-          <button @click="showEditModal = false" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition">
+        <!-- Footer -->
+        <div class="flex justify-end space-x-2 px-6 py-4 border-t border-slate-100 shrink-0 bg-slate-50/60">
+          <button @click="showEditModal = false" class="px-4 py-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 transition">
             Bekor qilish
           </button>
           <button
             @click="saveRecipe"
-            :disabled="saving"
-            class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-xs font-semibold transition"
+            :disabled="saving || hasDuplicateRows"
+            class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl text-xs font-bold transition flex items-center space-x-2 shadow-md shadow-indigo-600/20"
           >
-            {{ saving ? 'Saqlanmoqda...' : 'Saqlash' }}
+            <Loader2 v-if="saving" class="w-3.5 h-3.5 animate-spin" />
+            <Save v-else class="w-3.5 h-3.5" />
+            <span>{{ saving ? 'Saqlanmoqda...' : 'Retseptni saqlash' }}</span>
           </button>
         </div>
       </div>
     </div>
+
+    <!-- Success Toast -->
+    <Transition name="toast-fade">
+      <div
+        v-if="showSuccessToast"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-2.5"
+      >
+        <CheckCircle2 class="w-4.5 h-4.5 text-emerald-400 shrink-0" />
+        <span class="text-xs font-bold">{{ editingFoodName }} retsepti saqlandi!</span>
+      </div>
+    </Transition>
   </ChefLayout>
 </template>
 
@@ -183,7 +247,7 @@ import { ref, computed, onMounted } from 'vue';
 import ChefLayout from '@/components/ChefLayout.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useIngredientsStore } from '@/stores/ingredients';
-import { BookOpen, Search, Loader2, AlertTriangle, Utensils, Edit3, X, Trash2, ChevronDown } from 'lucide-vue-next';
+import { BookOpen, Search, Loader2, AlertTriangle, Utensils, Edit3, X, Trash2, ChevronDown, Plus, ChefHat, Save, CheckCircle2 } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const ingredientsStore = useIngredientsStore();
@@ -234,8 +298,11 @@ const filteredFoods = computed(() => {
 // Edit modal state
 const showEditModal = ref(false);
 const editingFood = ref(null);
+const editingFoodName = ref('');
 const editRows = ref([]);
 const saving = ref(false);
+const showSuccessToast = ref(false);
+const flashFoodId = ref(null);
 
 const openEditModal = (food) => {
   editingFood.value = food;
@@ -246,17 +313,33 @@ const openEditModal = (food) => {
   showEditModal.value = true;
 };
 
+// Ingredient unit shown next to the quantity field, e.g. "kg" / "l" / "dona"
+const unitFor = (ingredientId) => {
+  const ing = ingredientsStore.ingredients.find(i => i.id === ingredientId);
+  return ing?.unit || '';
+};
+
+const validRowCount = computed(() => editRows.value.filter(r => r.ingredient_id && r.quantity_required > 0).length);
+
+const isDuplicateRow = (row, idx) => {
+  if (!row.ingredient_id) return false;
+  return editRows.value.some((r, i) => i !== idx && r.ingredient_id === row.ingredient_id);
+};
+
+const hasDuplicateRows = computed(() => editRows.value.some((row, idx) => isDuplicateRow(row, idx)));
+
 const saveRecipe = async () => {
   const ingredients = editRows.value.filter(r => r.ingredient_id && r.quantity_required > 0);
 
-  if (ingredients.some(r => editRows.value.filter(x => x.ingredient_id === r.ingredient_id).length > 1)) {
+  if (hasDuplicateRows.value) {
     alert('Bir xil masalliq bir necha marta tanlangan. Ularni birlashtiring.');
     return;
   }
 
   saving.value = true;
   try {
-    const response = await fetch(`/api/menu/foods/${editingFood.value.id}/recipe`, {
+    const foodId = editingFood.value.id;
+    const response = await fetch(`/api/menu/foods/${foodId}/recipe`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -272,8 +355,21 @@ const saveRecipe = async () => {
       throw new Error(messages);
     }
 
+    editingFoodName.value = editingFood.value.name;
     showEditModal.value = false;
     await fetchRecipes();
+
+    // Return the chef straight to that dish's card in the list, expanded and
+    // briefly highlighted, so it's obvious the save actually landed - instead
+    // of just closing the modal and leaving them wondering.
+    expandedFoodId.value = foodId;
+    flashFoodId.value = foodId;
+    showSuccessToast.value = true;
+    setTimeout(() => {
+      document.getElementById(`food-card-${foodId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
+    setTimeout(() => { flashFoodId.value = null; }, 2000);
+    setTimeout(() => { showSuccessToast.value = false; }, 3000);
   } catch (err) {
     alert(err.message);
   } finally {
@@ -295,5 +391,15 @@ onMounted(() => {
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
+}
+
+.toast-fade-enter-active,
+.toast-fade-leave-active {
+  transition: all 0.25s ease;
+}
+.toast-fade-enter-from,
+.toast-fade-leave-to {
+  opacity: 0;
+  transform: translate(-50%, 10px);
 }
 </style>
