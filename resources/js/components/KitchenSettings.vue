@@ -71,9 +71,33 @@
         </div>
       </div>
 
+      <!-- Language Settings Card -->
+      <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm mb-6">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 flex items-center justify-center shrink-0">
+              <Globe class="w-5.5 h-5.5 stroke-[1.8]" />
+            </div>
+            <div>
+              <h3 class="text-slate-900 font-black text-base">{{ settingsStore.t('settings.sys_lang') }}</h3>
+              <p class="text-slate-500 font-bold text-xs mt-0.5">{{ settingsStore.t('settings.lang_desc') }}</p>
+            </div>
+          </div>
+          <select
+            :value="settingsStore.language"
+            @change="settingsStore.setLanguage($event.target.value)"
+            class="px-4 py-2.5 bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 transition cursor-pointer min-w-[150px]"
+          >
+            <option value="uz">O'zbek (UZ)</option>
+            <option value="ru">Русский (RU)</option>
+            <option value="en">English (EN)</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Settings Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
+
         <!-- Audio Settings Card -->
         <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
           <div class="flex items-center space-x-3 border-b border-slate-200 pb-3 mb-6">
@@ -262,7 +286,7 @@ import { computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useChefStore } from '@/stores/chef';
 import ChefLayout from '@/components/ChefLayout.vue';
-import { Volume2, Maximize2, Music, Lock } from 'lucide-vue-next';
+import { Volume2, Maximize2, Music, Lock, Globe } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const chefStore = useChefStore();

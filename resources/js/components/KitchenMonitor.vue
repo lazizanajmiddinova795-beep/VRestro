@@ -51,9 +51,10 @@
             class="px-4 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50"
           >
             <div>
-              <div 
-                class="font-black tracking-wide text-lg"
+              <div
+                class="font-black tracking-wide"
                 :class="[
+                  scaleClasses.tableNum,
                   ticket.status === 'pending' ? 'text-slate-900' : '',
                   ticket.status === 'cooking' ? 'text-amber-950' : '',
                   ticket.status === 'ready' ? 'text-white' : '',
@@ -62,9 +63,10 @@
               >
                 {{ ticket.order?.table?.table_number || 'Olib ketish' }}
               </div>
-              <div 
-                class="text-xs mt-1 flex items-center space-x-1 font-bold"
+              <div
+                class="mt-1 flex items-center space-x-1 font-bold"
                 :class="[
+                  scaleClasses.meta,
                   ticket.status === 'pending' ? 'text-slate-700' : '',
                   ticket.status === 'cooking' ? 'text-amber-900' : '',
                   ticket.status === 'ready' ? 'text-emerald-100' : '',
@@ -76,9 +78,10 @@
             </div>
 
             <!-- Elapsed Time Timer -->
-            <div 
-              class="text-sm font-mono font-black px-2 py-1 rounded-md border"
+            <div
+              class="font-mono font-black px-2 py-1 rounded-md border"
               :class="[
+                scaleClasses.timer,
                 ticket.status === 'ready' 
                   ? 'text-white bg-emerald-850 border-emerald-650 font-bold' 
                   : (isOverdue(ticket.created_at) 
@@ -92,9 +95,10 @@
 
           <!-- Body Line Items -->
           <div class="p-4 flex-grow space-y-4">
-            <div 
-              class="flex items-center justify-between text-xs border-b pb-1.5 font-bold"
+            <div
+              class="flex items-center justify-between border-b pb-1.5 font-bold"
               :class="[
+                scaleClasses.meta,
                 ticket.status === 'pending' ? 'text-slate-600 border-slate-200' : '',
                 ticket.status === 'cooking' ? 'text-amber-900 border-amber-250' : '',
                 ticket.status === 'ready' ? 'text-emerald-100 border-emerald-500' : '',
@@ -120,9 +124,10 @@
                 ]"
               >
                 <div class="flex items-start justify-between">
-                  <span 
-                    class="text-base leading-tight font-black"
+                  <span
+                    class="leading-tight font-black"
                     :class="[
+                      scaleClasses.foodName,
                       ticket.status === 'ready' ? 'text-white font-bold' : '',
                       ticket.status === 'cooking' ? 'text-amber-950 font-black' : '',
                       ticket.status === 'pending' ? 'text-slate-900 font-black' : '',
@@ -130,10 +135,11 @@
                     ]"
                   >
                     {{ item.food?.name }}
-                    <span 
-                      v-if="item.size_name" 
-                      class="text-sm font-bold"
+                    <span
+                      v-if="item.size_name"
+                      class="font-bold"
                       :class="[
+                        scaleClasses.sizeName,
                         ticket.status === 'ready' ? 'text-emerald-100' : '',
                         ticket.status === 'cooking' ? 'text-amber-900 font-bold' : '',
                         ticket.status === 'pending' ? 'text-slate-700 font-bold' : '',
@@ -141,9 +147,10 @@
                       ]"
                     >({{ item.size_name }})</span>
                   </span>
-                  <span 
-                    class="text-lg font-black whitespace-nowrap ml-2"
+                  <span
+                    class="font-black whitespace-nowrap ml-2"
                     :class="[
+                      scaleClasses.qty,
                       ticket.status === 'ready' ? 'text-white' : '',
                       ticket.status === 'cooking' ? 'text-amber-950' : '',
                       ticket.status === 'pending' ? 'text-slate-900' : '',
@@ -154,7 +161,7 @@
                   </span>
                 </div>
                 <!-- Modification Notes Badges: bg-rose-100 text-rose-800 px-2 py-1 rounded font-black -->
-                <div v-if="item.notes" class="text-sm bg-rose-100 text-rose-800 px-2 py-1 rounded font-black flex items-center space-x-1 mt-1 border border-rose-250">
+                <div v-if="item.notes" class="bg-rose-100 text-rose-800 px-2 py-1 rounded font-black flex items-center space-x-1 mt-1 border border-rose-250" :class="scaleClasses.notes">
                   <span class="not-italic">Izoh:</span>
                   <span>{{ item.notes }}</span>
                 </div>
@@ -164,21 +171,23 @@
 
           <!-- Footer Action Interactive Keys -->
           <div class="p-4 pt-0">
-            <button 
+            <button
               v-if="ticket.status === 'pending'"
               @click="handleAction(ticket, 'cooking')"
               :disabled="ticket.actioning"
-              class="w-full py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold transition-all duration-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg"
+              class="w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all duration-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg"
+              :class="scaleClasses.actionBtn"
             >
               <Play class="w-5 h-5" />
               <span>Boshlash (Start Cooking)</span>
             </button>
 
-            <button 
+            <button
               v-else-if="ticket.status === 'cooking'"
               @click="handleAction(ticket, 'ready')"
               :disabled="ticket.actioning"
-              class="w-full py-3 px-4 rounded-lg bg-amber-500 text-slate-950 text-lg font-black transition-all duration-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md hover:bg-amber-650"
+              class="w-full rounded-lg bg-amber-500 text-slate-950 font-black transition-all duration-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md hover:bg-amber-650"
+              :class="scaleClasses.actionBtn"
             >
               <CheckCircle class="w-5 h-5 animate-bounce" />
               <span>Tayyor! (Mark Ready)</span>
@@ -201,6 +210,20 @@ import { ChefHat, Play, CheckCircle } from 'lucide-vue-next';
 const chefStore = useChefStore();
 const timeTrigger = ref(Date.now());
 let timerInterval = null;
+
+// Text sizing per KDS Displey Masshtabi setting (Sozlamalar sahifasi) - the
+// grid column count alone wasn't a strong enough visual difference, since
+// every ticket text element used its own fixed size regardless of scale.
+const scaleClasses = computed(() => {
+  const scale = chefStore.kitchenSettings.layoutScale;
+  if (scale === 'compact') {
+    return { tableNum: 'text-base', meta: 'text-[10px]', timer: 'text-xs', foodName: 'text-sm', sizeName: 'text-xs', qty: 'text-base', notes: 'text-xs', actionBtn: 'text-sm py-2.5 px-3' };
+  }
+  if (scale === 'large') {
+    return { tableNum: 'text-2xl', meta: 'text-sm', timer: 'text-lg', foodName: 'text-xl', sizeName: 'text-base', qty: 'text-2xl', notes: 'text-base', actionBtn: 'text-xl py-4 px-5' };
+  }
+  return { tableNum: 'text-lg', meta: 'text-xs', timer: 'text-sm', foodName: 'text-base', sizeName: 'text-sm', qty: 'text-lg', notes: 'text-sm', actionBtn: 'text-lg py-3 px-4' };
+});
 
 // Watch for incoming new pending orders to play chime alert
 watch(
