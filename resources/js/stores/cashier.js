@@ -518,6 +518,65 @@ export const useCashierStore = defineStore('cashier', () => {
         }
     };
 
+    // "Taom tayyor" toast card notifications - polled from the shared
+    // SystemNotification feed (created by the kitchen when an order's
+    // items are all marked ready) so the cashier gets an actionable
+    // card + sound instead of having to watch the Bildirishnomalar list.
+    const readyToasts = ref([]);
+    let notificationPollInterval = null;
+
+    const pollReadyNotifications = async () => {
+        try {
+            const token = localStorage.getItem('vrestro_token');
+            const res = await fetch('/api/notifications?is_read=false&type=order_ready', {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            if (!res.ok) return;
+            const notifications = await res.json();
+            const list = Array.isArray(notifications) ? notifications : (notifications.data || []);
+
+            for (const notif of list) {
+                readyToasts.value.push({
+                    id: notif.id,
+                    title: notif.title,
+                    orderNumber: notif.meta_data?.order_number || '',
+                    message: notif.message
+                });
+                playNotificationBeep();
+
+                // Mark as read so it doesn't reappear on the next poll
+                fetch(`/api/notifications/${notif.id}/read`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                }).catch(() => {});
+
+                // Auto-dismiss the card after 10 seconds
+                setTimeout(() => {
+                    readyToasts.value = readyToasts.value.filter(t => t.id !== notif.id);
+                }, 10000);
+            }
+        } catch (e) {
+            console.error('Ready notification poll failed:', e);
+        }
+    };
+
+    const dismissReadyToast = (id) => {
+        readyToasts.value = readyToasts.value.filter(t => t.id !== id);
+    };
+
+    const startNotificationPolling = () => {
+        if (notificationPollInterval) return;
+        pollReadyNotifications();
+        notificationPollInterval = setInterval(pollReadyNotifications, 8000);
+    };
+
+    const stopNotificationPolling = () => {
+        if (notificationPollInterval) {
+            clearInterval(notificationPollInterval);
+            notificationPollInterval = null;
+        }
+    };
+
     // Cart operations
     const addToCart = (food, sizeName = null, price = null, notes = '', quantity = 1) => {
         const finalPrice = price !== null ? parseFloat(price) : parseFloat(food.price);
@@ -602,6 +661,12 @@ export const useCashierStore = defineStore('cashier', () => {
         localSettings,
         applyLocalSettings,
         playNotificationBeep,
-        t
+        t,
+
+        // "Taom tayyor" ready notifications
+        readyToasts,
+        startNotificationPolling,
+        stopNotificationPolling,
+        dismissReadyToast
     };
 });

@@ -129,6 +129,29 @@
       </div>
     </main>
 
+    <!-- "Taom tayyor" ready-order notification cards -->
+    <div class="fixed top-20 right-4 z-[70] w-full max-w-xs space-y-3 no-print">
+      <TransitionGroup name="toast">
+        <div
+          v-for="toast in cashierStore.readyToasts"
+          :key="toast.id"
+          class="bg-white border-2 border-emerald-300 rounded-2xl p-4 shadow-xl flex items-start space-x-3"
+        >
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0">
+            <CheckCircle2 class="w-5 h-5" />
+          </div>
+          <div class="flex-grow min-w-0">
+            <h4 class="text-sm font-black text-slate-900">{{ toast.title }}</h4>
+            <p v-if="toast.orderNumber" class="text-lg font-black text-emerald-700 leading-tight mt-0.5">№{{ toast.orderNumber }}</p>
+            <p class="text-xs text-slate-600 font-semibold mt-0.5">{{ toast.message }}</p>
+          </div>
+          <button @click="cashierStore.dismissReadyToast(toast.id)" class="text-slate-400 hover:text-slate-700 shrink-0">
+            <X class="w-4 h-4" />
+          </button>
+        </div>
+      </TransitionGroup>
+    </div>
+
     <!-- MODAL: SHIFT SESSION MANAGEMENT -->
     <Transition name="fade">
       <div 
@@ -207,7 +230,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { LogOut, X } from 'lucide-vue-next';
+import { LogOut, X, CheckCircle2 } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 import { useCashierTablesStore } from '@/stores/cashierTables';
 import { useCashierStore } from '@/stores/cashier';
@@ -332,16 +355,33 @@ onMounted(() => {
   // Load cashier tables immediately
   cashierTablesStore.fetchCashierTables();
   receiptsStore.fetchPayments();
+
+  // Poll for "taom tayyor" notifications from the kitchen
+  cashierStore.startNotificationPolling();
 });
 
 onUnmounted(() => {
   if (clockInterval) clearInterval(clockInterval);
+  cashierStore.stopNotificationPolling();
 });
 </script>
 
 <style scoped>
 .text-xxs {
   font-size: 0.65rem;
+}
+
+.toast-enter-active,
+.toast-leave-active {
+  transition: all 0.25s ease;
+}
+.toast-enter-from {
+  opacity: 0;
+  transform: translateX(30px);
+}
+.toast-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 
 @media print {
