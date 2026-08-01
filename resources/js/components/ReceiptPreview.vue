@@ -197,6 +197,9 @@
             <div v-if="printMode === 'pre-check' || printMode === 'mix'" class="text-center font-black text-[9px] uppercase tracking-wider bg-slate-100 py-0.5 mb-2 rounded">
               *** {{ cashierStore.t('navbat_cheki').toUpperCase() }} ***
             </div>
+            <div v-if="printMode === 'pre-check' || printMode === 'mix'" class="text-center font-black text-2xl text-slate-900 tracking-wider mb-2">
+              №{{ selectedPayment.order?.order_number }}
+            </div>
 
             <!-- Items Table -->
             <div class="space-y-1 mb-2">
@@ -324,6 +327,9 @@
 
         <div v-if="printMode === 'pre-check' || printMode === 'mix'" class="ticket-center ticket-bold bg-gray-header">
           *** {{ cashierStore.t('navbat_cheki').toUpperCase() }} ***
+        </div>
+        <div v-if="printMode === 'pre-check' || printMode === 'mix'" class="ticket-center ticket-order-number">
+          №{{ selectedPayment.order?.order_number }}
         </div>
 
         <table class="ticket-table">
@@ -656,10 +662,19 @@
             >
               {{ cashierStore.t('void_order_button') }}
             </button>
+            <button
+              v-if="selectedOrderDetails && selectedOrderDetails.items && selectedOrderDetails.items.length > 0"
+              type="button"
+              @click="printPreCheckForActiveOrder"
+              class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 transition flex items-center space-x-1.5"
+            >
+              <Printer class="w-3.5 h-3.5" />
+              <span>{{ cashierStore.t('navbat_cheki') }}</span>
+            </button>
             <button @click="showPaymentModal = false" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 transition">
               {{ cashierStore.t('bekor_qilish') }}
             </button>
-            <button 
+            <button
               @click="submitPayment"
               :disabled="loadingSubmit || !selectedOrderDetails || selectedOrderDetails.items.length === 0 || (newPaymentForm.payment_method === 'mixed' && !isSplitAmountValid)"
               class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
@@ -969,6 +984,30 @@ const executePrint = async () => {
   } else {
     await receiptsStore.markPaymentAsPrinted(selectedPayment.value.id);
   }
+};
+
+// Print a pre-check (navbat cheki) for the order currently being paid,
+// BEFORE the payment is actually submitted - lets the cashier show the
+// customer what they ordered and owe before charging them. Builds a
+// payment-shaped object out of the live order so the existing pre-check
+// template (which reads from selectedPayment) can render it unchanged.
+const printPreCheckForActiveOrder = () => {
+  if (!selectedOrderDetails.value) return;
+  selectedPayment.value = {
+    id: selectedOrderDetails.value.id,
+    order_id: selectedOrderDetails.value.id,
+    created_at: new Date().toISOString(),
+    total_amount: orderCalculations.value.total,
+    cash_amount: 0,
+    card_amount: 0,
+    qr_amount: 0,
+    bonus_used: 0,
+    order: selectedOrderDetails.value
+  };
+  printMode.value = 'pre-check';
+  setTimeout(() => {
+    executePrint();
+  }, 150);
 };
 
 // Modal Operations
@@ -1304,6 +1343,13 @@ onMounted(async () => {
   .bg-gray-header {
     background-color: #f3f4f6 !important;
     padding: 2px 0;
+  }
+
+  .ticket-order-number {
+    font-size: 22pt;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin: 4px 0 6px;
   }
 
   .ticket-table {
