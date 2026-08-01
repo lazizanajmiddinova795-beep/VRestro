@@ -19,13 +19,10 @@
     <div class="bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
         <h4 class="text-slate-900 font-black text-base uppercase tracking-wider">{{ t('personal_info_title') }}</h4>
-        <button 
-          @click="openEditModal" 
-          class="text-xs bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 px-3.5 py-1.5 rounded-xl font-bold transition flex items-center space-x-1"
-        >
-          <span>✏️</span>
-          <span>{{ t('edit_btn') }}</span>
-        </button>
+        <div class="flex items-center space-x-1.5 text-3xs text-slate-400 font-semibold">
+          <Lock class="w-3 h-3 shrink-0" />
+          <span>{{ settingsStore.t('profile.readonly_notice') }}</span>
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-y-5 gap-x-4 text-left">
         <div class="col-span-1">
@@ -116,93 +113,6 @@
       </button>
     </div>
 
-    <!-- Edit Profile Modal Overlay -->
-    <div v-if="showEditModal" class="fixed inset-0 z-[999] overflow-y-auto flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div class="bg-white border-2 border-slate-300 rounded-3xl w-full max-w-sm shadow-2xl p-6 space-y-6 animate-slideUp text-slate-900">
-        <div class="flex items-center justify-between border-b pb-3">
-          <h3 class="text-slate-900 font-black text-lg">Ma'lumotlarni Kiritish</h3>
-          <button @click="showEditModal = false" class="text-slate-500 hover:text-slate-700 font-black text-lg">✕</button>
-        </div>
-
-        <form @submit.prevent="saveProfile" class="space-y-4 text-left">
-          <div>
-            <label class="block text-xs font-black text-slate-700 mb-1">To'liq Ism</label>
-            <input 
-              type="text" 
-              v-model="editForm.name" 
-              required
-              class="w-full px-4 py-2 bg-white text-slate-900 border-2 border-slate-200 rounded-xl focus:border-indigo-600 outline-none transition font-bold"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-black text-slate-700 mb-1">Telefon Raqami</label>
-            <input 
-              type="text" 
-              v-model="editForm.phone" 
-              required
-              placeholder="+998901234567"
-              class="w-full px-4 py-2 bg-white text-slate-900 border-2 border-slate-200 rounded-xl focus:border-indigo-600 outline-none transition font-bold"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-black text-slate-700 mb-1">Email Manzili</label>
-            <input 
-              type="email" 
-              v-model="editForm.email" 
-              class="w-full px-4 py-2 bg-white text-slate-900 border-2 border-slate-200 rounded-xl focus:border-indigo-600 outline-none transition font-bold"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-black text-slate-700 mb-1">Pasport Seriyasi va Raqami</label>
-            <input 
-              type="text" 
-              v-model="editForm.passport_number" 
-              placeholder="AA1234567"
-              class="w-full px-4 py-2 bg-white text-slate-900 border-2 border-slate-200 rounded-xl focus:border-indigo-600 outline-none transition font-bold"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-black text-slate-700 mb-1">Tug'ilgan Sanasi</label>
-            <input 
-              type="date" 
-              v-model="editForm.birth_date" 
-              class="w-full px-4 py-2 bg-white text-slate-900 border-2 border-slate-200 rounded-xl focus:border-indigo-600 outline-none transition font-bold"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-black text-slate-700 mb-1">Yashash Manzili</label>
-            <input 
-              type="text" 
-              v-model="editForm.address" 
-              class="w-full px-4 py-2 bg-white text-slate-900 border-2 border-slate-200 rounded-xl focus:border-indigo-600 outline-none transition font-bold"
-            />
-          </div>
-
-          <div class="flex items-center space-x-3 pt-4 border-t">
-            <button 
-              type="button" 
-              @click="showEditModal = false"
-              class="flex-1 py-3 border-2 border-slate-200 hover:bg-slate-50 text-slate-800 rounded-xl font-bold transition text-xs"
-            >
-              Bekor qilish
-            </button>
-            <button 
-              type="submit" 
-              :disabled="saving"
-              class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black transition disabled:opacity-50 text-xs shadow-md"
-            >
-              Saqlash
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
   </div>
 </template>
 
@@ -213,7 +123,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useWaiterStore } from '@/stores/waiter';
-import { LogOut } from 'lucide-vue-next';
+import { LogOut, Lock } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const waiterStore = useWaiterStore();
@@ -226,62 +136,6 @@ const stats = ref({
   pending_checkout_count: 0,
   earned_bonus: 0
 });
-
-const showEditModal = ref(false);
-const saving = ref(false);
-const editForm = ref({
-  name: '',
-  phone: '',
-  email: '',
-  passport_number: '',
-  birth_date: '',
-  address: ''
-});
-
-const openEditModal = () => {
-  editForm.value = {
-    name: authStore.user?.name || '',
-    phone: authStore.user?.phone || '',
-    email: authStore.user?.email || '',
-    passport_number: authStore.user?.passport_number || '',
-    birth_date: authStore.user?.birth_date || '',
-    address: authStore.user?.address || ''
-  };
-  showEditModal.value = true;
-};
-
-const saveProfile = async () => {
-  saving.value = true;
-  try {
-    const response = await fetch('/api/user/profile', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('vrestro_token')}`
-      },
-      body: JSON.stringify(editForm.value)
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "Profilni saqlashda xatolik yuz berdi.");
-    }
-
-    // Update local user in authStore and localStorage
-    authStore.user = {
-      ...authStore.user,
-      ...data.user
-    };
-    localStorage.setItem('vrestro_user', JSON.stringify(authStore.user));
-    waiterStore.triggerToast(t('personal_info_title') + " muvaffaqiyatli saqlandi!");
-    showEditModal.value = false;
-  } catch (err) {
-    waiterStore.triggerToast(err.message);
-  } finally {
-    saving.value = false;
-  }
-};
 
 const dictionary = {
   uz: {
