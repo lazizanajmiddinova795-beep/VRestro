@@ -39,14 +39,11 @@
             </div>
           </div>
 
-          <!-- Edit button -->
-          <button
-            @click="openEditModal"
-            class="bg-slate-900 hover:bg-slate-800 text-white font-black py-2.5 px-4 rounded-xl border border-slate-950 shadow-sm transition duration-200 text-sm flex items-center space-x-2 self-center md:self-start"
-          >
-            <UserCheck class="w-4.5 h-4.5 text-orange-500" />
-            <span>{{ settingsStore.t('kitchen.enter_data') }}</span>
-          </button>
+          <!-- Read-only: this profile is entered by the administrator and cannot be edited here -->
+          <div class="flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 self-center md:self-start">
+            <Lock class="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <span class="text-3xs text-slate-500 font-semibold">{{ settingsStore.t('profile.readonly_notice') }}</span>
+          </div>
         </div>
 
         <!-- Profile Data Grid UI Structure -->
@@ -253,92 +250,6 @@
         </div>
 
       </div>
-      <!-- Edit Profile Modal -->
-      <div v-if="showEditModal" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-        <div class="bg-white border-2 border-slate-300 rounded-3xl w-full max-w-lg shadow-2xl p-6 space-y-6">
-          <div class="flex items-center justify-between border-b pb-3">
-            <h3 class="text-slate-900 font-black text-xl">{{ settingsStore.t('kitchen.edit_profile_title') }}</h3>
-            <button @click="showEditModal = false" class="text-slate-500 hover:text-slate-700 font-black text-lg">✕</button>
-          </div>
-
-          <form @submit.prevent="saveProfile" class="space-y-4 text-left">
-            <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.full_name_label') }}</label>
-              <input 
-                type="text" 
-                v-model="editForm.name" 
-                required
-                class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-orange-500 outline-none transition font-bold"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.phone_label') }}</label>
-              <input 
-                type="text" 
-                v-model="editForm.phone" 
-                required
-                placeholder="+998 (90) 123-45-67"
-                class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-orange-500 outline-none transition font-bold"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.email_label') }}</label>
-              <input 
-                type="email" 
-                v-model="editForm.email" 
-                class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-orange-500 outline-none transition font-bold"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.passport_hint_label') }}</label>
-              <input 
-                type="text" 
-                v-model="editForm.passport_number" 
-                placeholder="AA1234567"
-                class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-orange-500 outline-none transition font-bold"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.birthdate_label') }}</label>
-              <input 
-                type="date" 
-                v-model="editForm.birth_date" 
-                class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-orange-500 outline-none transition font-bold"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-black text-slate-900 mb-1">{{ settingsStore.t('kitchen.address_label') }}</label>
-              <input 
-                type="text" 
-                v-model="editForm.address" 
-                class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-orange-500 outline-none transition font-bold"
-              />
-            </div>
-
-            <div class="flex items-center space-x-3 pt-4 border-t">
-              <button 
-                type="button" 
-                @click="showEditModal = false"
-                class="flex-1 py-3 border-2 border-slate-200 hover:bg-slate-50 text-slate-800 rounded-xl font-bold transition"
-              >
-                {{ settingsStore.t('cancel') }}
-              </button>
-              <button
-                type="submit"
-                :disabled="saving"
-                class="flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-black transition disabled:opacity-50"
-              >
-                {{ saving ? settingsStore.t('kitchen.saving') : settingsStore.t('save') }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
 
     </div>
   </ChefLayout>
@@ -347,11 +258,11 @@
 <script setup>
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useChefStore } from '@/stores/chef';
 import ChefLayout from '@/components/ChefLayout.vue';
-import { Volume2, Maximize2, Music, UserCheck } from 'lucide-vue-next';
+import { Volume2, Maximize2, Music, Lock } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const chefStore = useChefStore();
@@ -381,62 +292,6 @@ const chefBirthDate = computed(() => {
   }
 });
 const chefAddress = computed(() => authStore.user?.address || settingsStore.t('not_entered'));
-
-const showEditModal = ref(false);
-const saving = ref(false);
-const editForm = ref({
-  name: '',
-  phone: '',
-  email: '',
-  passport_number: '',
-  birth_date: '',
-  address: ''
-});
-
-const openEditModal = () => {
-  editForm.value = {
-    name: authStore.user?.name || '',
-    phone: authStore.user?.phone || '',
-    email: authStore.user?.email || '',
-    passport_number: authStore.user?.passport_number || '',
-    birth_date: authStore.user?.birth_date || '',
-    address: authStore.user?.address || ''
-  };
-  showEditModal.value = true;
-};
-
-const saveProfile = async () => {
-  saving.value = true;
-  try {
-    const response = await fetch('/api/user/profile', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
-      body: JSON.stringify(editForm.value)
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || settingsStore.t('kitchen.save_error'));
-    }
-
-    // Update local user in authStore and localStorage
-    authStore.user = {
-      ...authStore.user,
-      ...data.user
-    };
-    localStorage.setItem('vrestro_user', JSON.stringify(authStore.user));
-    
-    showEditModal.value = false;
-  } catch (err) {
-    alert(err.message);
-  } finally {
-    saving.value = false;
-  }
-};
 
 const toggleSetting = (key) => {
   const currentValue = chefStore.kitchenSettings[key];
