@@ -127,6 +127,64 @@
       </div>
     </div>
 
+    <!-- STAFF PROFILE CARD (read-only - admin-entered data, cannot be edited by the staff member) -->
+    <div class="backdrop-blur-xl bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
+      <div class="flex items-center space-x-3.5 pb-4 border-b border-slate-200">
+        <div class="p-3 rounded-2xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 shadow-md">
+          <UserCircle class="w-6 h-6 stroke-[2]" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-slate-900 tracking-tight">{{ settingsStore.t('profile.title') }}</h2>
+          <p class="text-xs text-slate-500 mt-0.5">{{ settingsStore.t('profile.desc') }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <div class="w-16 h-16 rounded-full border-2 border-indigo-200 bg-indigo-50 text-indigo-700 text-xl font-black flex items-center justify-center overflow-hidden shrink-0">
+          <img v-if="authStore.user?.avatar_url" :src="authStore.user.avatar_url" class="w-full h-full object-cover" />
+          <span v-else>{{ profileInitials }}</span>
+        </div>
+        <div>
+          <h3 class="text-base font-black text-slate-900">{{ authStore.user?.name || '—' }}</h3>
+          <span class="inline-block bg-slate-100 border border-slate-200 text-slate-700 text-xs font-black px-3 py-1 rounded-full mt-1">
+            {{ settingsStore.t('staff.cashier') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-4">
+        <div>
+          <p class="text-3xs text-slate-500 font-extrabold uppercase tracking-wider">{{ settingsStore.t('profile.login') }}</p>
+          <p class="text-slate-900 font-bold text-sm mt-1">{{ authStore.user?.login || settingsStore.t('not_entered') }}</p>
+        </div>
+        <div>
+          <p class="text-3xs text-slate-500 font-extrabold uppercase tracking-wider">{{ settingsStore.t('phone') }}</p>
+          <p class="text-slate-900 font-bold text-sm mt-1">{{ authStore.user?.phone || settingsStore.t('not_entered') }}</p>
+        </div>
+        <div>
+          <p class="text-3xs text-slate-500 font-extrabold uppercase tracking-wider">{{ settingsStore.t('profile.email') }}</p>
+          <p class="text-slate-900 font-bold text-sm mt-1 truncate">{{ authStore.user?.email || settingsStore.t('not_entered') }}</p>
+        </div>
+        <div>
+          <p class="text-3xs text-slate-500 font-extrabold uppercase tracking-wider">{{ settingsStore.t('staff.passport') }}</p>
+          <p class="text-slate-900 font-bold text-sm mt-1">{{ maskedPassport }}</p>
+        </div>
+        <div>
+          <p class="text-3xs text-slate-500 font-extrabold uppercase tracking-wider">{{ settingsStore.t('staff.birth_date') }}</p>
+          <p class="text-slate-900 font-bold text-sm mt-1">{{ authStore.user?.birth_date || settingsStore.t('not_entered') }}</p>
+        </div>
+        <div class="sm:col-span-2">
+          <p class="text-3xs text-slate-500 font-extrabold uppercase tracking-wider">{{ settingsStore.t('staff.address') }}</p>
+          <p class="text-slate-900 font-bold text-sm mt-1">{{ authStore.user?.address || settingsStore.t('not_entered') }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
+        <Lock class="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <span class="text-3xs text-slate-500 font-semibold">{{ settingsStore.t('profile.readonly_notice') }}</span>
+      </div>
+    </div>
+
     <!-- ADDITIONAL HARDWARE & HARDWARE SETTINGS -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       
@@ -238,12 +296,28 @@
 </template>
 
 <script setup>
-import { Settings, Globe, Moon, Eye, Type, Printer, Volume2 } from 'lucide-vue-next';
+import { computed } from 'vue';
+import { Settings, Globe, Moon, Eye, Type, Printer, Volume2, UserCircle, Lock } from 'lucide-vue-next';
 import { useCashierStore } from '@/stores/cashier';
 import { useSettingsStore } from '@/stores/settings';
+import { useAuthStore } from '@/stores/auth';
 
 const cashierStore = useCashierStore();
 const settingsStore = useSettingsStore();
+const authStore = useAuthStore();
+
+const profileInitials = computed(() => {
+  const name = authStore.user?.name || '';
+  return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
+});
+
+// Mask passport like "AD 1234567" -> "AD ****567" so it isn't shown in full on-screen
+const maskedPassport = computed(() => {
+  const raw = authStore.user?.passport_number;
+  if (!raw) return settingsStore.t('not_entered');
+  if (raw.length < 5) return raw;
+  return raw.substring(0, 2) + ' ****' + raw.substring(raw.length - 3);
+});
 
 const setTheme = (theme) => {
   settingsStore.setTheme(theme);
