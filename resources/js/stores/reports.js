@@ -64,7 +64,9 @@ export const useReportsStore = defineStore('reports', () => {
             const response = await fetch(`/api/reports/sales?start_date=${startDate.value}&end_date=${endDate.value}`, {
                 headers: getHeaders()
             });
-            const data = await response.json();
+            const text = await response.text();
+            let data;
+            try { data = JSON.parse(text); } catch { throw new Error('Server noto\'g\'ri javob qaytardi.'); }
             if (!response.ok) throw new Error(data.message || 'Sotuv hisobotini yuklashda xatolik.');
             salesReport.value = data;
         } catch (err) {
@@ -81,7 +83,9 @@ export const useReportsStore = defineStore('reports', () => {
             const response = await fetch(`/api/reports/menu?start_date=${startDate.value}&end_date=${endDate.value}`, {
                 headers: getHeaders()
             });
-            const data = await response.json();
+            const text = await response.text();
+            let data;
+            try { data = JSON.parse(text); } catch { throw new Error('Server noto\'g\'ri javob qaytardi.'); }
             if (!response.ok) throw new Error(data.message || 'Menyu hisobotini yuklashda xatolik.');
             menuReport.value = data;
         } catch (err) {
@@ -98,7 +102,9 @@ export const useReportsStore = defineStore('reports', () => {
             const response = await fetch(`/api/reports/inventory?start_date=${startDate.value}&end_date=${endDate.value}`, {
                 headers: getHeaders()
             });
-            const data = await response.json();
+            const text = await response.text();
+            let data;
+            try { data = JSON.parse(text); } catch { throw new Error('Server noto\'g\'ri javob qaytardi.'); }
             if (!response.ok) throw new Error(data.message || 'Ombor hisobotini yuklashda xatolik.');
             inventoryReport.value = data;
         } catch (err) {
@@ -115,7 +121,9 @@ export const useReportsStore = defineStore('reports', () => {
             const response = await fetch(`/api/reports/staff?start_date=${startDate.value}&end_date=${endDate.value}`, {
                 headers: getHeaders()
             });
-            const data = await response.json();
+            const text = await response.text();
+            let data;
+            try { data = JSON.parse(text); } catch { throw new Error('Server noto\'g\'ri javob qaytardi.'); }
             if (!response.ok) throw new Error(data.message || 'Xodimlar hisobotini yuklashda xatolik.');
             staffReport.value = data;
         } catch (err) {

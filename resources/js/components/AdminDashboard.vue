@@ -578,10 +578,14 @@ const loadAll = async () => {
 
 // Lifecycle
 onMounted(async () => {
-  await Promise.all([
-    dashboardStore.fetchAnalytics(),
-    reportsStore.fetchAllReports()
-  ]);
+  try {
+    await Promise.all([
+      dashboardStore.fetchAnalytics().catch(e => console.warn('Dashboard fetch failed:', e)),
+      reportsStore.fetchAllReports().catch(e => console.warn('Reports fetch failed:', e))
+    ]);
+  } catch (e) {
+    console.warn('AdminDashboard onMounted error:', e);
+  }
   initChart();
   renderSalesChart();
 });
