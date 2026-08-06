@@ -146,7 +146,13 @@ const routes = [
                 path: 'staff',
                 name: 'staff',
                 component: () => import('@/components/StaffManagement.vue'),
-                meta: { roles: ['Manager'] }
+                meta: { requiresAuth: true, roles: ['Manager'] }
+            },
+            {
+                path: 'staff-admin',
+                name: 'staff-admin',
+                component: () => import('@/components/SuperAdminStaff.vue'),
+                meta: { requiresAuth: true }
             },
             {
                 path: 'customers',

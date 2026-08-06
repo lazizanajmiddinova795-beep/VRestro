@@ -86,6 +86,17 @@
             <span>Filiallar</span>
           </router-link>
 
+          <!-- Staff for SuperAdmin -->
+          <router-link
+            v-if="authStore.user?.is_superadmin"
+            to="/staff-admin"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group mt-1"
+            :class="isActiveRoute('/staff-admin') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
+          >
+            <Users class="w-5 h-5" :class="isActiveRoute('/staff-admin') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
+            <span>Xodimlar</span>
+          </router-link>
+
           <!-- Settings (Admin only) -->
           <router-link
             v-if="authStore.user?.roles?.[0] === 'Manager' || authStore.user?.is_superadmin"

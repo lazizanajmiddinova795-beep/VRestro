@@ -42,6 +42,7 @@ Route::middleware(['auth:sanctum', 'role:Manager'])->prefix('admin')->group(func
 
 Route::middleware('auth:sanctum')->group(function () {
     // Branches management
+    Route::get('/branches/available-managers', [BranchController::class, 'availableManagers']);
     Route::get('/branches', [BranchController::class, 'index']);
     Route::post('/branches', [BranchController::class, 'store']);
     Route::put('/branches/{id}', [BranchController::class, 'update']);

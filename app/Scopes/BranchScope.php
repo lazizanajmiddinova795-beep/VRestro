@@ -19,11 +19,24 @@ class BranchScope implements Scope
     {
         $user = auth()->user();
 
-        // SuperAdmin sees everything, unauthenticated requests are not filtered
-        if (!$user || $user->is_superadmin) {
+        if (!$user) {
             return;
         }
 
+        // SuperAdmin:
+        // - branch_id = null → global view (sees everything)
+        // - branch_id != null → sees only that branch + global records
+        if ($user->is_superadmin) {
+            if ($user->branch_id) {
+                $builder->where(function ($q) use ($user, $model) {
+                    $q->where($model->getTable() . '.branch_id', $user->branch_id)
+                      ->orWhereNull($model->getTable() . '.branch_id');
+                });
+            }
+            return;
+        }
+
+        // Regular users: see only their branch + global records
         if ($user->branch_id) {
             $builder->where(function ($q) use ($user, $model) {
                 $q->where($model->getTable() . '.branch_id', $user->branch_id)

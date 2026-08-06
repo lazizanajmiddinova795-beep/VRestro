@@ -14,8 +14,19 @@ class BranchService
     public function getAllBranches(): array
     {
         return Branch::withCount(['users', 'tables', 'orders'])
+            ->with(['users' => function($q) {
+                $q->whereHas('roles', fn($r) => $r->where('name', 'Manager'))
+                  ->select('id', 'name', 'phone', 'branch_id');
+            }])
             ->orderBy('id')
             ->get()
+            ->map(function($branch) {
+                $arr = $branch->toArray();
+                $manager = collect($arr['users'])->first();
+                $arr['manager'] = $manager;
+                unset($arr['users']);
+                return $arr;
+            })
             ->toArray();
     }
 
@@ -80,5 +91,18 @@ class BranchService
         $branch = Branch::findOrFail($branchId);
         $user->update(['branch_id' => $branch->id]);
         return $branch;
+    }
+
+    public function assignManager(int $branchId, ?int $managerId): void
+    {
+        // Remove old manager from this branch
+        User::whereHas('roles', fn($q) => $q->where('name', 'Manager'))
+            ->where('branch_id', $branchId)
+            ->update(['branch_id' => null]);
+
+        // Assign new manager if provided
+        if ($managerId) {
+            User::where('id', $managerId)->update(['branch_id' => $branchId]);
+        }
     }
 }

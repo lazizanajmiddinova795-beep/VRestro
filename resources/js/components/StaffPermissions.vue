@@ -185,7 +185,7 @@ const savePermissions = () => {
 // Default permissions per role (when first accessing the page for that user)
 const defaultPermissionsForRole = (role) => {
   const defaults = {
-    Admin: modules.reduce((acc, m) => { acc[m.key] = true; return acc; }, {}),
+    Manager: modules.reduce((acc, m) => { acc[m.key] = true; return acc; }, {}),
     Chef: {
       dashboard: false, orders: true, menu: true, ingredients: true,
       warehouse: false, tables: false, customers: false,
@@ -206,11 +206,12 @@ const defaultPermissionsForRole = (role) => {
 };
 
 const getPermission = (userId, moduleKey) => {
-  // Admin always has full access
-  const member = staffStore.staffMembers.find(m => m.id === userId);
-  if (member?.roles?.[0]?.name === 'Manager') return true;
-
-  if (!permissions.value[userId]) return false;
+  if (!permissions.value[userId]) {
+    const member = staffStore.staffMembers.find(m => m.id === userId);
+    const role = member?.roles?.[0]?.name;
+    const defaults = defaultPermissionsForRole(role);
+    return !!defaults[moduleKey];
+  }
   return !!permissions.value[userId][moduleKey];
 };
 
@@ -229,7 +230,7 @@ const resetAll = () => {
   // Reinitialize from roles
   staffStore.staffMembers.forEach(member => {
     const role = member.roles?.[0]?.name;
-    if (role !== 'Manager') {
+    if (role) {
       permissions.value[member.id] = defaultPermissionsForRole(role);
     }
   });
@@ -242,7 +243,7 @@ const initDefaults = () => {
   staffStore.staffMembers.forEach(member => {
     if (!permissions.value[member.id]) {
       const role = member.roles?.[0]?.name;
-      if (role !== 'Manager') {
+      if (role) {
         permissions.value[member.id] = defaultPermissionsForRole(role);
         changed = true;
       }

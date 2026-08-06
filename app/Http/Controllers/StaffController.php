@@ -64,6 +64,7 @@ class StaffController extends Controller
             'passport_number' => ['nullable', 'string', 'max:30'],
             'birth_date' => ['nullable', 'date'],
             'address' => ['nullable', 'string', 'max:255'],
+            'branch_id' => ['nullable', 'exists:branches,id'],
             'avatar_url' => ['nullable', 'string', 'max:500'],
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
         ]);
@@ -78,6 +79,10 @@ class StaffController extends Controller
         $data['password'] = trim($data['password']);
 
         $user = $this->staffService->createStaff($request->user()->id, $data);
+
+        if ($request->has('branch_id') && $request->input('branch_id')) {
+            $user->update(['branch_id' => $request->input('branch_id')]);
+        }
 
         return response()->json([
             'message' => 'Xodim muvaffaqiyatli qo\'shildi.',
@@ -108,6 +113,7 @@ class StaffController extends Controller
             'passport_number' => ['nullable', 'string', 'max:30'],
             'birth_date' => ['nullable', 'date'],
             'address' => ['nullable', 'string', 'max:255'],
+            'branch_id' => ['nullable', 'exists:branches,id'],
             'avatar_url' => ['nullable', 'string', 'max:500'],
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
         ]);
@@ -124,6 +130,10 @@ class StaffController extends Controller
         }
 
         $user = $this->staffService->updateStaff($request->user()->id, $id, $data);
+
+        if ($request->has('branch_id')) {
+            $user->update(['branch_id' => $request->input('branch_id')]);
+        }
 
         return response()->json([
             'message' => 'Xodim ma\'lumotlari yangilandi.',

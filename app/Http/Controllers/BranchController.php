@@ -46,9 +46,17 @@ class BranchController extends Controller
             'name' => 'required|string|max:255|unique:branches,name',
             'address' => 'nullable|string|max:500',
             'phone' => 'nullable|string|max:20',
+            'manager_id' => 'nullable|exists:users,id',
         ]);
 
+        $managerId = $validated['manager_id'] ?? null;
+        unset($validated['manager_id']);
+
         $branch = $this->branchService->createBranch($validated);
+
+        if ($managerId) {
+            $this->branchService->assignManager($branch->id, $managerId);
+        }
 
         return response()->json($branch, 201);
     }
@@ -67,9 +75,17 @@ class BranchController extends Controller
             'address' => 'nullable|string|max:500',
             'phone' => 'nullable|string|max:20',
             'is_active' => 'boolean',
+            'manager_id' => 'nullable|exists:users,id',
         ]);
 
+        $managerId = $validated['manager_id'] ?? null;
+        unset($validated['manager_id']);
+
         $branch = $this->branchService->updateBranch($id, $validated);
+
+        if (array_key_exists('manager_id', $request->all())) {
+            $this->branchService->assignManager($branch->id, $managerId);
+        }
 
         return response()->json($branch);
     }
@@ -123,5 +139,18 @@ class BranchController extends Controller
         $user->update(['branch_id' => null]);
 
         return response()->json(['message' => 'Global ko\'rinishga qaytildi.']);
+    }
+
+    public function availableManagers(Request $request): JsonResponse
+    {
+        $managers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'Manager'))
+            ->where(function($q) {
+                $q->whereNull('branch_id');
+            })
+            ->where('is_superadmin', false)
+            ->select('id', 'name', 'phone', 'branch_id')
+            ->get();
+
+        return response()->json($managers);
     }
 }

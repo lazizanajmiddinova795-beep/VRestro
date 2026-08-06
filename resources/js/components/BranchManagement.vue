@@ -70,6 +70,14 @@
                   <Phone class="w-4 h-4 text-slate-400 shrink-0" />
                   <span>{{ branch.phone || 'Telefon kiritilmagan' }}</span>
                 </div>
+                <div v-if="branch.manager" class="flex items-center space-x-2">
+                  <Users class="w-4 h-4 text-indigo-400 shrink-0" />
+                  <span class="text-indigo-600 font-bold">{{ branch.manager.name }}</span>
+                </div>
+                <div v-else class="flex items-center space-x-2">
+                  <Users class="w-4 h-4 text-slate-300 shrink-0" />
+                  <span class="italic text-slate-400">Menejer biriktirilmagan</span>
+                </div>
               </div>
 
               <!-- Stats -->
@@ -167,6 +175,23 @@
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 font-bold focus:outline-none transition placeholder-slate-400"
             />
           </div>
+
+          <div class="space-y-1.5">
+            <label class="text-3xs text-slate-500 font-extrabold uppercase tracking-wider">Menejer (ixtiyoriy)</label>
+            <select
+              v-model="branchForm.manager_id"
+              class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 font-bold focus:outline-none transition"
+            >
+              <option :value="null">— Menejer tanlanmagan —</option>
+              <option 
+                v-for="mgr in allManagerOptions" 
+                :key="mgr.id" 
+                :value="mgr.id"
+              >
+                {{ mgr.name }} {{ mgr.phone ? '(' + mgr.phone + ')' : '' }}
+              </option>
+            </select>
+          </div>
           
           <div class="space-y-1.5" v-if="editingBranch">
              <label class="text-3xs text-slate-500 font-extrabold uppercase tracking-wider">Holati</label>
@@ -207,7 +232,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { 
   Building2, Plus, Pencil, Trash2, MapPin, Phone, Users, Layers, ShoppingBag, Loader2, AlertTriangle, X
 } from 'lucide-vue-next';
@@ -225,11 +250,41 @@ const branchForm = ref({
   name: '',
   address: '',
   phone: '',
-  is_active: true
+  is_active: true,
+  manager_id: null
+});
+
+const availableManagers = ref([]);
+
+const fetchAvailableManagers = async () => {
+    try {
+        const response = await fetch('/api/branches/available-managers', {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${authStore.token}`
+            }
+        });
+        if (response.ok) {
+            availableManagers.value = await response.json();
+        }
+    } catch (err) {
+        console.error('Failed to fetch managers:', err);
+    }
+};
+
+const allManagerOptions = computed(() => {
+    const managers = [...availableManagers.value];
+    if (editingBranch.value?.manager) {
+        const existing = managers.find(m => m.id === editingBranch.value.manager.id);
+        if (!existing) {
+            managers.unshift(editingBranch.value.manager);
+        }
+    }
+    return managers;
 });
 
 onMounted(async () => {
-  if (authStore.is_superadmin) {
+  if (authStore.user?.is_superadmin) {
     await branchStore.fetchBranches();
   }
 });
@@ -241,17 +296,20 @@ const openAddEditModal = (branch = null) => {
       name: branch.name,
       address: branch.address || '',
       phone: branch.phone || '',
-      is_active: branch.is_active === 1 || branch.is_active === true
+      is_active: branch.is_active === 1 || branch.is_active === true,
+      manager_id: branch.manager?.id || null
     };
   } else {
     branchForm.value = {
       name: '',
       address: '',
       phone: '',
-      is_active: true
+      is_active: true,
+      manager_id: null
     };
   }
   showModal.value = true;
+  fetchAvailableManagers();
 };
 
 const submitForm = async () => {
@@ -265,7 +323,8 @@ const submitForm = async () => {
       name: branchForm.value.name,
       address: branchForm.value.address,
       phone: branchForm.value.phone,
-      is_active: branchForm.value.is_active ? 1 : 0
+      is_active: branchForm.value.is_active ? 1 : 0,
+      manager_id: branchForm.value.manager_id
     };
 
     if (editingBranch.value) {
