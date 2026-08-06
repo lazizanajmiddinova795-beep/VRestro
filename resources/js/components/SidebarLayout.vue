@@ -88,7 +88,7 @@
 
           <!-- Settings (Admin only) -->
           <router-link
-            v-if="authStore.user?.roles?.[0] === 'Manager'"
+            v-if="authStore.user?.roles?.[0] === 'Manager' || authStore.user?.is_superadmin"
             to="/settings"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group mt-1"
             :class="isActiveRoute('/settings') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
@@ -108,7 +108,7 @@
           <div class="overflow-hidden">
             <h4 class="text-sm font-black text-slate-900 truncate">{{ authStore.user?.name }}</h4>
             <span class="text-xxs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full inline-block mt-0.5 uppercase tracking-wider font-extrabold border border-slate-200">
-              {{ authStore.user?.roles?.[0] || 'Xodim' }}
+              {{ authStore.user?.is_superadmin ? 'Tizim Admin' : (authStore.user?.roles?.[0] || 'Xodim') }}
             </span>
           </div>
         </div>
@@ -290,10 +290,11 @@ const navGroups = computed(() => [
 
 const visibleNavGroups = computed(() => {
   const role = authStore.user?.roles?.[0];
+  const isSuperAdmin = authStore.user?.is_superadmin;
   return navGroups.value
     .map(group => ({
       ...group,
-      items: group.items.filter(item => !item.roles || item.roles.includes(role))
+      items: group.items.filter(item => isSuperAdmin || !item.roles || item.roles.includes(role))
     }))
     .filter(group => group.items.length > 0);
 });

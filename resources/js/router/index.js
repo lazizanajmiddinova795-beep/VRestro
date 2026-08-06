@@ -222,8 +222,13 @@ router.beforeEach((to, from, next) => {
         return next({ name: 'login' });
     }
 
-    // 3. Robust Role-based Authorization Guard
+    // 3. SuperAdmin bypasses ALL role checks
     const user = authStore.user;
+    if (user?.is_superadmin) {
+        return next();
+    }
+
+    // 4. Robust Role-based Authorization Guard
     let userRole = 'Manager';
     if (user) {
         if (Array.isArray(user.roles) && user.roles.length > 0) {

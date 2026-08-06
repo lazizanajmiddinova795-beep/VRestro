@@ -12,7 +12,7 @@
 
       <!-- Add Branch button -->
       <button 
-        v-if="authStore.is_superadmin"
+        v-if="authStore.user?.is_superadmin"
         @click="openAddEditModal()"
         class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-extrabold text-sm text-white shadow-md shadow-indigo-600/30 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
       >
@@ -22,7 +22,7 @@
     </div>
 
     <!-- Alert if not superadmin -->
-    <div v-if="!authStore.is_superadmin" class="flex flex-col items-center justify-center h-full space-y-4">
+    <div v-if="!authStore.user?.is_superadmin" class="flex flex-col items-center justify-center h-full space-y-4">
       <AlertTriangle class="w-12 h-12 text-rose-500" />
       <p class="text-slate-900 font-bold text-lg">Sizda bu sahifaga kirish huquqi yo'q</p>
     </div>
