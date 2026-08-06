@@ -60,6 +60,7 @@ class AuthService
                     'id' => $user->id,
                     'name' => $user->name,
                     'login' => $user->login,
+                    'branch_name' => $user->branch ? $user->branch->name : null,
                 ],
             ];
         }

@@ -121,6 +121,9 @@
             <span class="text-xxs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full inline-block mt-0.5 uppercase tracking-wider font-extrabold border border-slate-200">
               {{ authStore.user?.is_superadmin ? 'Tizim Admin' : (authStore.user?.roles?.[0] || 'Xodim') }}
             </span>
+            <span v-if="authStore.user?.branch_name" class="text-xxs text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full inline-block mt-0.5 tracking-wider font-bold border border-indigo-100">
+              🏢 {{ authStore.user.branch_name }}
+            </span>
           </div>
         </div>
         <button 

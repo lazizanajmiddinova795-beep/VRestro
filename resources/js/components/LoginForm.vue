@@ -144,6 +144,9 @@
           <div class="w-full text-center text-xs px-4">
             <span class="text-slate-500 font-medium">Tizimga kirayotgan xodim:</span>
             <span class="block text-indigo-600 font-bold mt-1 text-sm">{{ authStore.tempUser?.name }}</span>
+            <span v-if="authStore.tempUser?.branch_name" class="block text-slate-400 font-semibold mt-0.5 text-xs">
+              🏢 {{ authStore.tempUser.branch_name }}
+            </span>
           </div>
 
           <!-- Display Errors -->
