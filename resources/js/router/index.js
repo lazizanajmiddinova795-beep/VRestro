@@ -194,9 +194,11 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/' && isAuthenticated) {
         let dashboardName = 'admin-dashboard';
         const roles = authStore.user?.roles || [];
-        if (roles.includes('Manager')) {
+        // Normalize legacy 'Admin' to 'Manager'
+        const normalizedRoles = roles.map(r => r === 'Admin' ? 'Manager' : r);
+        if (normalizedRoles.includes('Manager')) {
             dashboardName = 'admin-dashboard';
-        } else if (roles.includes('Cashier')) {
+        } else if (normalizedRoles.includes('Cashier')) {
             dashboardName = 'cashier-tables';
         } else if (roles.includes('Chef')) {
             dashboardName = 'kitchen';
@@ -230,6 +232,9 @@ router.beforeEach((to, from, next) => {
             userRole = user.role;
         }
     }
+
+    // Normalize legacy 'Admin' role to 'Manager'
+    if (userRole === 'Admin') userRole = 'Manager';
 
     const matchedRoleRoute = to.matched.find(record => record.meta && record.meta.roles);
     if (matchedRoleRoute && matchedRoleRoute.meta.roles) {
