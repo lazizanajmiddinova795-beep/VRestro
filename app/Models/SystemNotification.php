@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToBranch;
 use Illuminate\Database\Eloquent\Model;
 
 class SystemNotification extends Model
 {
     protected $table = 'system_notifications';
 
+    use BelongsToBranch;
+
     protected $fillable = [
+        'branch_id',
         'type',
         'title',
         'message',

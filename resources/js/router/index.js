@@ -21,30 +21,30 @@ const routes = [
         path: '/kitchen',
         name: 'kitchen',
         component: () => import('@/components/KitchenMonitor.vue'),
-        meta: { requiresAuth: true, roles: ['Admin', 'Chef'] }
+        meta: { requiresAuth: true, roles: ['Manager', 'Chef'] }
     },
     {
         path: '/kitchen/stop-list',
         name: 'kitchen-stop-list',
         component: () => import('@/components/KitchenStopList.vue'),
-        meta: { requiresAuth: true, roles: ['Admin', 'Chef'] }
+        meta: { requiresAuth: true, roles: ['Manager', 'Chef'] }
     },
     {
         path: '/kitchen/recipes',
         name: 'kitchen-recipes',
         component: () => import('@/components/KitchenRecipes.vue'),
-        meta: { requiresAuth: true, roles: ['Admin', 'Chef'] }
+        meta: { requiresAuth: true, roles: ['Manager', 'Chef'] }
     },
     {
         path: '/kitchen/settings',
         name: 'kitchen-settings',
         component: () => import('@/components/KitchenSettings.vue'),
-        meta: { requiresAuth: true, roles: ['Admin', 'Chef'] }
+        meta: { requiresAuth: true, roles: ['Manager', 'Chef'] }
     },
     {
         path: '/cashier',
         component: () => import('@/components/CashierLayout.vue'),
-        meta: { requiresAuth: true, roles: ['Admin', 'Cashier'] },
+        meta: { requiresAuth: true, roles: ['Manager', 'Cashier'] },
         children: [
             {
                 path: 'tables',
@@ -71,7 +71,7 @@ const routes = [
     {
         path: '/waiter',
         component: () => import('@/components/WaiterLayout.vue'),
-        meta: { requiresAuth: true, roles: ['Admin', 'Waiter'] },
+        meta: { requiresAuth: true, roles: ['Manager', 'Waiter'] },
         children: [
             {
                 path: 'tables',
@@ -104,7 +104,13 @@ const routes = [
                 path: 'admin/dashboard',
                 name: 'admin-dashboard',
                 component: () => import('@/components/AdminDashboard.vue'),
-                meta: { roles: ['Admin'] }
+                meta: { roles: ['Manager'] }
+            },
+            {
+                path: 'branches',
+                name: 'branches',
+                component: () => import('@/components/BranchManagement.vue'),
+                meta: { requiresAuth: true }
             },
             {
                 path: 'orders',
@@ -140,7 +146,7 @@ const routes = [
                 path: 'staff',
                 name: 'staff',
                 component: () => import('@/components/StaffManagement.vue'),
-                meta: { roles: ['Admin'] }
+                meta: { roles: ['Manager'] }
             },
             {
                 path: 'customers',
@@ -151,13 +157,13 @@ const routes = [
                 path: 'payments',
                 name: 'payments',
                 component: () => import('@/components/PaymentsManagement.vue'),
-                meta: { roles: ['Admin', 'Cashier'] }
+                meta: { roles: ['Manager', 'Cashier'] }
             },
             {
                 path: 'discounts',
                 name: 'discounts',
                 component: () => import('@/components/DiscountsManagement.vue'),
-                meta: { roles: ['Admin', 'Cashier'] }
+                meta: { roles: ['Manager', 'Cashier'] }
             },
             {
                 path: 'notifications',
@@ -168,7 +174,7 @@ const routes = [
                 path: 'settings',
                 name: 'settings',
                 component: () => import('@/components/SettingsManagement.vue'),
-                meta: { roles: ['Admin'] }
+                meta: { roles: ['Manager'] }
             }
         ]
     }
@@ -188,7 +194,7 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/' && isAuthenticated) {
         let dashboardName = 'admin-dashboard';
         const roles = authStore.user?.roles || [];
-        if (roles.includes('Admin')) {
+        if (roles.includes('Manager')) {
             dashboardName = 'admin-dashboard';
         } else if (roles.includes('Cashier')) {
             dashboardName = 'cashier-tables';
@@ -216,7 +222,7 @@ router.beforeEach((to, from, next) => {
 
     // 3. Robust Role-based Authorization Guard
     const user = authStore.user;
-    let userRole = 'Admin';
+    let userRole = 'Manager';
     if (user) {
         if (Array.isArray(user.roles) && user.roles.length > 0) {
             userRole = user.roles[0];

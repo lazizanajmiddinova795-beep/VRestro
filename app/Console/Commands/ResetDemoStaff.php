@@ -23,7 +23,7 @@ class ResetDemoStaff extends Command
      */
     protected $description = 'Delete every non-superadmin staff member and recreate exactly 2 known-good accounts per role (Admin, Chef, Waiter, Cashier).';
 
-    protected array $roles = ['Admin', 'Chef', 'Waiter', 'Cashier'];
+    protected array $roles = ['Manager', 'Chef', 'Waiter', 'Cashier'];
 
     public function handle(): int
     {
@@ -66,6 +66,7 @@ class ResetDemoStaff extends Command
 
         $this->info("O'chirildi: {$toDelete->count()} ta xodim.");
 
+        $branch = \App\Models\Branch::first();
         $created = [];
         foreach ($this->roles as $role) {
             for ($i = 1; $i <= 2; $i++) {
@@ -81,6 +82,7 @@ class ResetDemoStaff extends Command
                     'status' => 'active',
                     'is_superadmin' => false,
                     'face_registered' => false,
+                    'branch_id' => $branch->id,
                 ]);
                 $user->assignRole($role);
 

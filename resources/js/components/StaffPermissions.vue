@@ -208,7 +208,7 @@ const defaultPermissionsForRole = (role) => {
 const getPermission = (userId, moduleKey) => {
   // Admin always has full access
   const member = staffStore.staffMembers.find(m => m.id === userId);
-  if (member?.roles?.[0]?.name === 'Admin') return true;
+  if (member?.roles?.[0]?.name === 'Manager') return true;
 
   if (!permissions.value[userId]) return false;
   return !!permissions.value[userId][moduleKey];
@@ -229,7 +229,7 @@ const resetAll = () => {
   // Reinitialize from roles
   staffStore.staffMembers.forEach(member => {
     const role = member.roles?.[0]?.name;
-    if (role !== 'Admin') {
+    if (role !== 'Manager') {
       permissions.value[member.id] = defaultPermissionsForRole(role);
     }
   });
@@ -242,7 +242,7 @@ const initDefaults = () => {
   staffStore.staffMembers.forEach(member => {
     if (!permissions.value[member.id]) {
       const role = member.roles?.[0]?.name;
-      if (role !== 'Admin') {
+      if (role !== 'Manager') {
         permissions.value[member.id] = defaultPermissionsForRole(role);
         changed = true;
       }
@@ -261,14 +261,14 @@ onMounted(async () => {
 
 // ---- Style helpers ----
 const avatarClass = (role) => {
-  if (role === 'Admin') return 'bg-rose-500/10 border-rose-500/20 text-rose-400';
+  if (role === 'Manager') return 'bg-rose-500/10 border-rose-500/20 text-rose-400';
   if (role === 'Chef') return 'bg-amber-500/10 border-amber-500/20 text-amber-400';
   if (role === 'Waiter') return 'bg-sky-500/10 border-sky-500/20 text-sky-400';
   return 'bg-purple-500/10 border-purple-500/20 text-purple-400';
 };
 
 const roleBadgeClass = (role) => {
-  if (role === 'Admin') return 'bg-rose-500/10 border-rose-500/20 text-rose-400';
+  if (role === 'Manager') return 'bg-rose-500/10 border-rose-500/20 text-rose-400';
   if (role === 'Chef') return 'bg-amber-500/10 border-amber-500/20 text-amber-400';
   if (role === 'Waiter') return 'bg-sky-500/10 border-sky-500/20 text-sky-400';
   return 'bg-purple-500/10 border-purple-500/20 text-purple-400';

@@ -19,7 +19,7 @@
               </span>
               <span class="text-sm font-medium text-slate-600">{{ authStore.user?.name }}</span>
             </div>
-            <router-link v-if="authStore.user?.roles?.includes('Admin')" to="/admin/dashboard" class="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 mr-2 transition duration-300">
+            <router-link v-if="authStore.user?.roles?.includes('Manager')" to="/admin/dashboard" class="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 mr-2 transition duration-300">
               Boshqaruv paneli
             </router-link>
             <router-link v-else-if="authStore.user?.roles?.includes('Cashier')" to="/cashier/tables" class="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 mr-2 transition duration-300">
@@ -77,7 +77,7 @@
             Tizimga kirish
           </router-link>
           <div v-else class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-            <router-link v-if="authStore.user?.roles?.includes('Admin')" to="/admin/dashboard" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white shadow-lg shadow-indigo-600/40 hover:shadow-indigo-600/60 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 w-full sm:w-auto">
+            <router-link v-if="authStore.user?.roles?.includes('Manager')" to="/admin/dashboard" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white shadow-lg shadow-indigo-600/40 hover:shadow-indigo-600/60 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 w-full sm:w-auto">
               Boshqaruv paneliga o'tish
             </router-link>
             <router-link v-else-if="authStore.user?.roles?.includes('Cashier')" to="/cashier/tables" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-white shadow-lg shadow-indigo-600/40 hover:shadow-indigo-600/60 hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 w-full sm:w-auto">

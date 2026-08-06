@@ -255,7 +255,7 @@ const handleCredentialsSubmit = async () => {
       authStore.setAuth(data.user, data.token);
       let dashboardName = 'admin-dashboard';
       const roles = data.user?.roles || [];
-      if (roles.includes('Admin')) {
+      if (roles.includes('Manager')) {
         dashboardName = 'admin-dashboard';
       } else if (roles.includes('Cashier')) {
         dashboardName = 'cashier-tables';
@@ -309,7 +309,7 @@ const handleOtpSubmit = async () => {
 
     // Redirect to dashboard (Admin), cashier panel (Cashier) or orders (Staff) directly
     setTimeout(() => {
-      if (data.user?.roles?.includes('Admin')) {
+      if (data.user?.roles?.includes('Manager')) {
         router.push('/admin/dashboard');
       } else if (data.user?.roles?.includes('Cashier')) {
         router.push('/cashier/tables');

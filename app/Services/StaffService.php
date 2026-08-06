@@ -69,15 +69,15 @@ class StaffService
             }
 
             // Prevent self-role modification if changing from Admin to something else
-            if ($id === $currentUserId && $data['role'] !== 'Admin' && $user->hasRole('Admin')) {
+            if ($id === $currentUserId && $data['role'] !== 'Manager' && $user->hasRole('Manager')) {
                 throw ValidationException::withMessages([
                     'role' => ['O\'zingizning administratorlik rolingizni o\'zgartira olmaysiz.'],
                 ]);
             }
 
             // Last active admin safeguard
-            if ($user->hasRole('Admin') && ($data['role'] !== 'Admin' || $data['status'] === 'inactive')) {
-                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Admin'))
+            if ($user->hasRole('Manager') && ($data['role'] !== 'Manager' || $data['status'] === 'inactive')) {
+                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Manager'))
                     ->where('status', 'active')
                     ->where('id', '!=', $id)
                     ->count();
@@ -132,8 +132,8 @@ class StaffService
             }
 
             // Last active admin safeguard
-            if ($user->hasRole('Admin') && $user->status === 'active') {
-                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Admin'))
+            if ($user->hasRole('Manager') && $user->status === 'active') {
+                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Manager'))
                     ->where('status', 'active')
                     ->where('id', '!=', $id)
                     ->count();
@@ -182,8 +182,8 @@ class StaffService
             }
 
             // Last active admin safeguard
-            if ($user->hasRole('Admin')) {
-                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Admin'))
+            if ($user->hasRole('Manager')) {
+                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Manager'))
                     ->where('status', 'active')
                     ->where('id', '!=', $id)
                     ->count();

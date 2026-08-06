@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BranchController;
 
 use App\Http\Controllers\OrderController;
 
@@ -35,11 +36,19 @@ Route::prefix('auth')->group(function () {
     Route::post('/verify-face', [AuthController::class, 'verifyFace']);
 });
 
-Route::middleware(['auth:sanctum', 'role:Admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'role:Manager'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    // Branches management
+    Route::get('/branches', [BranchController::class, 'index']);
+    Route::post('/branches', [BranchController::class, 'store']);
+    Route::put('/branches/{id}', [BranchController::class, 'update']);
+    Route::delete('/branches/{id}', [BranchController::class, 'destroy']);
+    Route::post('/branches/switch/{id}', [BranchController::class, 'switch']);
+    Route::post('/branches/clear-context', [BranchController::class, 'clearContext']);
+
     // Orders
     Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
@@ -153,7 +162,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Settings
     Route::get('/settings', [SettingController::class, 'index']);
-    Route::middleware('role:Admin')->post('/settings/password', [SettingController::class, 'changePassword']);
+    Route::middleware('role:Manager')->post('/settings/password', [SettingController::class, 'changePassword']);
     Route::post('/user/profile', [SettingController::class, 'updateProfile']);
     Route::post('/shift/close', [ShiftController::class, 'closeShift']);
     Route::middleware('permission:manage settings')->group(function () {
@@ -163,7 +172,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Activity Logs (Admin only)
-    Route::middleware('role:Admin')->group(function () {
+    Route::middleware('role:Manager')->group(function () {
         Route::get('/activity-logs', [ActivityLogController::class, 'index']);
         Route::delete('/activity-logs/clear', [ActivityLogController::class, 'clear']);
     });

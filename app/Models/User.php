@@ -7,13 +7,14 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'login', 'password', 'face_registered', 'phone', 'shift_hours', 'status', 'email', 'passport_number', 'birth_date', 'address', 'avatar_url', 'is_superadmin'])]
+#[Fillable(['branch_id', 'name', 'login', 'password', 'face_registered', 'phone', 'shift_hours', 'status', 'email', 'passport_number', 'birth_date', 'address', 'avatar_url', 'is_superadmin'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -42,5 +43,15 @@ class User extends Authenticatable
     public function inventoryTransactions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(InventoryTransaction::class, 'user_id');
+    }
+
+    /**
+     * Get the branch associated with the user.
+     *
+     * @return BelongsTo
+     */
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Branch::class);
     }
 }

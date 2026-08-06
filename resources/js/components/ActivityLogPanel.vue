@@ -306,7 +306,7 @@ const moduleBadge = (module) => {
 };
 
 const roleBadge = (role) => {
-  if (role === 'Admin')   return 'bg-rose-50 border-rose-200 text-rose-500';
+  if (role === 'Manager')   return 'bg-rose-50 border-rose-200 text-rose-500';
   if (role === 'Chef')    return 'bg-amber-50 border-amber-200 text-amber-500';
   if (role === 'Waiter')  return 'bg-sky-50 border-sky-200 text-sky-500';
   return 'bg-purple-50 border-purple-200 text-purple-500';

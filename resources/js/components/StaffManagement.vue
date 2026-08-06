@@ -69,7 +69,7 @@
           class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-indigo-500 transition"
         >
           <option value="">{{ settingsStore.t('staff.all_roles') }}</option>
-          <option value="Admin">{{ settingsStore.t('staff.admin') }}</option>
+          <option value="Manager">{{ settingsStore.t('staff.admin') }}</option>
           <option value="Chef">{{ settingsStore.t('staff.role_chef_opt') }}</option>
           <option value="Waiter">{{ settingsStore.t('staff.role_waiter_opt') }}</option>
           <option value="Cashier">{{ settingsStore.t('staff.role_cashier_opt') }}</option>
@@ -274,7 +274,7 @@
                     <div class="relative">
                         <select v-model="staffForm.role" required
                                 class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all appearance-none">
-                            <option value="Admin" class="bg-white text-slate-900">{{ settingsStore.t('staff.admin') }}</option>
+                            <option value="Manager" class="bg-white text-slate-900">{{ settingsStore.t('staff.admin') }}</option>
                             <option value="Chef" class="bg-white text-slate-900">{{ settingsStore.t('staff.role_chef_opt') }}</option>
                             <option value="Waiter" class="bg-white text-slate-900">{{ settingsStore.t('staff.role_waiter_opt') }}</option>
                             <option value="Cashier" class="bg-white text-slate-900">{{ settingsStore.t('staff.role_cashier_opt') }}</option>
@@ -571,14 +571,14 @@ const alertValidationError = (err) => {
 
 // Styling helper functions
 const avatarClass = (role) => {
-  if (role === 'Admin') return 'bg-rose-500/10 border-rose-500/20 text-rose-400';
+  if (role === 'Manager') return 'bg-rose-500/10 border-rose-500/20 text-rose-400';
   if (role === 'Chef') return 'bg-amber-500/10 border-amber-500/20 text-amber-400';
   if (role === 'Waiter') return 'bg-sky-500/10 border-sky-500/20 text-sky-400';
   return 'bg-purple-500/10 border-purple-500/20 text-purple-400';
 };
 
 const roleBadgeClass = (role) => {
-  if (role === 'Admin') return 'bg-rose-500/10 border-rose-500/20 text-rose-400';
+  if (role === 'Manager') return 'bg-rose-500/10 border-rose-500/20 text-rose-400';
   if (role === 'Chef') return 'bg-amber-500/10 border-amber-500/20 text-amber-400';
   if (role === 'Waiter') return 'bg-sky-500/10 border-sky-500/20 text-sky-400';
   return 'bg-purple-500/10 border-purple-500/20 text-purple-400';

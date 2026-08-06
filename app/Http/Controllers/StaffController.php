@@ -32,7 +32,7 @@ class StaffController extends Controller
 
         $filters = $request->validate([
             'status' => ['nullable', 'string', 'in:active,inactive'],
-            'role' => ['nullable', 'string', 'in:Admin,Chef,Waiter,Cashier'],
+            'role' => ['nullable', 'string', 'in:Manager,Chef,Waiter,Cashier'],
             'search' => ['nullable', 'string', 'max:100'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]);
@@ -57,7 +57,7 @@ class StaffController extends Controller
             'phone' => ['required', 'string', 'max:20', 'unique:users,phone'],
             'login' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z0-9_\.]+$/', 'unique:users,login'],
             'password' => ['required', 'string', 'min:4', 'max:100'],
-            'role' => ['required', 'string', 'in:Admin,Chef,Waiter,Cashier'],
+            'role' => ['required', 'string', 'in:Manager,Chef,Waiter,Cashier'],
             'shift_hours' => ['nullable', 'string', 'max:100'],
             'status' => ['required', 'string', 'in:active,inactive'],
             'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
@@ -101,7 +101,7 @@ class StaffController extends Controller
             'phone' => ['required', 'string', 'max:20', 'unique:users,phone,' . $id],
             'login' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z0-9_\.]+$/', 'unique:users,login,' . $id],
             'password' => ['nullable', 'string', 'min:4', 'max:100'],
-            'role' => ['required', 'string', 'in:Admin,Chef,Waiter,Cashier'],
+            'role' => ['required', 'string', 'in:Manager,Chef,Waiter,Cashier'],
             'shift_hours' => ['nullable', 'string', 'max:100'],
             'status' => ['required', 'string', 'in:active,inactive'],
             'email' => ['nullable', 'email', 'max:100', 'unique:users,email,' . $id],
@@ -176,7 +176,7 @@ class StaffController extends Controller
      */
     protected function authorizeAdmin(Request $request): void
     {
-        if (!$request->user()->hasRole('Admin')) {
+        if (!$request->user()->hasRole('Manager')) {
             abort(403, 'Ushbu amalni bajarish uchun sizda ruxsat yo\'q.');
         }
     }

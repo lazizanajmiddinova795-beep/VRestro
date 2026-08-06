@@ -19,11 +19,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create the first branch
+        $branch = \App\Models\Branch::firstOrCreate(
+            ['name' => 'VRestro Asosiy filial'],
+            ['is_active' => true]
+        );
+
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Create Roles
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        $adminRole = Role::firstOrCreate(['name' => 'Manager']);
         $chefRole = Role::firstOrCreate(['name' => 'Chef']);
         $waiterRole = Role::firstOrCreate(['name' => 'Waiter']);
         $cashierRole = Role::firstOrCreate(['name' => 'Cashier']);
@@ -64,6 +70,8 @@ class DatabaseSeeder extends Seeder
                 'phone' => '+998901234567',
                 'shift_hours' => '09:00 - 18:00',
                 'status' => 'active',
+                'branch_id' => null,
+                'is_superadmin' => true,
             ]
         );
         $adminUser->assignRole($adminRole);
@@ -78,6 +86,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '+998901234568',
                 'shift_hours' => '08:00 - 20:00',
                 'status' => 'active',
+                'branch_id' => $branch->id,
             ]
         );
         $chefUser->assignRole($chefRole);
@@ -92,6 +101,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '+998901234569',
                 'shift_hours' => '10:00 - 22:00',
                 'status' => 'active',
+                'branch_id' => $branch->id,
             ]
         );
         $waiterUser->assignRole($waiterRole);
@@ -106,6 +116,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '+998901234570',
                 'shift_hours' => '09:00 - 21:00',
                 'status' => 'active',
+                'branch_id' => $branch->id,
             ]
         );
         $cashierUser->assignRole($cashierRole);
@@ -120,6 +131,7 @@ class DatabaseSeeder extends Seeder
                 'capacity' => 4,
                 'status' => 'empty',
                 'qr_code_token' => 'qr_table_' . $t . '_' . bin2hex(random_bytes(4)),
+                'branch_id' => $branch->id,
             ]);
         }
 
@@ -130,6 +142,7 @@ class DatabaseSeeder extends Seeder
                 'capacity' => 8,
                 'status' => 'empty',
                 'qr_code_token' => 'qr_vip_' . $v . '_' . bin2hex(random_bytes(4)),
+                'branch_id' => $branch->id,
             ]);
         }
 
@@ -152,7 +165,8 @@ class DatabaseSeeder extends Seeder
                 'phone' => '+9989090000' . str_pad($idx + 1, 2, '0', STR_PAD_LEFT),
                 'bonus_balance' => round($bonus, -2), // Round to nearest 100 UZS
                 'total_orders_count' => $visits,
-                'total_spent_amount' => $spent
+                'total_spent_amount' => $spent,
+                'branch_id' => $branch->id,
             ]);
         }
 
@@ -285,6 +299,7 @@ class DatabaseSeeder extends Seeder
                     'waiter_id' => $waiter->id,
                     'total_amount' => 0, // Will update below
                     'status' => $status,
+                    'branch_id' => $branch->id,
                     'created_at' => $date->copy()->setTime(rand(9, 22), rand(0, 59)),
                     'updated_at' => $date,
                 ]);
@@ -329,6 +344,7 @@ class DatabaseSeeder extends Seeder
                         'qr_amount' => ($pm === 'qr') ? $totalAmount : 0,
                         'bonus_used' => 0,
                         'status' => 'completed',
+                        'branch_id' => $branch->id,
                         'created_at' => $order->created_at,
                         'updated_at' => $order->updated_at,
                     ]);
@@ -348,6 +364,7 @@ class DatabaseSeeder extends Seeder
                     'amount' => $amount,
                     'description' => $category . ' xarajatlari',
                     'category' => $category,
+                    'branch_id' => $branch->id,
                     'created_at' => $date->copy()->setTime(rand(9, 18), rand(0, 59)),
                     'updated_at' => $date,
                 ]);
@@ -365,6 +382,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($ingredients as $ing) {
+            $ing['branch_id'] = $branch->id;
             \App\Models\Ingredient::create($ing);
         }
 

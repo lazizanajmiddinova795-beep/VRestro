@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToBranch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -9,7 +10,10 @@ class Setting extends Model
 {
     protected $table = 'settings';
 
+    use BelongsToBranch;
+
     protected $fillable = [
+        'branch_id',
         'key',
         'value',
         'type'

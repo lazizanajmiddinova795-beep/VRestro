@@ -265,7 +265,7 @@ const toggleFood = (foodId) => {
 // own workflow) are allowed to change ingredient quantities here.
 const canEdit = computed(() => {
   const role = authStore.user?.roles?.[0];
-  return role === 'Admin' || role === 'Chef';
+  return role === 'Manager' || role === 'Chef';
 });
 
 const fetchRecipes = async () => {

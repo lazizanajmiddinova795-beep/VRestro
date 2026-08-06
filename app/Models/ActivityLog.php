@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToBranch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActivityLog extends Model
 {
+    use BelongsToBranch;
+
     protected $fillable = [
+        'branch_id',
         'user_id',
         'user_name',
         'user_role',

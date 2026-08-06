@@ -13,10 +13,15 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     const setAuth = (userData, userToken) => {
-        user.value = userData;
+        const userObj = {
+            ...userData,
+            branch_id: userData.branch_id || null,
+            branch_name: userData.branch_name || null
+        };
+        user.value = userObj;
         token.value = userToken;
         localStorage.setItem('vrestro_token', userToken);
-        localStorage.setItem('vrestro_user', JSON.stringify(userData));
+        localStorage.setItem('vrestro_user', JSON.stringify(userObj));
         loginStep.value = 'success';
         tempUser.value = null;
     };

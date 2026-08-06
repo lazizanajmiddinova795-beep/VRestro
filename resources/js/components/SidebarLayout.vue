@@ -75,9 +75,20 @@
             </div>
           </div>
 
+          <!-- Branches (SuperAdmin only) -->
+          <router-link
+            v-if="authStore.user?.is_superadmin"
+            to="/branches"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group mt-1"
+            :class="isActiveRoute('/branches') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
+          >
+            <Building2 class="w-5 h-5" :class="isActiveRoute('/branches') ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'" />
+            <span>Filiallar</span>
+          </router-link>
+
           <!-- Settings (Admin only) -->
           <router-link
-            v-if="authStore.user?.roles?.[0] === 'Admin'"
+            v-if="authStore.user?.roles?.[0] === 'Manager'"
             to="/settings"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group mt-1"
             :class="isActiveRoute('/settings') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'text-slate-600 font-bold hover:text-indigo-600 hover:bg-indigo-50/60'"
@@ -122,7 +133,7 @@
         >
           <Menu class="w-5.5 h-5.5" />
         </button>
-        <div class="hidden md:block"></div>
+        <BranchSwitcher />
         <!-- Right side: Bell icon dropdown and alerts -->
         <div class="flex items-center space-x-4 relative">
           
@@ -228,8 +239,9 @@
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
 import { ref, onMounted, watch, computed } from 'vue';
+import BranchSwitcher from '@/components/BranchSwitcher.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ChefHat, LayoutDashboard, ShoppingBag, LogOut, BookOpen, Database, Sparkles, Package, Layers, Users, Smile, DollarSign, Tag, BarChart3, Bell, Info, X, Settings, ChevronDown, Folder, Wallet, Menu, Utensils } from 'lucide-vue-next';
+import { ChefHat, LayoutDashboard, ShoppingBag, LogOut, BookOpen, Database, Sparkles, Package, Layers, Users, Smile, DollarSign, Tag, BarChart3, Bell, Info, X, Settings, ChevronDown, Folder, Wallet, Menu, Utensils, Building2 } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationStore } from '@/stores/notifications';
 import { useSettingStore } from '@/stores/settings';
@@ -261,7 +273,7 @@ const navGroups = computed(() => [
     icon: Users,
     items: [
       { path: '/tables', label: settingsStore.t('nav.tables'), icon: Layers },
-      { path: '/staff', label: settingsStore.t('nav.staff'), icon: Users, roles: ['Admin'] },
+      { path: '/staff', label: settingsStore.t('nav.staff'), icon: Users, roles: ['Manager'] },
       { path: '/customers', label: settingsStore.t('nav.customers'), icon: Smile },
     ]
   },
@@ -270,8 +282,8 @@ const navGroups = computed(() => [
     label: settingsStore.t('nav.finance'),
     icon: Wallet,
     items: [
-      { path: '/payments', label: settingsStore.t('nav.payments'), icon: DollarSign, roles: ['Admin', 'Cashier'] },
-      { path: '/discounts', label: settingsStore.t('nav.discounts'), icon: Tag, roles: ['Admin', 'Cashier'] },
+      { path: '/payments', label: settingsStore.t('nav.payments'), icon: DollarSign, roles: ['Manager', 'Cashier'] },
+      { path: '/discounts', label: settingsStore.t('nav.discounts'), icon: Tag, roles: ['Manager', 'Cashier'] },
     ]
   }
 ]);

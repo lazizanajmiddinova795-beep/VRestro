@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToBranch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Model
 {
+    use BelongsToBranch;
+
     protected $fillable = [
+        'branch_id',
         'order_id',
         'customer_id',
         'total_amount',

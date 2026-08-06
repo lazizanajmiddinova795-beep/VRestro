@@ -35,7 +35,7 @@ class AuthService
         }
 
         // Check if user is Admin
-        if ($user->hasRole('Admin')) {
+        if ($user->hasRole('Manager')) {
             // Generate 8-digit OTP for Admin
             $otp = sprintf("%08d", mt_rand(10000000, 99999999));
             $user->telegram_otp = $otp;
@@ -97,6 +97,8 @@ class AuthService
             'shift_hours'     => $user->shift_hours,
             'is_superadmin'   => (bool) $user->is_superadmin,
             'roles'           => $roles,
+            'branch_id'       => $user->branch_id,
+            'branch_name'     => $user->branch ? $user->branch->name : null,
         ];
     }
 
