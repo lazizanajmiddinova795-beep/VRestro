@@ -37,6 +37,13 @@ class StaffController extends Controller
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]);
 
+        // Managers should NOT see other Managers or SuperAdmin in their staff list
+        $user = $request->user();
+        if (!$user->is_superadmin) {
+            $filters['exclude_roles'] = ['Manager'];
+            $filters['exclude_superadmin'] = true;
+        }
+
         $staff = $this->userRepository->getAllUsers($filters);
 
         return response()->json($staff);

@@ -146,7 +146,7 @@
         </button>
         <BranchSwitcher />
         <!-- Right side: Bell icon dropdown and alerts -->
-        <div class="flex items-center space-x-4 relative">
+        <div class="flex items-center space-x-4 relative ml-auto">
           
           <!-- Bell trigger -->
           <div class="relative">

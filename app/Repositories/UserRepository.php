@@ -94,6 +94,20 @@ class UserRepository implements UserRepositoryInterface
             });
         }
 
+        // Exclude specific roles (e.g., Manager from Manager's view)
+        if (!empty($filters['exclude_roles'])) {
+            $query->whereDoesntHave('roles', function ($q) use ($filters) {
+                $q->whereIn('name', $filters['exclude_roles']);
+            });
+        }
+
+        // Exclude superadmin users
+        if (!empty($filters['exclude_superadmin'])) {
+            $query->where(function ($q) {
+                $q->where('is_superadmin', false)->orWhereNull('is_superadmin');
+            });
+        }
+
         $perPage = !empty($filters['per_page']) ? (int)$filters['per_page'] : 15;
 
         return $query->orderBy('name')->paginate($perPage);
