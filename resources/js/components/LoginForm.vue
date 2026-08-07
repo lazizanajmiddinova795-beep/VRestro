@@ -8,7 +8,7 @@
       <!-- Logo header -->
       <div class="text-center mb-8">
         <router-link to="/" class="inline-flex items-center space-x-3 group">
-          <img src="/foodflow_logo.png" alt="FoodFlow Logo" class="h-12 md:h-16 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" />
+          <img :src="'/foodflow_logo.png'" alt="FoodFlow Logo" class="h-12 md:h-16 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" />
         </router-link>
         <p class="text-slate-500 text-sm mt-2">Tizimga kirish va autentifikatsiya</p>
       </div>

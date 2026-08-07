@@ -4,7 +4,7 @@
     <header class="sticky top-0 z-50 backdrop-blur-md border-b border-slate-200 bg-white/80 px-6 py-4 transition-all duration-300">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <img src="/foodflow_logo.png" alt="FoodFlow Logo" class="h-10 md:h-12 object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300" />
+          <img :src="'/foodflow_logo.png'" alt="FoodFlow Logo" class="h-10 md:h-12 object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300" />
         </div>
         <div class="flex items-center space-x-4">
           <template v-if="authStore.isAuthenticated()">

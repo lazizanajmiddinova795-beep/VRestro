@@ -5,7 +5,7 @@
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <router-link to="/" class="flex items-center space-x-3">
-            <img src="/foodflow_logo.png" alt="FoodFlow Logo" class="h-10 object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300" />
+            <img :src="'/foodflow_logo.png'" alt="FoodFlow Logo" class="h-10 object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300" />
           </router-link>
         </div>
         <div class="flex items-center space-x-4">
