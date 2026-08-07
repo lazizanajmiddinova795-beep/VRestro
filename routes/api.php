@@ -33,6 +33,7 @@ Route::get('/user', function (Request $request) {
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login/pin', [AuthController::class, 'loginWithPin']);
     Route::post('/verify-face', [AuthController::class, 'verifyFace']);
 });
 

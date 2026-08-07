@@ -264,6 +264,12 @@
                 </div>
 
                 <div class="flex flex-col">
+                    <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">PIN Kod (Numpad)</label>
+                    <input type="text" v-model="staffForm.pin" placeholder="Masalan: 1234" maxlength="6"
+                           class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
+                </div>
+
+                <div class="flex flex-col">
                     <label class="text-slate-500 font-extrabold text-xs tracking-wider uppercase mb-1.5">{{ settingsStore.t('staff.shift_label') }}</label>
                     <input type="text" v-model="staffForm.shift_hours" placeholder="08:00 - 20:00"
                            class="bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all placeholder-slate-400" />
@@ -419,6 +425,7 @@ const staffForm = ref({
   phone: '',
   login: '',
   password: '',
+  pin: '',
   shift_hours: '',
   role: 'Waiter',
   status: 'active',
@@ -474,6 +481,7 @@ const openAddEditModal = (member = null) => {
     phone: member.phone || '',
     login: member.login,
     password: '',
+    pin: member.pin || '',
     shift_hours: member.shift_hours || '',
     role: member.roles?.[0]?.name || 'Waiter',
     status: member.status,
@@ -487,6 +495,7 @@ const openAddEditModal = (member = null) => {
     phone: '',
     login: '',
     password: '',
+    pin: '',
     shift_hours: '',
     role: 'Waiter',
     status: 'active',
@@ -514,6 +523,7 @@ const submitForm = async () => {
   formData.append('phone', staffForm.value.phone);
   formData.append('login', staffForm.value.login);
   if (staffForm.value.password) formData.append('password', staffForm.value.password);
+  if (staffForm.value.pin) formData.append('pin', staffForm.value.pin);
   formData.append('role', staffForm.value.role);
   formData.append('shift_hours', staffForm.value.shift_hours || '');
   formData.append('status', staffForm.value.status);

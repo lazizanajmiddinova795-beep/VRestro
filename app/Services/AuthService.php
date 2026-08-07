@@ -78,6 +78,66 @@ class AuthService
     }
 
     /**
+     * Authenticate user via PIN.
+     *
+     * @param string $pin
+     * @return array
+     * @throws ValidationException
+     */
+    public function verifyPin(string $pin): array
+    {
+        $user = User::where('pin', trim($pin))->first();
+
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'pin' => ['PIN kod orqali xodim topilmadi yoki noto\'g\'ri.'],
+            ]);
+        }
+
+        // Check if user is Admin
+        if ($user->hasRole('Manager')) {
+            // Generate 8-digit OTP for Admin
+            $otp = sprintf("%08d", mt_rand(10000000, 99999999));
+            $user->telegram_otp = $otp;
+            $user->telegram_otp_expires_at = now()->addMinutes(10);
+            $user->save();
+
+            // Send OTP to Telegram Channel using TelegramService
+            try {
+                $telegramService = app(\App\Services\TelegramService::class);
+                $message = "🔐 <b>VRestro Admin Autentifikatsiya Kodi (PIN)</b>\n\n";
+                $message .= "Administrator: <b>{$user->name}</b> ({$user->login})\n";
+                $message .= "Kirish uchun 8 xonali tasdiqlash kodi: <code>{$otp}</code>\n\n";
+                $message .= "⚠️ Ushbu kod 10 daqiqa davomida faol bo'ladi.";
+                $telegramService->sendMessage($message);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Failed to send OTP to Telegram: " . $e->getMessage());
+            }
+
+            return [
+                'requires_otp' => true,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'login' => $user->login,
+                    'branch_name' => $user->branch ? $user->branch->name : null,
+                ],
+            ];
+        }
+
+        // For non-admin employees (Cashier, Chef, Waiter, etc.): Issue token directly
+        $user->tokens()->delete();
+        $token = $user->createToken('vrestro-auth-token')->plainTextToken;
+        $roles = $user->getRoleNames();
+
+        return [
+            'requires_otp' => false,
+            'user' => $this->presentUser($user, $roles),
+            'token' => $token,
+        ];
+    }
+
+    /**
      * Shape the profile fields returned to the frontend after login, so a
      * staff member's own profile screen shows the same data the admin
      * entered when creating their account (name/login/roles alone left

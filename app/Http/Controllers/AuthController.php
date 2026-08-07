@@ -63,6 +63,43 @@ class AuthController extends Controller
     }
 
     /**
+     * Login via PIN code.
+     */
+    public function loginWithPin(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'pin' => ['required', 'string']
+        ]);
+
+        $authData = $this->authService->verifyPin($data['pin']);
+
+        if (!empty($authData['requires_otp'])) {
+            return response()->json([
+                'requires_otp' => true,
+                'message' => 'Login tekshirildi. Telegram orqali 8 xonali parolni kiriting.',
+                'user' => $authData['user'],
+            ]);
+        }
+
+        // Log direct login via PIN
+        $logUser = \App\Models\User::find($authData['user']['id'] ?? null);
+        ActivityLog::record(
+            'login',
+            ($authData['user']['name'] ?? 'Noma\'lum') . " tizimga PIN orqali kirdi",
+            'auth',
+            ['user_id' => $authData['user']['id'] ?? null],
+            $logUser
+        );
+
+        return response()->json([
+            'requires_otp' => false,
+            'message' => 'Tizimga kirish muvaffaqiyatli yakunlandi.',
+            'user' => $authData['user'],
+            'token' => $authData['token']
+        ]);
+    }
+
+    /**
      * Step 2: Verify 8-digit Telegram OTP code and issue token.
      */
     public function verifyFace(Request $request): JsonResponse

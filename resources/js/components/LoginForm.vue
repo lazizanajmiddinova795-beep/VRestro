@@ -25,10 +25,26 @@
         <div v-if="authStore.loginStep === 'credentials'" class="space-y-6">
           <div class="space-y-1">
             <h2 class="text-xl font-bold text-slate-900">{{ settingsStore.t('app_title') }} - Xush kelibsiz</h2>
-            <p class="text-xs text-slate-500">Davom etish uchun login va parolingizni kiriting</p>
+            <p class="text-xs text-slate-500">Davom etish uchun login va parolingizni yoki PIN kodni kiriting</p>
           </div>
 
-          <form @submit.prevent="handleCredentialsSubmit" class="space-y-5">
+          <!-- Tabs -->
+          <div class="flex p-1 space-x-1 bg-slate-100/80 rounded-xl">
+            <button
+              @click="loginMethod = 'login'"
+              :class="['w-1/2 py-2 text-xs font-bold rounded-lg transition-all', loginMethod === 'login' ? 'bg-white text-indigo-600 shadow' : 'text-slate-500 hover:text-slate-700']"
+            >
+              Login/Parol
+            </button>
+            <button
+              @click="loginMethod = 'pin'"
+              :class="['w-1/2 py-2 text-xs font-bold rounded-lg transition-all', loginMethod === 'pin' ? 'bg-white text-indigo-600 shadow' : 'text-slate-500 hover:text-slate-700']"
+            >
+              PIN Kod
+            </button>
+          </div>
+
+          <form v-if="loginMethod === 'login'" @submit.prevent="handleCredentialsSubmit" class="space-y-5 animate-fadeIn">
             <!-- Login Field -->
             <div class="space-y-2">
               <label for="login" class="text-xs font-semibold tracking-wider text-slate-500 uppercase">Login</label>
@@ -83,6 +99,46 @@
               </span>
             </button>
           </form>
+
+          <div v-else class="space-y-5 animate-fadeIn">
+            <!-- PIN Display -->
+            <div class="flex justify-center space-x-3 my-4">
+              <div v-for="i in 6" :key="i" class="w-10 h-10 rounded-xl border-2 flex items-center justify-center text-xl font-black transition-all"
+                   :class="pinCode.length >= i ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-slate-50'">
+                {{ pinCode.length >= i ? '•' : '' }}
+              </div>
+            </div>
+            
+            <!-- Display Errors -->
+            <div v-if="error" class="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-600 font-medium text-center">
+              {{ error }}
+            </div>
+
+            <!-- Numpad -->
+            <div class="grid grid-cols-3 gap-3 max-w-[240px] mx-auto">
+              <button v-for="num in [1,2,3,4,5,6,7,8,9]" :key="num" @click="addPin(num)"
+                      class="h-14 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xl font-bold transition-all active:scale-95">
+                {{ num }}
+              </button>
+              <div class="h-14"></div>
+              <button @click="addPin(0)"
+                      class="h-14 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xl font-bold transition-all active:scale-95">
+                0
+              </button>
+              <button @click="removePin()"
+                      class="h-14 rounded-2xl bg-slate-50 hover:bg-red-50 hover:border-red-200 hover:text-red-500 border border-slate-200 text-slate-500 text-xl font-bold transition-all flex items-center justify-center active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-delete"><path d="M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/><line x1="18" x2="12" y1="9" y2="15"/><line x1="12" x2="18" y1="9" y2="15"/></svg>
+              </button>
+            </div>
+            
+            <button
+              v-if="loading"
+              disabled
+              class="w-full relative group py-3.5 rounded-xl bg-slate-100 font-bold text-slate-500 text-sm flex items-center justify-center mt-4"
+            >
+              Yuklanmoqda...
+            </button>
+          </div>
 
           <div class="text-center pt-2">
             <router-link to="/" class="text-xs text-indigo-600 hover:text-indigo-700 font-medium transition duration-200">
@@ -231,14 +287,84 @@ const settingsStore = useSettingsStore();
 const router = useRouter();
 
 // State
+const loginMethod = ref('login'); // 'login' or 'pin'
 const login = ref('');
 const password = ref('');
+const pinCode = ref('');
 const error = ref('');
 const loading = ref(false);
 const submittingOtp = ref(false);
 const success = ref(false);
 const otpCode = ref('');
 const resendingOtp = ref(false);
+
+const addPin = (num) => {
+  if (pinCode.value.length < 6) {
+    pinCode.value += num.toString();
+    if (pinCode.value.length === 4 || pinCode.value.length === 6) {
+      // Auto-submit on 4 or 6 digits
+      handlePinSubmit();
+    }
+  }
+};
+
+const removePin = () => {
+  if (pinCode.value.length > 0) {
+    pinCode.value = pinCode.value.slice(0, -1);
+    error.value = '';
+  }
+};
+
+const handlePinSubmit = async () => {
+  error.value = '';
+  loading.value = true;
+  try {
+    const response = await fetch('/api/auth/login/pin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        pin: pinCode.value,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      pinCode.value = ''; // clear on error
+      throw new Error(data.message || (data.errors ? Object.values(data.errors).flat().join(', ') : 'PIN orqali kirishda xatolik.'));
+    }
+
+    if (data.requires_otp) {
+      otpCode.value = '';
+      authStore.setTempUser(data.user);
+    } else if (data.token) {
+      authStore.setAuth(data.user, data.token);
+      let dashboardName = 'admin-dashboard';
+      const roles = data.user?.roles || [];
+      if (roles.includes('Manager')) {
+        dashboardName = 'admin-dashboard';
+      } else if (roles.includes('Cashier')) {
+        dashboardName = 'cashier-tables';
+      } else if (roles.includes('Chef')) {
+        dashboardName = 'kitchen';
+      } else if (roles.includes('Waiter')) {
+        dashboardName = 'waiter-tables';
+      } else {
+        dashboardName = 'orders';
+      }
+      setTimeout(() => {
+        router.push({ name: dashboardName });
+      }, 300);
+    }
+  } catch (err) {
+    error.value = err.message;
+  } finally {
+    loading.value = false;
+  }
+};
 
 const handleCredentialsSubmit = async () => {
   error.value = '';
