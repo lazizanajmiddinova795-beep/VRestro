@@ -417,6 +417,7 @@
               <th class="px-4 py-3">{{ settingsStore.t('payments.col_type') }}</th>
               <th class="px-4 py-3">{{ settingsStore.t('status') }}</th>
               <th class="px-4 py-3 text-right">{{ settingsStore.t('total') }}</th>
+              <th class="px-4 py-3 text-center">Amallar</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 text-sm">
@@ -436,6 +437,16 @@
                 </span>
               </td>
               <td class="px-4 py-3 text-right font-bold text-slate-900">{{ formatCurrency(p.total_amount) }}</td>
+              <td class="px-4 py-3 text-center">
+                <div class="flex items-center justify-center gap-2">
+                  <button @click="printReceiptAction(p.id)" class="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition" title="Chop etish">
+                    <Printer class="w-4 h-4" />
+                  </button>
+                  <button @click="printReceiptAction(p.id)" class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition" title="Yuklab olish (PDF)">
+                    <Download class="w-4 h-4" />
+                  </button>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -459,9 +470,10 @@
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   DollarSign, Banknote, CreditCard, QrCode, Layers,
-  Clock, CheckCircle, User, ShoppingBag, X, Search, Loader2, History, RefreshCw
+  Clock, CheckCircle, User, ShoppingBag, X, Search, Loader2, History, RefreshCw, Printer, Download
 } from 'lucide-vue-next';
 import { usePaymentStore } from '@/stores/payment';
 import { useOrdersStore } from '@/stores/orders';
@@ -470,6 +482,12 @@ import { useCustomerStore } from '@/stores/customers';
 const paymentStore = usePaymentStore();
 const ordersStore = useOrdersStore();
 const customerStore = useCustomerStore();
+const router = useRouter();
+
+const printReceiptAction = (paymentId) => {
+  const url = router.resolve({ path: '/cashier/receipts', query: { print: paymentId } }).href;
+  window.open(url, '_blank');
+};
 
 // UI States
 const selectedOrder = ref(null);
