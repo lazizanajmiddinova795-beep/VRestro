@@ -90,17 +90,28 @@
             </router-link>
           </div>
 
-          <!-- Mobile App Download Buttons -->
-          <div class="flex items-center justify-center gap-3 pt-3">
+          <!-- App Download Buttons -->
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
             <a
-              href="https://play.google.com"
-              target="_blank"
+              href="/vrestro.apk"
+              download
               class="flex items-center space-x-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-900 transition hover:scale-105 shadow-sm group"
             >
               <Play class="w-5 h-5 text-emerald-600 group-hover:text-emerald-500 transition" />
               <div class="text-left">
                 <span class="block text-[9px] uppercase tracking-wider text-slate-500 font-bold leading-tight">Yuklab olish</span>
                 <span class="block text-xs font-black leading-tight">Android APK</span>
+              </div>
+            </a>
+            <a
+              href="/vrestro-windows.exe"
+              download
+              class="flex items-center space-x-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-900 transition hover:scale-105 shadow-sm group"
+            >
+              <Monitor class="w-5 h-5 text-blue-600 group-hover:text-blue-500 transition" />
+              <div class="text-left">
+                <span class="block text-[9px] uppercase tracking-wider text-slate-500 font-bold leading-tight">Yuklab olish (POS)</span>
+                <span class="block text-xs font-black leading-tight">Windows .exe</span>
               </div>
             </a>
             <a
@@ -211,7 +222,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ChefHat, User, Lock, ArrowRight, KeyRound, CheckCircle, Apple, Play } from 'lucide-vue-next';
+import { ChefHat, User, Lock, ArrowRight, KeyRound, CheckCircle, Apple, Play, Monitor } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingsStore } from '@/stores/settings';
 
