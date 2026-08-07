@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <Teleport to="body">
     <!-- Hidden element that only shows up during printing -->
-    <div v-if="order" id="print-kot-container" class="print-only thermal-ticket p-4 bg-white text-black hidden">
+    <div v-if="order" id="print-kot-container" class="print-only thermal-ticket p-4 bg-white text-black">
       <div class="ticket-center mb-4">
         <h2 class="text-xl font-bold uppercase tracking-wider mb-1">Buyurtma Cheki</h2>
         <div class="text-xs uppercase font-bold bg-gray-200 py-1 px-2 inline-block rounded">
@@ -12,7 +12,7 @@
       <div class="ticket-divider"></div>
       
       <div class="flex justify-between text-sm font-bold my-2">
-        <span>Stol: {{ order.table?.name || 'Olib ketish' }}</span>
+        <span>Stol: {{ order.table?.table_number || order.table?.name || 'Olib ketish' }}</span>
         <span>Buyurtma: #{{ order.order_number || order.id }}</span>
       </div>
       
@@ -53,7 +53,7 @@
         <p class="mt-1 font-bold">Iltimos, tayyorlashni boshlang!</p>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup>
@@ -83,16 +83,12 @@ const formatDate = (dateString) => {
 }
 
 @media print {
-  /* Hide everything */
-  body * {
-    visibility: hidden;
+  /* Hide all direct children of body except our container */
+  body > *:not(#print-kot-container) {
+    display: none !important;
   }
   
   /* Show only our print container */
-  #print-kot-container, #print-kot-container * {
-    visibility: visible;
-  }
-  
   #print-kot-container {
     display: block !important;
     position: absolute;
