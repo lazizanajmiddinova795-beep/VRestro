@@ -4,11 +4,11 @@
     <header class="sticky top-0 z-50 backdrop-blur-md border-b border-slate-200 bg-white/80 px-6 py-4 transition-all duration-300">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <ChefHat class="w-6 h-6 text-white" />
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
+            <span class="text-white font-black text-xl tracking-tighter">FF</span>
           </div>
           <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 tracking-wider">
-            VRestro
+            FoodFlow
           </span>
         </div>
         <div class="flex items-center space-x-4">
@@ -130,8 +130,8 @@
 
     <!-- Footer -->
     <footer class="border-t border-slate-200 py-8 text-center text-xs text-slate-400">
-      <div class="max-w-7xl mx-auto px-6">
-        &copy; 2026 VRestro. Barcha huquqlar himoyalangan. Next-Gen Restoran Ekotizimi.
+      <div class="container mx-auto px-6 text-center text-slate-500 text-sm">
+        &copy; 2026 FoodFlow. Barcha huquqlar himoyalangan. Next-Gen Restoran Ekotizimi.
       </div>
     </footer>
   </div>

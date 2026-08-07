@@ -45,7 +45,7 @@ class AuthService
             // Send OTP to Telegram Channel using TelegramService
             try {
                 $telegramService = app(\App\Services\TelegramService::class);
-                $message = "🔐 <b>VRestro Admin Autentifikatsiya Kodi</b>\n\n";
+                $message = "🔐 <b>FoodFlow Admin Autentifikatsiya Kodi</b>\n\n";
                 $message .= "Administrator: <b>{$user->name}</b> ({$user->login})\n";
                 $message .= "Kirish uchun 8 xonali tasdiqlash kodi: <code>{$otp}</code>\n\n";
                 $message .= "⚠️ Ushbu kod 10 daqiqa davomida faol bo'ladi.";
@@ -105,7 +105,7 @@ class AuthService
             // Send OTP to Telegram Channel using TelegramService
             try {
                 $telegramService = app(\App\Services\TelegramService::class);
-                $message = "🔐 <b>VRestro Admin Autentifikatsiya Kodi (PIN)</b>\n\n";
+                $message = "🔐 <b>FoodFlow Admin Autentifikatsiya Kodi (PIN)</b>\n\n";
                 $message .= "Administrator: <b>{$user->name}</b> ({$user->login})\n";
                 $message .= "Kirish uchun 8 xonali tasdiqlash kodi: <code>{$otp}</code>\n\n";
                 $message .= "⚠️ Ushbu kod 10 daqiqa davomida faol bo'ladi.";

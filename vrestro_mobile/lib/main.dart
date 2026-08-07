@@ -37,7 +37,7 @@ class VRestroApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'VRestro Mobile',
+        title: 'FoodFlow Mobile',
         debugShowCheckedModeBanner: false,
         theme: NeumorphicTheme.lightTheme,
         home: const RootRoleRouter(),

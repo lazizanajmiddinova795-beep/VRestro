@@ -48,7 +48,7 @@ class TelegramBotService
         $userId = $message['from']['id'];
 
         if (str_starts_with($text, '/start')) {
-            $welcomeText = "👋 <b>Assalomu alaykum! VRestro botiga xush kelibsiz!</b>\n\n";
+            $welcomeText = "👋 <b>Assalomu alaykum! FoodFlow botiga xush kelibsiz!</b>\n\n";
             $welcomeText .= "Bu yerda siz restoranimiz menyusini ko'rishingiz, taom tanlashingiz va to'g'ridan-to'g'ri buyurtma berishingiz mumkin.\n\n";
             $welcomeText .= "Tugmalardan birini tanlang 👇";
 
@@ -298,7 +298,7 @@ class TelegramBotService
                 ]);
             });
         } elseif ($data === 'back_to_start') {
-            $welcomeText = "👋 <b>VRestro botiga xush kelibsiz!</b>\nTugmalardan birini tanlang:";
+            $welcomeText = "👋 <b>FoodFlow botiga xush kelibsiz!</b>\nTugmalardan birini tanlang:";
             $keyboard = [
                 'inline_keyboard' => [
                     [
@@ -315,7 +315,7 @@ class TelegramBotService
                 'reply_markup' => $keyboard
             ]);
         } elseif ($data === 'about_restaurant') {
-            $aboutText = "🏢 <b>VRestro ERP Restaurant</b>\n\n";
+            $aboutText = "🏢 <b>FoodFlow ERP Restaurant</b>\n\n";
             $aboutText .= "📍 Manzil: " . $this->settingRepository->getByKey('restaurant_address') . "\n";
             $aboutText .= "📞 Telefon: " . $this->settingRepository->getByKey('restaurant_phone') . "\n";
             $aboutText .= "⏰ Ish vaqti: " . $this->settingRepository->getByKey('restaurant_hours') . "\n";

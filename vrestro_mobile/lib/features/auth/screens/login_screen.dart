@@ -46,35 +46,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // VRestro Brand Icon
+                      // FoodFlow Brand Icon
                       Center(
                         child: Container(
-                          width: 72,
-                          height: 72,
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [AppColors.primary, AppColors.primaryLight],
-                            ),
-                            borderRadius: BorderRadius.circular(20),
+                            shape: BoxShape.circle,
+                            color: Colors.white,
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.primary.withOpacity(0.3),
-                                blurRadius: 15,
-                                offset: const Offset(0, 8),
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
                               ),
                             ],
                           ),
-                          child: const Icon(
-                            Icons.restaurant_menu_rounded,
-                            size: 38,
-                            color: Colors.white,
+                          child: const Text(
+                            'FF',
+                            style: TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.primary,
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(height: 20),
 
                       const Text(
-                        'VRestro Mobile',
+                        'FoodFlow POS',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 26,

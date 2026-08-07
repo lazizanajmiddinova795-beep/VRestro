@@ -120,7 +120,7 @@ class SettingController extends Controller
             $url = "https://api.telegram.org/bot{$token}/sendMessage";
             $response = \Illuminate\Support\Facades\Http::timeout(5)->post($url, [
                 'chat_id' => $chatId,
-                'text' => "🔔 <b>VRestro ERP Integratsiyasi</b>\nTelegram bot muvaffaqiyatli sinovdan o'tdi!",
+                'text' => "🔔 <b>FoodFlow Integratsiyasi</b>\nTelegram bot muvaffaqiyatli sinovdan o'tdi!",
                 'parse_mode' => 'HTML',
             ]);
 

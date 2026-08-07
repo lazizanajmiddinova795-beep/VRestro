@@ -9,10 +9,10 @@
       <div class="text-center mb-8">
         <router-link to="/" class="inline-flex items-center space-x-3 group">
           <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
-            <ChefHat class="w-7 h-7 text-white" />
+            <span class="text-white font-black text-xl tracking-tighter">FF</span>
           </div>
           <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 tracking-wider">
-            VRestro
+            FoodFlow
           </span>
         </router-link>
         <p class="text-slate-500 text-sm mt-2">Tizimga kirish va autentifikatsiya</p>
@@ -149,7 +149,7 @@
           <!-- App Download Buttons -->
           <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
             <a
-              href="/vrestro.apk?v=2"
+              href="/foodflow.apk?v=3"
               download
               class="flex items-center space-x-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-900 transition hover:scale-105 shadow-sm group"
             >
@@ -160,7 +160,7 @@
               </div>
             </a>
             <a
-              href="/vrestro-windows.exe"
+              href="/foodflow-windows.exe"
               download
               class="flex items-center space-x-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-900 transition hover:scale-105 shadow-sm group"
             >

@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
    <application
-        android:label="VRestro Mobile"
+        android:label="FoodFlow Mobile"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="true">

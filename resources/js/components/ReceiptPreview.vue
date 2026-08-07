@@ -158,7 +158,7 @@
 
             <!-- Receipt Header -->
             <div class="text-center space-y-1 mb-3">
-              <h4 class="text-xs font-black uppercase tracking-wider">{{ settingStore.settings.restaurant_name || 'VRestro' }}</h4>
+              <h4 class="text-xs font-black uppercase tracking-wider">{{ settingStore.settings.restaurant_name || 'FoodFlow' }}</h4>
               <p class="text-[9px] text-slate-650 leading-tight">{{ settingStore.settings.restaurant_address || 'Toshkent, O\'zbekiston' }}</p>
               <p class="text-[9px] text-slate-650">Tel: {{ settingStore.settings.restaurant_phone || '+998 90 123 45 67' }}</p>
             </div>
@@ -286,7 +286,7 @@
 
             <!-- Greeting Footer -->
             <div class="text-center text-[8px] text-slate-650 mt-2 space-y-0.5 leading-tight">
-              <p>{{ settingStore.settings.receipt_header || 'VRestro - Xizmatimizdan mamnunmisiz?' }}</p>
+              <p>{{ settingStore.settings.receipt_header || 'FoodFlow - Xizmatimizdan mamnunmisiz?' }}</p>
               <p class="font-black">{{ settingStore.settings.receipt_footer || 'Xaridingiz uchun rahmat! Yana keling!' }}</p>
             </div>
 
@@ -314,7 +314,7 @@
     <!-- ACTUAL PRINT ONLY CONTENT (Hidden on screen, shown when printing) -->
     <div id="physical-thermal-receipt" class="print-only" v-if="selectedPayment && printMode !== 'kot'">
       <div class="thermal-ticket">
-        <div class="ticket-center font-bold font-large">{{ settingStore.settings.restaurant_name || 'VRestro' }}</div>
+        <div class="ticket-center font-bold font-large">{{ settingStore.settings.restaurant_name || 'FoodFlow' }}</div>
         <div class="ticket-center">{{ settingStore.settings.restaurant_address || 'Toshkent, O\'zbekiston' }}</div>
         <div class="ticket-center">Tel: {{ settingStore.settings.restaurant_phone || '+998 90 123 45 67' }}</div>
         
@@ -415,7 +415,7 @@
         <div class="ticket-divider"></div>
 
         <div class="ticket-center ticket-footer-text">
-          <p>{{ settingStore.settings.receipt_header || 'VRestro - Xizmatimizdan mamnunmisiz?' }}</p>
+          <p>{{ settingStore.settings.receipt_header || 'FoodFlow - Xizmatimizdan mamnunmisiz?' }}</p>
           <p class="ticket-bold">{{ settingStore.settings.receipt_footer || 'Xaridingiz uchun rahmat! Yana keling!' }}</p>
         </div>
       </div>
