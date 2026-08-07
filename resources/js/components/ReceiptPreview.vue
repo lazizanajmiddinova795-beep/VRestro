@@ -83,15 +83,19 @@
                     >
                       <button @click="triggerDirectPrint(item, 'pre-check')" class="w-full px-3.5 py-2 text-slate-700 hover:bg-slate-50 hover:text-slate-950 flex items-center space-x-2">
                         <FileText class="w-3.5 h-3.5" />
-                        <span>{{ cashierStore.t('navbat_cheki') }}</span>
+                        <span class="text-xs font-bold">{{ cashierStore.t('navbat_cheki') }}</span>
+                      </button>
+                      <button @click="triggerDirectPrint(item, 'kot')" class="w-full px-3.5 py-2 text-slate-700 hover:bg-slate-50 hover:text-slate-950 flex items-center space-x-2">
+                        <ChefHat class="w-3.5 h-3.5 text-amber-600" />
+                        <span class="text-xs font-bold text-amber-700">Oshpaz cheki</span>
                       </button>
                       <button @click="triggerDirectPrint(item, 'invoice')" class="w-full px-3.5 py-2 text-slate-700 hover:bg-slate-50 hover:text-slate-955 flex items-center space-x-2">
                         <Receipt class="w-3.5 h-3.5" />
-                        <span>{{ cashierStore.t('tolov_cheki') }}</span>
+                        <span class="text-xs font-bold">{{ cashierStore.t('hisob_cheki') }}</span>
                       </button>
                       <button @click="triggerDirectPrint(item, 'mix')" class="w-full px-3.5 py-2 text-slate-700 hover:bg-slate-50 hover:text-slate-955 flex items-center space-x-2">
                         <FileSpreadsheet class="w-3.5 h-3.5" />
-                        <span>{{ cashierStore.t('mix_chop') }}</span>
+                        <span class="text-xs font-bold">{{ cashierStore.t('aralash_chek') }}</span>
                       </button>
                     </div>
                   </div>
@@ -115,7 +119,7 @@
         <!-- Live Preview Title & Print Mode triggers -->
         <div class="shrink-0 pb-4 border-b border-slate-200">
           <h3 class="text-slate-900 font-black text-lg pb-1">{{ cashierStore.t('chek_korinishi') }}</h3>
-          <div class="grid grid-cols-3 gap-2 mt-3.5" v-if="selectedPayment">
+          <div class="grid grid-cols-4 gap-2 mt-3.5" v-if="selectedPayment">
             <button 
               @click="printMode = 'pre-check'"
               class="px-2.5 py-2 rounded-xl text-[10px] transition duration-200 border"
@@ -307,9 +311,9 @@
       </div>
     </div>
 
-    <!-- INVISIBLE FULL SCREEN THERMAL CONTAINER FOR PHYSICAL PRINTER -->
-    <div id="physical-thermal-receipt" class="print-only">
-      <div v-if="selectedPayment" class="thermal-ticket">
+    <!-- ACTUAL PRINT ONLY CONTENT (Hidden on screen, shown when printing) -->
+    <div id="physical-thermal-receipt" class="print-only" v-if="selectedPayment && printMode !== 'kot'">
+      <div class="thermal-ticket">
         <div class="ticket-center font-bold font-large">{{ settingStore.settings.restaurant_name || 'VRestro' }}</div>
         <div class="ticket-center">{{ settingStore.settings.restaurant_address || 'Toshkent, O\'zbekiston' }}</div>
         <div class="ticket-center">Tel: {{ settingStore.settings.restaurant_phone || '+998 90 123 45 67' }}</div>
@@ -749,6 +753,7 @@
       </div>
     </Transition>
 
+    <PrintKot v-if="printMode === 'kot' && selectedPayment" :order="selectedPayment.order" />
   </div>
 </template>
 
@@ -757,8 +762,9 @@ import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
 import { ref, onMounted, computed, watch, markRaw } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { RotateCw, Printer, Receipt, FileText, FileSpreadsheet, Plus, X, HelpCircle, CheckCircle } from 'lucide-vue-next';
+import { RotateCw, Printer, Receipt, FileText, FileSpreadsheet, Plus, X, HelpCircle, CheckCircle, ChefHat } from 'lucide-vue-next';
 import { useReceiptsStore } from '@/stores/receipts';
+import PrintKot from '@/components/PrintKot.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingStore } from '@/stores/settings';
 import { useCashierTablesStore } from '@/stores/cashierTables';

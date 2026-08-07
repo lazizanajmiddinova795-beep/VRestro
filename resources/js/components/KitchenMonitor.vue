@@ -77,9 +77,19 @@
               </div>
             </div>
 
-            <!-- Elapsed Time Timer -->
-            <div
-              class="font-mono font-black px-2 py-1 rounded-md border"
+            <!-- Action & Timer -->
+            <div class="flex items-center space-x-2">
+              <button
+                @click="printTicket(ticket)"
+                class="p-1.5 rounded bg-slate-200 text-slate-700 hover:bg-slate-300 transition"
+                title="Chekni chiqarish (KOT)"
+              >
+                <Printer class="w-4 h-4" />
+              </button>
+              
+              <!-- Elapsed Time Timer -->
+              <div
+                class="font-mono font-black px-2 py-1 rounded-md border"
               :class="[
                 scaleClasses.timer,
                 ticket.status === 'ready' 
@@ -90,6 +100,7 @@
               ]"
             >
               {{ getElapsedTime(ticket.created_at) }}
+            </div>
             </div>
           </div>
 
@@ -196,20 +207,35 @@
         </div>
       </div>
     </div>
+
+    <!-- Hidden KOT Receipt -->
+    <PrintKot :order="orderToPrint" />
   </ChefLayout>
 </template>
 
 <script setup>
 import { useSettingsStore } from '@/stores/settings';
-const settingsStore = useSettingsStore();
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import { useChefStore } from '@/stores/chef';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
+import { ChefHat, Play, CheckCircle, Printer } from 'lucide-vue-next';
 import ChefLayout from '@/components/ChefLayout.vue';
-import { ChefHat, Play, CheckCircle } from 'lucide-vue-next';
+import PrintKot from '@/components/PrintKot.vue';
+import { useChefStore } from '@/stores/chef';
 
+const settingsStore = useSettingsStore();
 const chefStore = useChefStore();
 const timeTrigger = ref(Date.now());
 let timerInterval = null;
+
+const orderToPrint = ref(null);
+const printTicket = (ticket) => {
+  orderToPrint.value = {
+    ...ticket.order,
+    items: ticket.items
+  };
+  setTimeout(() => {
+    window.print();
+  }, 200);
+};
 
 // Text sizing per KDS Displey Masshtabi setting (Sozlamalar sahifasi) - the
 // grid column count alone wasn't a strong enough visual difference, since

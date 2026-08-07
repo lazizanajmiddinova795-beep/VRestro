@@ -39,7 +39,16 @@
               {{ order.order_number }}
             </span>
           </div>
-          <span class="text-xs text-slate-700 font-black">{{ formatTime(order.created_at) }} {{ t('dispatched') }}</span>
+          <div class="flex items-center space-x-3">
+            <button
+              @click="printKot(order)"
+              class="p-1 rounded bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+              :title="t('print_kot')"
+            >
+              <Printer class="w-4 h-4" />
+            </button>
+            <span class="text-xs text-slate-700 font-black">{{ formatTime(order.created_at) }} {{ t('dispatched') }}</span>
+          </div>
         </div>
 
         <!-- Grouped items listing -->
@@ -148,7 +157,9 @@
         </div>
       </div>
     </div>
-
+    
+    <!-- Hidden KOT Receipt -->
+    <PrintKot :order="orderToPrint" />
   </div>
 </template>
 
@@ -157,7 +168,8 @@ import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
 import { ref, computed, onMounted } from 'vue';
 import { useWaiterStore } from '@/stores/waiter';
-import { Trash2, Lock } from 'lucide-vue-next';
+import { Trash2, Lock, Printer } from 'lucide-vue-next';
+import PrintKot from '@/components/PrintKot.vue';
 
 const waiterStore = useWaiterStore();
 
@@ -177,7 +189,8 @@ const dictionary = {
     confirm_cancel: "Ushbu taomni bekor qilishni tasdiqlaysizmi?",
     cancel_success: "Muvaffaqiyatli bekor qilindi.",
     cancel_tooltip: "Bekor qilish",
-    lock_tooltip: "Oshxonada boshlangan (Tahrirlab bo'lmaydi)"
+    lock_tooltip: "Oshxonada boshlangan (Tahrirlab bo'lmaydi)",
+    print_kot: "Oshpaz chekini chiqarish"
   },
   ru: {
     total: "Всего",
@@ -192,7 +205,8 @@ const dictionary = {
     confirm_cancel: "Вы действительно хотите отменить это блюдо?",
     cancel_success: "Успешно отменено.",
     cancel_tooltip: "Отменить",
-    lock_tooltip: "Начато на кухне (Нельзя изменить)"
+    lock_tooltip: "Начато на кухне (Нельзя изменить)",
+    print_kot: "Печать чека на кухню"
   }
 };
 
@@ -274,6 +288,14 @@ const executeCancelItem = async () => {
     isCancelModalOpen.value = false;
     itemToCancel.value = null;
   }
+};
+
+const orderToPrint = ref(null);
+const printKot = (order) => {
+  orderToPrint.value = order;
+  setTimeout(() => {
+    window.print();
+  }, 200);
 };
 
 onMounted(() => {
