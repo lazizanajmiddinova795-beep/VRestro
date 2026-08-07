@@ -76,7 +76,7 @@ const formatDate = (dateString) => {
 };
 </script>
 
-<style scoped>
+<style>
 /* By default, hide the print container entirely on screen */
 #print-kot-container {
   display: none !important;
