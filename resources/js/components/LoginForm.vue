@@ -93,7 +93,7 @@
           <!-- App Download Buttons -->
           <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
             <a
-              href="/vrestro.apk"
+              href="/vrestro.apk?v=2"
               download
               class="flex items-center space-x-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-900 transition hover:scale-105 shadow-sm group"
             >
