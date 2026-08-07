@@ -3,6 +3,24 @@
     
     <!-- LEFT COLUMN: Categories and Foods Grid (60% width) -->
     <div class="w-full lg:w-3/5 flex flex-col h-full overflow-hidden bg-white border border-slate-200 rounded-3xl p-6 shadow-md">
+      <!-- Menu Type Selector (Oshxona / Bar) -->
+      <div class="flex items-center space-x-2 mb-4 bg-slate-100 p-1.5 rounded-2xl shrink-0 w-fit">
+        <button 
+          @click="setMenuType('kitchen')"
+          class="px-5 py-2 rounded-xl text-xs font-bold transition duration-200"
+          :class="selectedMenuType === 'kitchen' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+        >
+          🍲 Taomlar
+        </button>
+        <button 
+          @click="setMenuType('bar')"
+          class="px-5 py-2 rounded-xl text-xs font-bold transition duration-200"
+          :class="selectedMenuType === 'bar' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+        >
+          🍷 Bar
+        </button>
+      </div>
+
       <!-- Category Tabs -->
       <div class="flex items-center space-x-2 overflow-x-auto pb-3 shrink-0 scrollbar-thin">
         <button 
@@ -13,7 +31,7 @@
           {{ cashierStore.t('barchasi') }}
         </button>
         <button 
-          v-for="cat in categories" 
+          v-for="cat in availableCategories" 
           :key="cat.id"
           @click="selectedCategory = cat.id"
           class="px-4 py-2 rounded-xl text-xs font-bold transition duration-200 shrink-0 border"
@@ -448,6 +466,7 @@ const customers = ref([]);
 const allTablesList = ref([]);
 const loading = ref(false);
 const selectedCategory = ref('all');
+const selectedMenuType = ref('kitchen'); // 'kitchen' or 'bar'
 const selectedTableId = ref(null);
 
 // Checkout modal states
@@ -477,11 +496,28 @@ const taxRate = computed(() => settingStore.settings.tax_rate || 12);
 const serviceChargeRate = computed(() => settingStore.settings.service_charge_rate || 10);
 
 // Computed stats
+const setMenuType = (type) => {
+  selectedMenuType.value = type;
+  selectedCategory.value = 'all'; // reset category on switch
+};
+
+const availableCategories = computed(() => {
+  const relevantFoods = foods.value.filter(f => 
+    selectedMenuType.value === 'kitchen' ? !f.is_bar_item : f.is_bar_item
+  );
+  const categoryIds = new Set(relevantFoods.map(f => f.category_id));
+  return categories.value.filter(c => categoryIds.has(c.id));
+});
+
 const filteredFoods = computed(() => {
+  const typeFiltered = foods.value.filter(f => 
+    selectedMenuType.value === 'kitchen' ? !f.is_bar_item : f.is_bar_item
+  );
+
   if (selectedCategory.value === 'all') {
-    return foods.value;
+    return typeFiltered;
   }
-  return foods.value.filter(f => f.category_id === selectedCategory.value);
+  return typeFiltered.filter(f => f.category_id === selectedCategory.value);
 });
 
 const totals = computed(() => {

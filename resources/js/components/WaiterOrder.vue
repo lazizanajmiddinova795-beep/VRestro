@@ -43,6 +43,24 @@
       />
     </div>
 
+    <!-- Horizontal Menu Type Switcher (Oshxona / Bar) -->
+    <div class="flex space-x-2 overflow-x-auto pb-1 scrollbar-none w-full">
+      <button 
+        @click="setMenuType('kitchen')"
+        class="w-1/2 py-2.5 rounded-xl text-xs font-black whitespace-nowrap transition duration-200"
+        :class="selectedMenuType === 'kitchen' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-200/70 text-slate-700 border border-slate-300'"
+      >
+        🍲 {{ t('kitchen') || 'Taomlar' }}
+      </button>
+      <button 
+        @click="setMenuType('bar')"
+        class="w-1/2 py-2.5 rounded-xl text-xs font-black whitespace-nowrap transition duration-200"
+        :class="selectedMenuType === 'bar' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-200/70 text-slate-700 border border-slate-300'"
+      >
+        🍷 {{ t('bar') || 'Bar' }}
+      </button>
+    </div>
+
     <!-- Horizontal Category Switcher -->
     <div class="flex space-x-2 overflow-x-auto pb-2 scrollbar-none">
       <button 
@@ -50,17 +68,17 @@
         class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition duration-200"
         :class="!selectedCategoryId ? 'bg-indigo-600 text-white font-black shadow-md' : 'bg-slate-200/70 text-slate-700 font-bold border border-slate-300'"
       >
-        🍲 {{ t('all_cats') }}
+        🌟 Barchasi
       </button>
 
       <button 
-        v-for="cat in menuStore.categories" 
+        v-for="cat in availableCategories" 
         :key="cat.id"
         @click="selectCategory(cat.id)"
         class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition duration-200"
         :class="selectedCategoryId === cat.id ? 'bg-indigo-600 text-white font-black shadow-md' : 'bg-slate-200/70 text-slate-700 font-bold border border-slate-300'"
       >
-        🍽️ {{ translateCategory(cat.name) }}
+        📌 {{ translateCategory(cat.name) }}
       </button>
     </div>
 
@@ -249,6 +267,7 @@ const router = useRouter();
 // State properties
 const searchQuery = ref('');
 const selectedCategoryId = ref(null);
+const selectedMenuType = ref('kitchen'); // 'kitchen' or 'bar'
 const showCartDrawer = ref(false);
 const showTableDropdown = ref(false);
 const submitting = ref(false);
@@ -415,10 +434,29 @@ const selectCategory = (categoryId) => {
   menuStore.fetchFoods();
 };
 
+const setMenuType = (type) => {
+  selectedMenuType.value = type;
+  selectedCategoryId.value = null; // reset category on switch
+};
+
+const availableCategories = computed(() => {
+  const relevantFoods = menuStore.foods.filter(f => 
+    selectedMenuType.value === 'kitchen' ? !f.is_bar_item : f.is_bar_item
+  );
+  const categoryIds = new Set(relevantFoods.map(f => f.category_id));
+  return menuStore.categories.filter(c => categoryIds.has(c.id));
+});
+
 const filteredFoods = computed(() => {
+  let list = menuStore.foods.filter(f => 
+    selectedMenuType.value === 'kitchen' ? !f.is_bar_item : f.is_bar_item
+  );
+  if (selectedCategoryId.value) {
+    list = list.filter(f => f.category_id === selectedCategoryId.value);
+  }
   const query = searchQuery.value.toLowerCase().trim();
-  if (!query) return menuStore.foods;
-  return menuStore.foods.filter(f => f.name.toLowerCase().includes(query));
+  if (!query) return list;
+  return list.filter(f => f.name.toLowerCase().includes(query));
 });
 
 const triggerAddFlow = (food) => {
