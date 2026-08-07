@@ -57,13 +57,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 
 const props = defineProps({
   order: {
     type: Object,
     default: null
   }
+});
+
+watch(() => props.order, (newVal) => {
+  if (newVal) {
+    document.body.classList.add('printing-kot');
+  } else {
+    document.body.classList.remove('printing-kot');
+  }
+}, { immediate: true });
+
+onUnmounted(() => {
+  document.body.classList.remove('printing-kot');
 });
 
 const formatDate = (dateString) => {
@@ -83,12 +95,16 @@ const formatDate = (dateString) => {
 }
 
 @media print {
-  /* Hide all direct children of body except our container */
-  body > *:not(#print-kot-container) {
+  /* Hide all direct children of body except our container, ONLY when printing-kot class is present */
+  body.printing-kot > *:not(#print-kot-container) {
     display: none !important;
   }
   
   /* Show only our print container */
+  #print-kot-container, #print-kot-container * {
+    visibility: visible !important;
+  }
+  
   #print-kot-container {
     display: block !important;
     position: absolute;
