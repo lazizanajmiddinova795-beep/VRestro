@@ -89,7 +89,8 @@ class BranchService
     public function switchBranch(User $user, int $branchId): Branch
     {
         $branch = Branch::findOrFail($branchId);
-        $user->update(['branch_id' => $branch->id]);
+        // Do not update the user's branch_id in the database for SuperAdmin.
+        // The frontend will track it and pass it via X-Branch-Id header.
         return $branch;
     }
 

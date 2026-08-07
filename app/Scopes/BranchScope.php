@@ -24,12 +24,12 @@ class BranchScope implements Scope
         }
 
         // SuperAdmin:
-        // - branch_id = null → global view (sees everything)
-        // - branch_id != null → sees only that branch + global records
+        // Reads from X-Branch-Id header. If not present, shows global (all).
         if ($user->is_superadmin) {
-            if ($user->branch_id) {
-                $builder->where(function ($q) use ($user, $model) {
-                    $q->where($model->getTable() . '.branch_id', $user->branch_id)
+            $headerBranchId = request()->header('X-Branch-Id');
+            if ($headerBranchId) {
+                $builder->where(function ($q) use ($headerBranchId, $model) {
+                    $q->where($model->getTable() . '.branch_id', $headerBranchId)
                       ->orWhereNull($model->getTable() . '.branch_id');
                 });
             }

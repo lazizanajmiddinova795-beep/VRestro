@@ -6,7 +6,7 @@ export const useBranchStore = defineStore('branch', () => {
     const authStore = useAuthStore();
 
     const branches = ref([]);
-    const activeBranch = ref(null);
+    const activeBranch = ref(JSON.parse(localStorage.getItem('vrestro_active_branch') || 'null'));
     const loading = ref(false);
     const error = ref('');
 
@@ -113,6 +113,7 @@ export const useBranchStore = defineStore('branch', () => {
             try { data = JSON.parse(text); } catch { throw new Error('Server noto\'g\'ri javob qaytardi.'); }
             if (!response.ok) throw new Error(data.message || 'Filalga o\'tishda xatolik.');
             activeBranch.value = data.branch;
+            localStorage.setItem('vrestro_active_branch', JSON.stringify(data.branch));
             return data;
         } catch (err) {
             error.value = err.message;
@@ -131,6 +132,7 @@ export const useBranchStore = defineStore('branch', () => {
             });
             if (response.ok) {
                 activeBranch.value = null;
+                localStorage.removeItem('vrestro_active_branch');
             }
         } catch (err) {
             error.value = err.message;
