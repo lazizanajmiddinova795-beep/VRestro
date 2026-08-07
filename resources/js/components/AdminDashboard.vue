@@ -5,14 +5,7 @@
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <router-link to="/" class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
-              <span class="text-white font-black text-xl tracking-tighter">FF</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 tracking-wider">
-                FoodFlow
-              </span>
-            </div>
+            <img src="/foodflow_logo.png" alt="FoodFlow Logo" class="h-10 object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300" />
           </router-link>
         </div>
         <div class="flex items-center space-x-4">

@@ -8,12 +8,7 @@
       <!-- Logo header -->
       <div class="text-center mb-8">
         <router-link to="/" class="inline-flex items-center space-x-3 group">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
-            <span class="text-white font-black text-xl tracking-tighter">FF</span>
-          </div>
-          <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 tracking-wider">
-            FoodFlow
-          </span>
+          <img src="/foodflow_logo.png" alt="FoodFlow Logo" class="h-12 md:h-16 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" />
         </router-link>
         <p class="text-slate-500 text-sm mt-2">Tizimga kirish va autentifikatsiya</p>
       </div>
