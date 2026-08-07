@@ -54,6 +54,8 @@ class MenuController extends Controller
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'], // Max 5MB
             'sizes' => ['nullable'],
             'ingredients' => ['nullable'],
+            'barcode' => ['nullable', 'string', 'max:255', 'unique:foods,barcode'],
+            'is_bar_item' => ['nullable', 'boolean'],
         ]);
 
         $imageFile = $request->file('image');
@@ -61,6 +63,9 @@ class MenuController extends Controller
         $itemData = collect($data)->except(['image', 'ingredients'])->toArray();
         if ($request->has('is_available')) {
             $itemData['is_available'] = filter_var($data['is_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if ($request->has('is_bar_item')) {
+            $itemData['is_bar_item'] = filter_var($data['is_bar_item'], FILTER_VALIDATE_BOOLEAN);
         }
 
         if ($request->has('sizes')) {
@@ -119,6 +124,8 @@ class MenuController extends Controller
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'sizes' => ['nullable'],
             'ingredients' => ['nullable'],
+            'barcode' => ['nullable', 'string', 'max:255', 'unique:foods,barcode,' . $id],
+            'is_bar_item' => ['nullable', 'boolean'],
         ]);
 
         $imageFile = $request->file('image');
@@ -126,6 +133,9 @@ class MenuController extends Controller
         $itemData = collect($data)->except(['image', 'ingredients'])->toArray();
         if ($request->has('is_available')) {
             $itemData['is_available'] = filter_var($data['is_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if ($request->has('is_bar_item')) {
+            $itemData['is_bar_item'] = filter_var($data['is_bar_item'], FILTER_VALIDATE_BOOLEAN);
         }
 
         if ($request->has('sizes')) {
@@ -191,5 +201,22 @@ class MenuController extends Controller
         return response()->json([
             'message' => 'Taom muvaffaqiyatli o\'chirildi.'
         ]);
+    }
+
+    /**
+     * Get food by barcode
+     *
+     * @param string $barcode
+     * @return JsonResponse
+     */
+    public function getByBarcode(string $barcode): JsonResponse
+    {
+        $food = \App\Models\Food::where('barcode', $barcode)->first();
+
+        if (!$food) {
+            return response()->json(['message' => 'Shtrix-kod bo\'yicha mahsulot topilmadi.'], 404);
+        }
+
+        return response()->json($food);
     }
 }

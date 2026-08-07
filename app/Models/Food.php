@@ -25,11 +25,14 @@ class Food extends Model
         'category_id',
         'is_available',
         'sizes',
+        'barcode',
+        'is_bar_item',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'is_available' => 'boolean',
+        'is_bar_item' => 'boolean',
         'category_id' => 'integer',
         'sizes' => 'array',
     ];

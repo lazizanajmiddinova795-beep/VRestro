@@ -395,7 +395,7 @@
 <script setup>
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
-import { ref, onMounted, computed, watch, markRaw } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch, markRaw } from 'vue';
 import { Plus, Trash2, Receipt, X, CheckCircle } from 'lucide-vue-next';
 import { useCashierStore } from '@/stores/cashier';
 import { useAuthStore } from '@/stores/auth';
@@ -705,7 +705,62 @@ onMounted(async () => {
   }
 
   settingStore.fetchSettings();
+
+  window.addEventListener('keydown', handleGlobalKeydown);
 });
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown);
+});
+
+// --- Barcode Scanner Logic ---
+let barcodeBuffer = '';
+let barcodeTimeout = null;
+
+const handleGlobalKeydown = (e) => {
+  // Ignore if user is typing in an input field (except if it's the body)
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+    return;
+  }
+
+  if (e.key === 'Enter') {
+    if (barcodeBuffer.length > 2) {
+      processBarcodeScan(barcodeBuffer);
+    }
+    barcodeBuffer = '';
+    return;
+  }
+
+  if (e.key.length === 1) { // Normal printable character
+    barcodeBuffer += e.key;
+    clearTimeout(barcodeTimeout);
+    barcodeTimeout = setTimeout(() => {
+      barcodeBuffer = ''; // reset if typing is too slow (human typing)
+    }, 150);
+  }
+};
+
+const processBarcodeScan = async (barcode) => {
+  try {
+    const res = await fetch(`/api/menu/foods/barcode/${barcode}`, {
+      headers: { 'Authorization': `Bearer ${authStore.token}`, 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const food = await res.json();
+      if (!food.is_available) {
+        alert('Bu mahsulot (shtrix-kod) hozirda mavjud emas!');
+        return;
+      }
+      
+      // Add to cart with quantity 1
+      cashierStore.addToCart(food, null, food.price, '', 1);
+    } else {
+      console.warn('Shtrix-kod bo\'yicha mahsulot topilmadi:', barcode);
+    }
+  } catch (err) {
+    console.error('Barcode processing error:', err);
+  }
+};
 </script>
 
 <style>

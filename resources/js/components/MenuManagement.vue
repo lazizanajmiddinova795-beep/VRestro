@@ -145,9 +145,18 @@
                   <h3 class="text-sm font-bold text-slate-900 leading-snug truncate" :title="food.name">
                     {{ food.name }}
                   </h3>
-                  <span class="shrink-0 text-3xs bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-full font-medium">
-                    {{ food.category?.name }}
-                  </span>
+                  <div class="shrink-0 flex items-center space-x-1">
+                    <span v-if="food.is_bar_item" class="text-3xs bg-indigo-50 text-indigo-600 border border-indigo-200 px-2 py-0.5 rounded-full font-medium" title="Bar mahsuloti">
+                      🍷 Bar
+                    </span>
+                    <span class="text-3xs bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-full font-medium">
+                      {{ food.category?.name }}
+                    </span>
+                  </div>
+                </div>
+                <div v-if="food.is_bar_item && food.barcode" class="text-3xs text-slate-400 font-mono flex items-center space-x-1">
+                  <Scan class="w-3 h-3" />
+                  <span>{{ food.barcode }}</span>
                 </div>
                 <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
                   {{ food.description || 'Taomga izoh berilmagan.' }}
@@ -294,20 +303,45 @@
             </select>
           </div>
 
-          <div class="space-y-1.5">
-            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Mavjudlik holati</label>
-            <div class="pt-2">
-              <label class="flex items-center space-x-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  v-model="foodForm.is_available"
-                  class="sr-only peer"
-                />
-                <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 relative"></div>
-                <span class="text-xs font-medium text-slate-600">{{ foodForm.is_available ? 'Mavjud' : 'Mavjud emas' }}</span>
-              </label>
+            <div class="space-y-1.5">
+              <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Mavjudlik holati</label>
+              <div class="pt-2">
+                <label class="flex items-center space-x-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    v-model="foodForm.is_available"
+                    class="sr-only peer"
+                  />
+                  <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 relative"></div>
+                  <span class="text-xs font-medium text-slate-600">{{ foodForm.is_available ? 'Mavjud' : 'Mavjud emas' }}</span>
+                </label>
+              </div>
             </div>
-          </div>
+
+            <div class="space-y-1.5">
+              <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Bar mahsulotimi?</label>
+              <div class="pt-2">
+                <label class="flex items-center space-x-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    v-model="foodForm.is_bar_item"
+                    class="sr-only peer"
+                  />
+                  <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:bg-indigo-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 relative"></div>
+                  <span class="text-xs font-medium text-slate-600">{{ foodForm.is_bar_item ? 'Ha (Shtrix-kod o\'qish mumkin)' : 'Yo\'q' }}</span>
+                </label>
+              </div>
+            </div>
+
+            <div v-if="foodForm.is_bar_item" class="space-y-1.5 sm:col-span-2">
+              <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Shtrix-kod (Barcode)</label>
+              <input
+                v-model="foodForm.barcode"
+                type="text"
+                placeholder="Skaner orqali okiting yoki kiriting..."
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
+              />
+            </div>
 
           <div class="space-y-1.5 sm:col-span-2">
             <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Taom haqida (Tavsif)</label>
@@ -492,7 +526,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import {
-  Plus, Edit3, Trash2, Search, X, Loader2, ChefHat, UploadCloud
+  Plus, Edit3, Trash2, Search, X, Loader2, ChefHat, UploadCloud, Scan
 } from 'lucide-vue-next';
 import { useMenuStore } from '@/stores/menu';
 import { useIngredientsStore } from '@/stores/ingredients';
@@ -523,6 +557,8 @@ const foodForm = ref({
   category_id: '',
   description: '',
   is_available: true,
+  is_bar_item: false,
+  barcode: '',
   sizes: []
 });
 const recipeRows = ref([]);
@@ -634,6 +670,8 @@ const openFoodModal = async (food = null) => {
     category_id: food.category_id,
     description: food.description || '',
     is_available: food.is_available,
+    is_bar_item: food.is_bar_item || false,
+    barcode: food.barcode || '',
     sizes: food.sizes ? JSON.parse(JSON.stringify(food.sizes)) : []
   } : {
     name: '',
@@ -641,6 +679,8 @@ const openFoodModal = async (food = null) => {
     category_id: menuStore.selectedCategoryId || '',
     description: '',
     is_available: true,
+    is_bar_item: false,
+    barcode: '',
     sizes: []
   };
 
@@ -682,6 +722,10 @@ const submitFoodForm = async () => {
   formData.append('category_id', foodForm.value.category_id);
   formData.append('description', foodForm.value.description);
   formData.append('is_available', foodForm.value.is_available ? '1' : '0');
+  formData.append('is_bar_item', foodForm.value.is_bar_item ? '1' : '0');
+  if (foodForm.value.is_bar_item && foodForm.value.barcode) {
+    formData.append('barcode', foodForm.value.barcode);
+  }
 
   if (imageFile.value) {
     formData.append('image', imageFile.value);

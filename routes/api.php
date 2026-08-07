@@ -65,6 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Foods (Dishes)
     Route::get('/menu/foods', [MenuController::class, 'index']);
+    Route::get('/menu/foods/barcode/{barcode}', [MenuController::class, 'getByBarcode']);
     Route::post('/menu/foods', [MenuController::class, 'store']);
     Route::get('/menu/foods/{id}', [MenuController::class, 'show']);
     Route::put('/menu/foods/{id}', [MenuController::class, 'update']); // Using PUT to allow image upload on update with _method=PUT

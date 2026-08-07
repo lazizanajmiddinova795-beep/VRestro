@@ -227,19 +227,23 @@
 </template>
 
 <script setup>
-import { useSettingsStore } from '@/stores/settings';
-const settingsStore = useSettingsStore();
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { 
+  ChevronLeft, Search, Plus, Minus, Trash2, 
+  X, CheckCircle, ChevronDown, ListFilter,
+  UtensilsCrossed, ChefHat, ShoppingBag, ChevronUp, Loader2, Send
+} from 'lucide-vue-next';
 import { useMenuStore } from '@/stores/menu';
 import { useWaiterStore } from '@/stores/waiter';
 import { useWaiterCartStore } from '@/stores/waiterCart';
-import { ArrowLeft, Search, ChefHat, ShoppingBag, ChevronUp, ChevronDown, X, Loader2, Send } from 'lucide-vue-next';
+import { useSettingsStore } from '@/stores/settings';
 import ProductOptionsSheet from './ProductOptionsSheet.vue';
 
 const menuStore = useMenuStore();
 const waiterStore = useWaiterStore();
 const waiterCartStore = useWaiterCartStore();
+const settingsStore = useSettingsStore();
 const router = useRouter();
 
 // State properties
@@ -345,7 +349,65 @@ onMounted(async () => {
     await menuStore.fetchCategories();
   }
   await menuStore.fetchFoods();
+
+  window.addEventListener('keydown', handleGlobalKeydown);
 });
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown);
+});
+
+// --- Barcode Scanner Logic ---
+let barcodeBuffer = '';
+let barcodeTimeout = null;
+
+const handleGlobalKeydown = (e) => {
+  // Ignore if user is typing in an input field (except if it's the body)
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+    return;
+  }
+
+  if (e.key === 'Enter') {
+    if (barcodeBuffer.length > 2) {
+      processBarcodeScan(barcodeBuffer);
+    }
+    barcodeBuffer = '';
+    return;
+  }
+
+  if (e.key.length === 1) { // Normal printable character
+    barcodeBuffer += e.key;
+    clearTimeout(barcodeTimeout);
+    barcodeTimeout = setTimeout(() => {
+      barcodeBuffer = ''; // reset if typing is too slow (human typing)
+    }, 150);
+  }
+};
+
+const processBarcodeScan = async (barcode) => {
+  try {
+    const res = await fetch(`/api/menu/foods/barcode/${barcode}`, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('vrestro_token')}`, 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const food = await res.json();
+      if (!food.is_available) {
+        waiterStore.triggerToast(t('item_unavailable_alert') || 'Bu mahsulot hozirda mavjud emas!');
+        return;
+      }
+      
+      // Add to cart with quantity 1
+      waiterCartStore.addToCart(tableId.value, food, null, food.price, '', 1);
+      waiterStore.triggerToast(`Skanerlandi: ${food.name}`);
+    } else {
+      console.warn('Shtrix-kod bo\'yicha mahsulot topilmadi:', barcode);
+      waiterStore.triggerToast('Shtrix-kod bo\'yicha mahsulot topilmadi');
+    }
+  } catch (err) {
+    console.error('Barcode processing error:', err);
+  }
+};
+
 
 const selectCategory = (categoryId) => {
   selectedCategoryId.value = categoryId;
