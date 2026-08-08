@@ -277,7 +277,7 @@
 
             <!-- QR code dynamic image -->
             <div class="flex flex-col items-center justify-center my-3.5 space-y-1">
-              <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent((settingStore.branding.name || 'FoodFlow') + ' - ' + (settingStore.branding.address || 'Toshkent, O\\'zbekiston'))}`" class="w-20 h-20 border border-slate-200 p-1 bg-white" alt="QR Code" />
+              <img :src="qrCodeUrl" class="w-20 h-20 border border-slate-200 p-1 bg-white" alt="QR Code" />
               <span class="text-[7px] text-slate-500 font-mono tracking-widest uppercase">{{ cashierStore.t('scan_to_verify') }}</span>
             </div>
 
@@ -402,7 +402,7 @@
 
         <!-- QR Code print-only version -->
         <div class="ticket-center" style="margin: 12px 0;">
-          <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent((settingStore.branding.name || 'FoodFlow') + ' - ' + (settingStore.branding.address || 'Toshkent, O\\'zbekiston'))}`" style="width: 2.2cm; height: 2.2cm; display: block; margin: 0 auto;" alt="QR Code" />
+          <img :src="qrCodeUrl" style="width: 2.2cm; height: 2.2cm; display: block; margin: 0 auto;" alt="QR Code" />
           <div style="font-size: 7.5pt; font-family: monospace; margin-top: 4px; text-transform: uppercase;">{{ cashierStore.t('scan_to_verify') }}</div>
         </div>
 
@@ -883,6 +883,12 @@ const modal = ref({
 // Settings defaults
 const taxRate = computed(() => settingStore.settings.tax_rate || 12);
 const serviceChargeRate = computed(() => settingStore.settings.service_charge_rate || 10);
+
+const qrCodeUrl = computed(() => {
+  const name = settingStore.branding?.name || 'FoodFlow';
+  const address = settingStore.branding?.address || "Toshkent, O'zbekiston";
+  return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(name + ' - ' + address)}`;
+});
 
 const selectPayment = (payment) => {
   selectedPayment.value = payment;
