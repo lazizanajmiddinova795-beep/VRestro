@@ -83,7 +83,7 @@
           <div v-else class="space-y-5 animate-fadeIn">
             <!-- PIN Display -->
             <div class="flex justify-center space-x-3 my-4">
-              <div v-for="i in 6" :key="i" class="w-10 h-10 rounded-xl border-2 flex items-center justify-center text-xl font-black transition-all"
+              <div v-for="i in 5" :key="i" class="w-10 h-10 rounded-xl border-2 flex items-center justify-center text-xl font-black transition-all"
                    :class="pinCode.length >= i ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-slate-50'">
                 {{ pinCode.length >= i ? '•' : '' }}
               </div>
@@ -289,10 +289,10 @@ const otpCode = ref('');
 const resendingOtp = ref(false);
 
 const addPin = (num) => {
-  if (pinCode.value.length < 6) {
+  if (pinCode.value.length < 5) {
     pinCode.value += num.toString();
-    if (pinCode.value.length === 4 || pinCode.value.length === 6) {
-      // Auto-submit on 4 or 6 digits
+    if (pinCode.value.length === 5) {
+      // Auto-submit on 5 digits
       handlePinSubmit();
     }
   }
