@@ -1854,9 +1854,11 @@ export const useSettingsStore = defineStore('settings', () => {
                     language.value = data.system_language;
                     localStorage.setItem('vrestro_language', data.system_language);
                 }
-                if (data.restaurant_name) {
-                    branding.value.name = data.restaurant_name;
-                }
+                if (data.restaurant_name) branding.value.name = data.restaurant_name;
+                if (data.restaurant_phone) branding.value.phone = data.restaurant_phone;
+                if (data.restaurant_address) branding.value.address = data.restaurant_address;
+                if (data.restaurant_hours) branding.value.working_hours = data.restaurant_hours;
+                if (data.restaurant_logo) branding.value.logo_url = data.restaurant_logo;
             }
         } catch (e) {
             console.error('Settings fetch error:', e);

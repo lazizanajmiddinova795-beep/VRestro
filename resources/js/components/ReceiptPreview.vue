@@ -158,9 +158,9 @@
 
             <!-- Receipt Header -->
             <div class="text-center space-y-1 mb-3">
-              <h4 class="text-xs font-black uppercase tracking-wider">{{ settingStore.settings.restaurant_name || 'FoodFlow' }}</h4>
-              <p class="text-[9px] text-slate-650 leading-tight">{{ settingStore.settings.restaurant_address || 'Toshkent, O\'zbekiston' }}</p>
-              <p class="text-[9px] text-slate-650">Tel: {{ settingStore.settings.restaurant_phone || '+998 90 123 45 67' }}</p>
+              <h4 class="text-xs font-black uppercase tracking-wider">{{ settingStore.branding.name || 'FoodFlow' }}</h4>
+              <p class="text-[9px] text-slate-650 leading-tight">{{ settingStore.branding.address || 'Toshkent, O\'zbekiston' }}</p>
+              <p class="text-[9px] text-slate-650">Tel: {{ settingStore.branding.phone || '+998 90 123 45 67' }}</p>
             </div>
 
             <!-- Double separator line -->
@@ -275,12 +275,9 @@
               </div>
             </div>
 
-            <!-- QR code vector visualization -->
+            <!-- QR code dynamic image -->
             <div class="flex flex-col items-center justify-center my-3.5 space-y-1">
-              <svg class="w-20 h-20 text-slate-900 border border-slate-200 p-1 bg-white" viewBox="0 0 29 29" shape-rendering="crispEdges">
-                <path fill="currentColor" d="M0 0h7v7H0zm22 0h7v7h-7zM0 22h7v7H0zM2 2h3v3H2zm20 0h3v3h-3zm-20 20h3v3H2z"/>
-                <path fill="currentColor" d="M9 1h1v1H9zm2 0h2v1h-2zm4 0h1v2h-1zm3 0h1v1h-1zm-6 2h1v1h-1zm3 0h2v1h-2zm-6 2h2v1H9zm3 0h1v1h-1zm4 0h1v1h-1zm1 1h1v1h-1zm-7 2h1v1H9zm6 0h2v1h-2zm2 1h1v1h-1zm-7 2h2v1H9zm6 0h1v1h-1zm3 0h1v2h-1zm-8 2h1v1h-1zm3 0h1v2h-1zm4 0h1v1h-1zm-9 2h1v1H8zm2 0h1v1h-1zm3 0h2v1h-2zm4 0h1v1h-1zm-6 2h1v1zm3 0h2v1h-2zm4 0h1v1h-1zM9 13h1v1H9zm2 0h1v1h-1zm4 0h2v1h-2zm3 0h1v1h-1z"/>
-              </svg>
+              <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent((settingStore.branding.name || 'FoodFlow') + ' - ' + (settingStore.branding.address || 'Toshkent, O\\'zbekiston'))}`" class="w-20 h-20 border border-slate-200 p-1 bg-white" alt="QR Code" />
               <span class="text-[7px] text-slate-500 font-mono tracking-widest uppercase">{{ cashierStore.t('scan_to_verify') }}</span>
             </div>
 
@@ -313,10 +310,10 @@
 
     <!-- ACTUAL PRINT ONLY CONTENT (Hidden on screen, shown when printing) -->
     <div id="physical-thermal-receipt" class="print-only" v-if="selectedPayment && printMode !== 'kot'">
-      <div class="thermal-ticket">
-        <div class="ticket-center font-bold font-large">{{ settingStore.settings.restaurant_name || 'FoodFlow' }}</div>
-        <div class="ticket-center">{{ settingStore.settings.restaurant_address || 'Toshkent, O\'zbekiston' }}</div>
-        <div class="ticket-center">Tel: {{ settingStore.settings.restaurant_phone || '+998 90 123 45 67' }}</div>
+      <div class="ticket-ticket">
+        <div class="ticket-center font-bold font-large">{{ settingStore.branding.name || 'FoodFlow' }}</div>
+        <div class="ticket-center">{{ settingStore.branding.address || 'Toshkent, O\'zbekiston' }}</div>
+        <div class="ticket-center">Tel: {{ settingStore.branding.phone || '+998 90 123 45 67' }}</div>
         
         <div class="ticket-divider"></div>
 
@@ -405,10 +402,7 @@
 
         <!-- QR Code print-only version -->
         <div class="ticket-center" style="margin: 12px 0;">
-          <svg viewBox="0 0 29 29" style="width: 2.2cm; height: 2.2cm; display: block; margin: 0 auto;" shape-rendering="crispEdges">
-            <path fill="#000000" d="M0 0h7v7H0zm22 0h7v7h-7zM0 22h7v7H0zM2 2h3v3H2zm20 0h3v3h-3zm-20 20h3v3H2z"/>
-            <path fill="#000000" d="M9 1h1v1H9zm2 0h2v1h-2zm4 0h1v2h-1zm3 0h1v1h-1zm-6 2h1v1h-1zm3 0h2v1h-2zm-6 2h2v1H9zm3 0h1v1h-1zm4 0h1v1h-1zm1 1h1v1h-1zm-7 2h1v1H9zm6 0h2v1h-2zm2 1h1v1h-1zm-7 2h2v1H9zm6 0h1v1h-1zm3 0h1v2h-1zm-8 2h1v1h-1zm3 0h1v2h-1zm4 0h1v1h-1zm-9 2h1v1H8zm2 0h1v1h-1zm3 0h2v1h-2zm4 0h1v1h-1zm-6 2h1v1zm3 0h2v1h-2zm4 0h1v1h-1zM9 13h1v1H9zm2 0h1v1h-1zm4 0h2v1h-2zm3 0h1v1h-1z"/>
-          </svg>
+          <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent((settingStore.branding.name || 'FoodFlow') + ' - ' + (settingStore.branding.address || 'Toshkent, O\\'zbekiston'))}`" style="width: 2.2cm; height: 2.2cm; display: block; margin: 0 auto;" alt="QR Code" />
           <div style="font-size: 7.5pt; font-family: monospace; margin-top: 4px; text-transform: uppercase;">{{ cashierStore.t('scan_to_verify') }}</div>
         </div>
 
