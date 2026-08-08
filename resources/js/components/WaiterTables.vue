@@ -30,16 +30,16 @@
     </div>
 
     <!-- Tables Matrix -->
-    <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-3 pb-24">
+    <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 pb-24">
       <div 
         v-for="table in waiterStore.tables" 
         :key="table.id"
         @click="handleTableClick(table)"
-        class="relative overflow-hidden rounded-2xl p-4 flex flex-col justify-center items-center min-h-[120px] aspect-[4/3] border transition-all duration-300 cursor-pointer text-center shadow-sm hover:shadow-md"
+        class="relative overflow-hidden rounded-xl p-2 flex flex-col justify-center items-center min-h-[90px] aspect-[4/3] border transition-all duration-300 cursor-pointer text-center shadow-sm hover:shadow-md"
         :class="tableCardClasses(table)"
       >
         <!-- Table Number -->
-        <span class="text-3xl font-black mb-1" :class="[table.status === 'occupied_by_me' ? 'text-indigo-950' : 'text-slate-900']">
+        <span class="text-2xl font-black mb-0.5" :class="[table.status === 'occupied_by_me' ? 'text-indigo-950' : 'text-slate-900']">
           {{ table.table_number }}
         </span>
 
@@ -49,7 +49,7 @@
         </span>
 
         <!-- Status Label -->
-        <span class="text-xs font-black tracking-wider uppercase" :class="statusTextClasses(table)">
+        <span class="text-[10px] font-black tracking-wider uppercase" :class="statusTextClasses(table)">
           {{ statusLabel(table) }}
         </span>
       </div>
@@ -155,12 +155,12 @@ const emptyTablesCount = computed(() => {
 
 const tableCardClasses = (table) => {
   if (table.status === 'empty') {
-    return 'bg-white border-2 border-emerald-500 rounded-2xl p-5 text-slate-900 font-black shadow-sm text-center';
+    return 'bg-white border-2 border-emerald-500 rounded-xl p-2 text-slate-900 font-black shadow-sm text-center';
   } else if (table.status === 'occupied_by_me') {
-    return 'bg-indigo-50 border-2 border-indigo-500 rounded-2xl p-5 text-indigo-950 font-black shadow-sm text-center';
+    return 'bg-indigo-50 border-2 border-indigo-500 rounded-xl p-2 text-indigo-950 font-black shadow-sm text-center';
   } else {
     // occupied_by_other
-    return 'bg-slate-100 border-2 border-slate-300 opacity-60 text-slate-500 rounded-2xl p-5 text-center';
+    return 'bg-slate-100 border-2 border-slate-300 opacity-60 text-slate-500 rounded-xl p-2 text-center';
   }
 };
 
