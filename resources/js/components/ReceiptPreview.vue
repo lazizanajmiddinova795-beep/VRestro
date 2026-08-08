@@ -158,6 +158,7 @@
 
             <!-- Receipt Header -->
             <div class="text-center space-y-1 mb-3">
+              <img :src="'/foodflow_logo.png'" class="mx-auto w-10 h-10 mb-1" style="filter: grayscale(100%);" alt="Logo" />
               <h4 class="text-xs font-black uppercase tracking-wider">{{ settingStore.branding.name || 'FoodFlow' }}</h4>
               <p class="text-[9px] text-slate-650 leading-tight">{{ settingStore.branding.address || 'Toshkent, O\'zbekiston' }}</p>
               <p class="text-[9px] text-slate-650">Tel: {{ settingStore.branding.phone || '+998 90 123 45 67' }}</p>
@@ -311,6 +312,9 @@
     <!-- ACTUAL PRINT ONLY CONTENT (Hidden on screen, shown when printing) -->
     <div id="physical-thermal-receipt" class="print-only" v-if="selectedPayment && printMode !== 'kot'">
       <div class="ticket-ticket">
+        <div class="ticket-center" style="margin-bottom: 5px;">
+           <img :src="'/foodflow_logo.png'" style="width: 48px; height: 48px; display: block; margin: 0 auto; filter: grayscale(100%);" alt="Logo" />
+        </div>
         <div class="ticket-center font-bold font-large">{{ settingStore.branding.name || 'FoodFlow' }}</div>
         <div class="ticket-center">{{ settingStore.branding.address || 'Toshkent, O\'zbekiston' }}</div>
         <div class="ticket-center">Tel: {{ settingStore.branding.phone || '+998 90 123 45 67' }}</div>

@@ -3,6 +3,10 @@
     <!-- Hidden element that only shows up during printing -->
     <div v-if="order" id="print-kot-container" class="print-only thermal-ticket p-4 bg-white text-black">
       <div class="ticket-center mb-4">
+        <div class="ticket-center" style="margin-bottom: 5px;">
+           <img :src="'/foodflow_logo.png'" style="width: 48px; height: 48px; display: block; margin: 0 auto; filter: grayscale(100%);" alt="Logo" />
+        </div>
+        <div class="font-bold text-lg mb-1">FoodFlow</div>
         <h2 class="text-xl font-bold uppercase tracking-wider mb-1">Buyurtma Cheki</h2>
         <div class="text-xs uppercase font-bold bg-gray-200 py-1 px-2 inline-block rounded">
           KOT (Kitchen Order Ticket)
