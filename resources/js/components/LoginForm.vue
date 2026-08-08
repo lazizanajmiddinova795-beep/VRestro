@@ -22,21 +22,7 @@
             <p class="text-xs text-slate-500">Davom etish uchun login va parolingizni yoki PIN kodni kiriting</p>
           </div>
 
-          <!-- Tabs -->
-          <div class="flex p-1 space-x-1 bg-slate-100/80 rounded-xl">
-            <button
-              @click="loginMethod = 'login'"
-              :class="['w-1/2 py-2 text-xs font-bold rounded-lg transition-all', loginMethod === 'login' ? 'bg-white text-indigo-600 shadow' : 'text-slate-500 hover:text-slate-700']"
-            >
-              Login/Parol
-            </button>
-            <button
-              @click="loginMethod = 'pin'"
-              :class="['w-1/2 py-2 text-xs font-bold rounded-lg transition-all', loginMethod === 'pin' ? 'bg-white text-indigo-600 shadow' : 'text-slate-500 hover:text-slate-700']"
-            >
-              PIN Kod
-            </button>
-          </div>
+
 
           <form v-if="loginMethod === 'login'" @submit.prevent="handleCredentialsSubmit" class="space-y-5 animate-fadeIn">
             <!-- Login Field -->
@@ -134,10 +120,20 @@
             </button>
           </div>
 
-          <div class="text-center pt-2">
-            <router-link to="/" class="text-xs text-indigo-600 hover:text-indigo-700 font-medium transition duration-200">
-              Bosh sahifaga qaytish
-            </router-link>
+          <div class="text-center pt-2 space-y-4">
+            <div>
+              <button 
+                @click="loginMethod = loginMethod === 'pin' ? 'login' : 'pin'" 
+                class="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors underline underline-offset-4 decoration-slate-300 hover:decoration-indigo-300"
+              >
+                {{ loginMethod === 'pin' ? 'Login va parol orqali kirish' : 'PIN kod orqali kirish' }}
+              </button>
+            </div>
+            <div class="block">
+              <router-link to="/" class="text-xs text-slate-400 hover:text-indigo-600 font-medium transition duration-200">
+                Bosh sahifaga qaytish
+              </router-link>
+            </div>
           </div>
 
           <!-- App Download Buttons -->
@@ -281,7 +277,7 @@ const settingsStore = useSettingsStore();
 const router = useRouter();
 
 // State
-const loginMethod = ref('login'); // 'login' or 'pin'
+const loginMethod = ref('pin'); // 'login' or 'pin'
 const login = ref('');
 const password = ref('');
 const pinCode = ref('');
