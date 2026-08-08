@@ -222,25 +222,11 @@ const getModalIconColor = (type) => {
 // Interaction Handler
 const handleTableClick = (table) => {
   if (table.status === 'occupied' || table.status === 'waiting_checkout') {
-    console.log(`Active Order ID triggered: ${table.order_id}`);
-    
-    // Simulate redirection alert to Invoice/Receipt history
-    modal.value = {
-      show: true,
-      type: 'success',
-      title: 'To\'lov oynasiga yo\'naltirish',
-      message: `Ushbu stolda faol buyurtma mavjud (Order ID: ${table.order_id}). Cheklar tarixi bo'limiga o'tib to'lov qilishingiz mumkin.`,
-      icon: markRaw(Play)
-    };
+    // Navigate to receipts/payments for this table (you can pass the order ID if needed)
+    router.push({ path: '/cashier/receipts' });
   } else {
-    // Show empty or reserved modal info
-    modal.value = {
-      show: true,
-      type: 'info',
-      title: 'Ma\'lumot',
-      message: `Ushbu stolda (${table.table_number}) faol buyurtma mavjud emas. Yangi buyurtma yaratish uchun Tezkor Buyurtma bo'limidan foydalanishingiz mumkin.`,
-      icon: markRaw(HelpCircle)
-    };
+    // Navigate directly to the Cashier Order page with this table pre-selected
+    router.push({ path: '/cashier/order', query: { table_id: table.id } });
   }
 };
 

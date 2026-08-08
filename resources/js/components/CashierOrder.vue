@@ -418,11 +418,16 @@ import { Plus, Trash2, Receipt, X, CheckCircle } from 'lucide-vue-next';
 import { useCashierStore } from '@/stores/cashier';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingStore } from '@/stores/settings';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import ProductOptionsSheet from './ProductOptionsSheet.vue';
 
 const activeCustomFood = ref(null);
 const editingCartItem = ref(null);
+const cashierStore = useCashierStore();
+const authStore = useAuthStore();
+const settingStore = useSettingStore();
+const router = useRouter();
+const route = useRoute();
 
 const triggerAddFlow = (food) => {
   editingCartItem.value = null;
@@ -701,6 +706,12 @@ const closeModal = () => {
 
 onMounted(async () => {
   loading.value = true;
+  
+  // Set selectedTableId from query param if available
+  if (route.query.table_id) {
+    selectedTableId.value = parseInt(route.query.table_id, 10);
+  }
+  
   // Load categories
   try {
     const res = await fetch('/api/menu/categories', {
