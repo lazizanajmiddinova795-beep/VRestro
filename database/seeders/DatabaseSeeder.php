@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
     {
         // Create the first branch
         $branch = \App\Models\Branch::firstOrCreate(
-            ['name' => 'VRestro Asosiy filial'],
+            ['name' => 'FoodFlow Asosiy filial'],
             ['is_active' => true]
         );
 

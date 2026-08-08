@@ -20,7 +20,7 @@ return new class extends Migration
 
         // Seed the first branch with the current restaurant
         DB::table('branches')->insert([
-            'name' => 'VRestro Asosiy filial',
+            'name' => 'FoodFlow Asosiy filial',
             'is_active' => true,
             'created_at' => now(),
             'updated_at' => now(),
