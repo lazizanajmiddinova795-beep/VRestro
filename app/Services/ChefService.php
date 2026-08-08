@@ -48,6 +48,9 @@ class ChefService
         }
 
         return DB::transaction(function () use ($itemId, $status) {
+            $initialItem = OrderItem::findOrFail($itemId);
+            $order = \App\Models\Order::lockForUpdate()->findOrFail($initialItem->order_id);
+            
             $item = OrderItem::with('order.items')->findOrFail($itemId);
             
             if ($status === 'ready' && $item->status !== 'cooking') {
@@ -62,8 +65,6 @@ class ChefService
             $item->status = $status;
             $item->save();
 
-            $order = $item->order;
-
             // If the order status was 'new' or 'cooking' and we started preparation
             if ($status === 'cooking' && $order->status === 'new') {
                 $order->status = 'cooking';
@@ -71,7 +72,7 @@ class ChefService
             }
 
             // Check if all items in this order are 'ready'
-            $allItemsReady = $order->items->every(fn($orderItem) => $orderItem->status === 'ready');
+            $allItemsReady = $order->items()->where('status', '!=', 'ready')->doesntExist();
 
             if ($allItemsReady) {
                 $order->status = 'ready';
