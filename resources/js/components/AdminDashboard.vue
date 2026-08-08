@@ -28,23 +28,7 @@
       <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-violet-600/5 blur-[120px] pointer-events-none"></div>
       <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 rounded-full bg-indigo-600/5 blur-[120px] pointer-events-none"></div>
 
-      <!-- Sub-navigation tabs to merge Boshqaruv & Tahlillar -->
-      <div class="flex items-center space-x-1 bg-white border border-slate-200/80 rounded-2xl p-1 mb-8 shrink-0 w-max shadow-sm">
-        <button 
-          @click="switchTab('overview')"
-          class="px-5 py-2.5 rounded-xl text-xs font-extrabold transition duration-200"
-          :class="activeTab === 'overview' ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'"
-        >
-          {{ settingsStore.t('dashboard.tab_overview') }}
-        </button>
-        <button
-          @click="switchTab('analytics')"
-          class="px-5 py-2.5 rounded-xl text-xs font-extrabold transition duration-200"
-          :class="activeTab === 'analytics' ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'"
-        >
-          {{ settingsStore.t('dashboard.tab_analytics') }}
-        </button>
-      </div>
+
 
       <!-- Tab 1: Overview Dashboard -->
       <div v-if="activeTab === 'overview'">
