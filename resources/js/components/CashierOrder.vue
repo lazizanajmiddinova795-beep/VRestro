@@ -459,12 +459,7 @@ const handleCustomAdd = (payload) => {
   editingCartItem.value = null;
 };
 
-const cashierStore = useCashierStore();
-const authStore = useAuthStore();
-const settingStore = useSettingStore();
-const router = useRouter();
 
-// Categories & Foods lists
 const categories = ref([]);
 const foods = ref([]);
 const customers = ref([]);
