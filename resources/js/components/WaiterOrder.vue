@@ -87,37 +87,38 @@
       <div v-for="n in 5" :key="n" class="h-20 bg-slate-200 animate-pulse rounded-2xl border border-slate-300 shadow-sm"></div>
     </div>
 
-    <!-- Foods List Feed -->
-    <div v-else class="space-y-3">
+    <!-- Foods Grid Feed -->
+    <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
       <div 
         v-for="food in filteredFoods" 
         :key="food.id"
-        class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm mb-3 flex items-center justify-between transition duration-200"
-        :class="!food.is_available ? 'opacity-50 bg-slate-100 border-slate-300' : 'hover:border-slate-350'"
+        class="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm flex flex-col justify-between transition duration-200 cursor-pointer text-center"
+        :class="!food.is_available ? 'opacity-50 bg-slate-100 border-slate-300 cursor-not-allowed' : 'hover:border-indigo-300 hover:shadow-md'"
+        @click="food.is_available ? triggerAddFlow(food) : null"
       >
-        <div class="flex items-center space-x-3 min-w-0">
-          <div class="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 shrink-0">
+        <div class="flex flex-col items-center">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 mb-2 shrink-0">
             <img v-if="food.image_url" :src="food.image_url" :alt="food.name" class="w-full h-full object-cover" />
-            <ChefHat v-else class="w-6 h-6 text-slate-500 stroke-[1.2]" />
+            <ChefHat v-else class="w-8 h-8 text-slate-500 stroke-[1.2]" />
           </div>
-          <div class="min-w-0">
-            <h4 class="text-slate-900 font-black text-base leading-snug truncate" :title="food.name">{{ food.name }}</h4>
-            <span class="text-indigo-600 font-bold text-sm block mt-0.5">{{ formatCurrency(food.price) }}</span>
+          <div class="w-full">
+            <h4 class="text-slate-900 font-black text-sm leading-tight line-clamp-2" :title="food.name">{{ food.name }}</h4>
+            <span class="text-indigo-600 font-black text-xs block mt-1">{{ formatCurrency(food.price) }}</span>
           </div>
         </div>
 
-        <div>
+        <div class="mt-3 w-full">
           <!-- Stop list check -->
           <span 
             v-if="!food.is_available" 
-            class="bg-rose-100 text-rose-700 font-black border border-rose-300 px-3 py-1.5 rounded-xl text-xs uppercase tracking-wider"
+            class="block w-full bg-rose-100 text-rose-700 font-black border border-rose-300 py-2 rounded-xl text-[10px] uppercase tracking-wider"
           >
             {{ t('out_of_stock') }}
           </span>
           <button 
             v-else
-            @click="triggerAddFlow(food)"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2 px-4 rounded-xl shadow-sm text-sm active:scale-95 transition-all"
+            @click.stop="triggerAddFlow(food)"
+            class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2 rounded-xl shadow-sm text-xs active:scale-95 transition-all"
           >
             {{ t('add_btn') }}
           </button>

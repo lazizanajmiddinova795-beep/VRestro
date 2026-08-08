@@ -30,26 +30,28 @@
     </div>
 
     <!-- Tables Matrix -->
-    <div v-else class="grid grid-cols-2 gap-3 pb-24">
+    <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-3 pb-24">
       <div 
         v-for="table in waiterStore.tables" 
         :key="table.id"
         @click="handleTableClick(table)"
-        class="relative overflow-hidden rounded-2xl p-5 flex flex-col justify-between h-28 border transition-all duration-300 cursor-pointer text-center"
+        class="relative overflow-hidden rounded-2xl p-4 flex flex-col justify-center items-center min-h-[120px] aspect-[4/3] border transition-all duration-300 cursor-pointer text-center shadow-sm hover:shadow-md"
         :class="tableCardClasses(table)"
       >
-        <div class="relative z-10 flex items-start justify-between w-full">
-          <span class="text-base font-black text-slate-900" :class="[table.status === 'occupied_by_me' ? 'text-indigo-950' : '']">{{ table.table_number }}</span>
-          <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 border border-slate-300 text-slate-800 font-black">
-            {{ table.capacity }} {{ t('persons') }}
-          </span>
-        </div>
+        <!-- Table Number -->
+        <span class="text-3xl font-black mb-1" :class="[table.status === 'occupied_by_me' ? 'text-indigo-950' : 'text-slate-900']">
+          {{ table.table_number }}
+        </span>
 
-        <div class="relative z-10 w-full mt-2">
-          <span class="text-xs font-black tracking-wider uppercase" :class="statusTextClasses(table)">
-            {{ statusLabel(table) }}
-          </span>
-        </div>
+        <!-- Capacity -->
+        <span class="text-[10px] px-2 py-0.5 rounded border mb-2 font-black" :class="[table.status === 'empty' ? 'bg-emerald-100 border-emerald-300 text-emerald-800' : (table.status === 'occupied_by_me' ? 'bg-indigo-100 border-indigo-300 text-indigo-800' : 'bg-slate-200 border-slate-300 text-slate-700')]">
+          <UsersIcon class="w-3 h-3 inline-block mr-1 -mt-0.5" />{{ table.capacity }} {{ t('persons') }}
+        </span>
+
+        <!-- Status Label -->
+        <span class="text-xs font-black tracking-wider uppercase" :class="statusTextClasses(table)">
+          {{ statusLabel(table) }}
+        </span>
       </div>
     </div>
 
@@ -97,7 +99,7 @@ const settingsStore = useSettingsStore();
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useWaiterStore } from '@/stores/waiter';
-import { X, PlusCircle } from 'lucide-vue-next';
+import { X, PlusCircle, Users as UsersIcon } from 'lucide-vue-next';
 
 const waiterStore = useWaiterStore();
 const router = useRouter();
