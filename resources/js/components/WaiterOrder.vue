@@ -350,6 +350,7 @@ const translateCategory = (name) => {
 
 const tableId = computed(() => waiterStore.activeTableId);
 const tableNumber = computed(() => {
+  if (tableId.value === 'takeaway') return t('takeaway_label') || 'Saboy (Olib ketish)';
   const currentTable = waiterStore.tables.find(t => t.id === tableId.value);
   return currentTable ? currentTable.table_number : t('table_label');
 });
@@ -542,7 +543,7 @@ const submitOrder = async () => {
         'Accept': 'application/json'
       },
       body: JSON.stringify({
-        table_id: tableId.value,
+        table_id: tableId.value === 'takeaway' ? null : tableId.value,
         items: cartItems.value
       })
     });

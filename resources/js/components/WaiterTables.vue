@@ -21,6 +21,17 @@
       <div v-for="n in 6" :key="n" class="h-28 bg-white animate-pulse rounded-2xl border-2 border-slate-200"></div>
     </div>
 
+    <!-- Takeaway Button -->
+    <div v-if="!waiterStore.loading && !waiterStore.error" class="pb-2">
+      <button 
+        @click="createTakeawayOrder"
+        class="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 font-black text-white shadow-lg hover:from-orange-600 hover:to-amber-600 transition-all flex items-center justify-center space-x-3"
+      >
+        <ShoppingBag class="w-6 h-6" />
+        <span class="text-lg uppercase tracking-wider">{{ t('takeaway_btn') }}</span>
+      </button>
+    </div>
+
     <!-- Error state -->
     <div v-else-if="waiterStore.error" class="p-4 rounded-2xl bg-red-50 border-2 border-red-300 text-center text-xs text-red-800 font-bold shadow-sm">
       {{ waiterStore.error }}
@@ -119,7 +130,7 @@ const settingsStore = useSettingsStore();
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useWaiterStore } from '@/stores/waiter';
-import { X, PlusCircle, Users as UsersIcon } from 'lucide-vue-next';
+import { X, PlusCircle, Users as UsersIcon, ShoppingBag } from 'lucide-vue-next';
 
 const waiterStore = useWaiterStore();
 const router = useRouter();
@@ -145,7 +156,8 @@ const dictionary = {
     cancel: "Bekor qilish",
     empty_status: "Bo'sh",
     my_table_status: "Mening stolim",
-    occupied_status: "Band (Boshqa)"
+    occupied_status: "Band (Boshqa)",
+    takeaway_btn: "Saboy (Olib ketish)"
   },
   ru: {
     total_tables: "Всего столов",
@@ -159,7 +171,8 @@ const dictionary = {
     cancel: "Отмена",
     empty_status: "Свободен",
     my_table_status: "Мой стол",
-    occupied_status: "Занят (Другим)"
+    occupied_status: "Занят (Другим)",
+    takeaway_btn: "С собой (На вынос)"
   }
 };
 
@@ -238,6 +251,12 @@ const closeDrawer = () => {
 const createNewOrder = () => {
   closeDrawer();
   waiterStore.selectTable(selectedTable.value.id, null);
+  waiterStore.setTab('yangi-buyurtma');
+  router.push({ name: 'waiter-order' });
+};
+
+const createTakeawayOrder = () => {
+  waiterStore.selectTable('takeaway', null);
   waiterStore.setTab('yangi-buyurtma');
   router.push({ name: 'waiter-order' });
 };
