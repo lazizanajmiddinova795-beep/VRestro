@@ -13,6 +13,7 @@ class Table extends Model
     protected $fillable = [
         'branch_id',
         'table_number',
+        'floor',
         'capacity',
         'status',
         'qr_code_token',

@@ -31,13 +31,33 @@
       <button @click="refreshTables" class="text-xs underline hover:text-red-950 ml-4 shrink-0">Qaytadan urinish</button>
     </div>
 
+    <!-- Floor Filters -->
+    <div v-if="availableFloors.length > 0" class="flex items-center space-x-2 overflow-x-auto pb-2">
+      <button 
+        @click="selectedFloor = 'all'"
+        class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-colors"
+        :class="selectedFloor === 'all' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50'"
+      >
+        Barcha Stollar
+      </button>
+      <button 
+        v-for="floor in availableFloors" 
+        :key="floor"
+        @click="selectedFloor = floor"
+        class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-colors"
+        :class="selectedFloor === floor ? 'bg-indigo-600 text-white shadow-md' : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50'"
+      >
+        {{ floor }}
+      </button>
+    </div>
+
     <!-- Tables Grid -->
     <div 
-      v-if="cashierTablesStore.tables && cashierTablesStore.tables.length > 0"
+      v-if="filteredTables.length > 0"
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
     >
       <button
-        v-for="table in cashierTablesStore.tables"
+        v-for="table in filteredTables"
         :key="table.id"
         @click="handleTableClick(table)"
         class="relative group p-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[140px] flex flex-col justify-between"
@@ -153,7 +173,7 @@
 <script setup>
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
-import { ref, onMounted, onUnmounted, markRaw } from 'vue';
+import { ref, computed, onMounted, onUnmounted, markRaw } from 'vue';
 import { RotateCw, Users as UsersIcon, HelpCircle, CheckCircle, Play, Plus } from 'lucide-vue-next';
 import { useCashierTablesStore } from '@/stores/cashierTables';
 import { useCashierStore } from '@/stores/cashier';
@@ -163,6 +183,20 @@ const cashierTablesStore = useCashierTablesStore();
 const cashierStore = useCashierStore();
 const router = useRouter();
 let pollInterval = null;
+
+const selectedFloor = ref('all');
+
+const availableFloors = computed(() => {
+  if (!cashierTablesStore.tables) return [];
+  const floors = new Set(cashierTablesStore.tables.map(t => t.floor).filter(Boolean));
+  return Array.from(floors).sort();
+});
+
+const filteredTables = computed(() => {
+  if (!cashierTablesStore.tables) return [];
+  if (selectedFloor.value === 'all') return cashierTablesStore.tables;
+  return cashierTablesStore.tables.filter(t => t.floor === selectedFloor.value);
+});
 
 // Modal dialog state
 const modal = ref({

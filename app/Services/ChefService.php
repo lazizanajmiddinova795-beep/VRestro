@@ -28,6 +28,9 @@ class ChefService
     {
         return OrderItem::with(['order.table', 'order.waiter', 'food'])
             ->whereIn('status', ['pending', 'cooking'])
+            ->whereHas('food', function($query) {
+                $query->where('is_bar_item', false);
+            })
             ->orderBy('created_at', 'asc')
             ->get();
     }
@@ -71,10 +74,15 @@ class ChefService
                 $order->save();
             }
 
-            // Check if all items in this order are 'ready'
-            $allItemsReady = $order->items()->where('status', '!=', 'ready')->doesntExist();
+            // Check if all KITCHEN items in this order are 'ready'
+            $allKitchenItemsReady = $order->items()
+                ->whereHas('food', function($query) {
+                    $query->where('is_bar_item', false);
+                })
+                ->where('status', '!=', 'ready')
+                ->doesntExist();
 
-            if ($allItemsReady) {
+            if ($allKitchenItemsReady) {
                 $order->status = 'ready';
                 $order->save();
 

@@ -75,6 +75,9 @@ class OrderService
                     }
                 }
 
+                // Determine status for this item
+                $itemStatus = $food->is_bar_item ? 'ready' : 'pending';
+
                 OrderItem::create([
                     'order_id' => $order->id,
                     'food_id' => $food->id,
@@ -82,6 +85,7 @@ class OrderService
                     'price' => $priceSnapshot,
                     'notes' => $item['notes'] ?? null,
                     'size_name' => $sizeName,
+                    'status' => $itemStatus,
                 ]);
 
                 $totalAmount += $quantity * $priceSnapshot;
@@ -96,6 +100,18 @@ class OrderService
 
             // 4. Update Order Total
             $order->update(['total_amount' => $totalAmount]);
+
+            // Check if all items are bar items (ready). If so, update order to ready instantly
+            $allKitchenItemsReady = $order->items()
+                ->whereHas('food', function($q) {
+                    $q->where('is_bar_item', false);
+                })
+                ->where('status', '!=', 'ready')
+                ->doesntExist();
+
+            if ($allKitchenItemsReady) {
+                $order->update(['status' => 'ready']);
+            }
 
             // Dispatch alert
             $this->notificationService->sendNotification(

@@ -373,7 +373,23 @@
           </label>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 p-4 rounded-2xl mt-4">
+          <div>
+            <span class="text-xs font-semibold text-slate-900">2-Bosqichli Tasdiqlash (2FA)</span>
+            <span class="text-3xs text-slate-500 block mt-0.5">Admin tizimga kirishda Telegram orqali yuborilgan tasdiqlash kodini kiritishi talab qilinadi.</span>
+          </div>
+          <label class="flex items-center space-x-2.5 cursor-pointer">
+            <input
+              type="checkbox"
+              v-model="telegramForm.telegram_2fa_enabled"
+              class="sr-only peer"
+            />
+            <div class="w-9 h-5 bg-slate-300 border border-slate-300 rounded-full peer peer-checked:bg-emerald-600 peer-checked:border-emerald-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 relative"></div>
+            <span class="text-xs font-medium text-slate-600">{{ telegramForm.telegram_2fa_enabled ? settingsStore.t('settings.enabled') : settingsStore.t('settings.disabled') }}</span>
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4">
           <div class="space-y-1.5 md:col-span-2">
             <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.bot_token') }}</label>
             <div class="relative">
@@ -499,7 +515,8 @@ const financeForm = ref({
 const telegramForm = ref({
   telegram_bot_token: '',
   telegram_chat_id: '',
-  telegram_notifications_enabled: false
+  telegram_notifications_enabled: false,
+  telegram_2fa_enabled: false
 });
 
 const clearingCache = ref(false);
@@ -530,6 +547,7 @@ onMounted(async () => {
   telegramForm.value.telegram_bot_token = settingStore.settings.telegram_bot_token || '';
   telegramForm.value.telegram_chat_id = settingStore.settings.telegram_chat_id || '';
   telegramForm.value.telegram_notifications_enabled = filterBoolean(settingStore.settings.telegram_notifications_enabled);
+  telegramForm.value.telegram_2fa_enabled = filterBoolean(settingStore.settings.telegram_2fa_enabled);
 });
 
 const filterBoolean = (val) => {
@@ -566,6 +584,7 @@ const saveAllSettings = async () => {
   formData.append('telegram_bot_token', telegramForm.value.telegram_bot_token);
   formData.append('telegram_chat_id', telegramForm.value.telegram_chat_id || '');
   formData.append('telegram_notifications_enabled', telegramForm.value.telegram_notifications_enabled ? 'true' : 'false');
+  formData.append('telegram_2fa_enabled', telegramForm.value.telegram_2fa_enabled ? 'true' : 'false');
 
   if (logoFile.value) {
     formData.append('restaurant_logo', logoFile.value);

@@ -28,6 +28,7 @@ class TableController extends Controller
     {
         $filters = $request->validate([
             'status' => ['nullable', 'string', 'in:empty,occupied,reserved'],
+            'floor' => ['nullable', 'string', 'max:50'],
         ]);
 
         $tables = $this->tableRepository->getAllTables($filters);
@@ -45,6 +46,7 @@ class TableController extends Controller
     {
         $data = $request->validate([
             'table_number' => ['required', 'string', 'max:50', 'unique:tables,table_number'],
+            'floor' => ['nullable', 'string', 'max:50'],
             'capacity' => ['required', 'integer', 'min:1', 'max:100'],
             'status' => ['required', 'string', 'in:empty,occupied,reserved'],
             'qr_code_token' => ['nullable', 'string', 'max:100', 'unique:tables,qr_code_token'],
@@ -69,6 +71,7 @@ class TableController extends Controller
     {
         $data = $request->validate([
             'table_number' => ['required', 'string', 'max:50', 'unique:tables,table_number,' . $id],
+            'floor' => ['nullable', 'string', 'max:50'],
             'capacity' => ['required', 'integer', 'min:1', 'max:100'],
             'status' => ['required', 'string', 'in:empty,occupied,reserved'],
             'qr_code_token' => ['nullable', 'string', 'max:100', 'unique:tables,qr_code_token,' . $id],

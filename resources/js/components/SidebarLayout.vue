@@ -188,7 +188,8 @@
                 <div 
                   v-for="item in latestNotifications" 
                   :key="item.id"
-                  class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition duration-150 border-l-2"
+                  @click="openNotificationModal(item)"
+                  class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition duration-150 border-l-2 cursor-pointer"
                   :class="getLeftBorderColor(item.type)"
                 >
                   <div class="flex justify-between items-start">
@@ -226,7 +227,8 @@
         <div 
           v-for="toast in activeToasts" 
           :key="toast.id" 
-          class="pointer-events-auto w-full p-4 rounded-xl border border-white/10 bg-slate-900/90 backdrop-blur-md shadow-2xl flex gap-3 items-start animate-slideIn relative overflow-hidden"
+          @click="openNotificationModal(toast)"
+          class="pointer-events-auto w-full p-4 rounded-xl border border-white/10 bg-slate-900/90 backdrop-blur-md shadow-2xl flex gap-3 items-start animate-slideIn relative overflow-hidden cursor-pointer hover:bg-slate-800/90 transition"
         >
           <div 
             class="absolute left-0 top-0 bottom-0 w-1" 
@@ -239,12 +241,34 @@
             <h5 class="text-xs font-bold text-white">{{ toast.title }}</h5>
             <p class="text-xxs text-slate-300">{{ toast.message }}</p>
           </div>
-          <button @click="dismissToast(toast.id)" class="text-slate-500 hover:text-white shrink-0">
+          <button @click.stop="dismissToast(toast.id)" class="text-slate-500 hover:text-white shrink-0">
             <X class="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
     </div>
+
+    <!-- Notification Details Modal -->
+    <Transition name="fade">
+      <div v-if="selectedNotification" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="selectedNotification = null"></div>
+        <div class="relative z-10 w-full max-w-sm bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-4 animate-scaleIn text-slate-900">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="text-base font-bold text-slate-900">Bildirishnoma</h3>
+            <button @click="selectedNotification = null" class="p-1 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 transition">
+              <X class="w-4.5 h-4.5" />
+            </button>
+          </div>
+          <div class="space-y-3">
+            <h4 class="text-sm font-black text-slate-800">{{ selectedNotification.title }}</h4>
+            <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">{{ selectedNotification.message }}</p>
+            <div class="text-[10px] font-medium text-slate-400 mt-2">
+              Vaqt: {{ selectedNotification.created_at ? formatTimeAgo(selectedNotification.created_at) : 'Hozirgina' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
 
   </div>
 </template>
@@ -339,6 +363,7 @@ watch(() => route.path, () => { mobileMenuOpen.value = false; });
 
 const showDropdown = ref(false);
 const activeToasts = ref([]);
+const selectedNotification = ref(null);
 
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
@@ -377,6 +402,22 @@ const markAllAsRead = () => {
 
 const dismissToast = (id) => {
   activeToasts.value = activeToasts.value.filter(t => t.id !== id);
+};
+
+const openNotificationModal = async (notif) => {
+  selectedNotification.value = notif;
+  showDropdown.value = false;
+  if (!notif.is_read && notif.id && !`${notif.id}`.includes('.')) { 
+    // mark as read via store
+    try {
+      await fetch(`/api/notifications/${notif.id}/read`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${authStore.token}`, 'Accept': 'application/json' }
+      });
+      notif.is_read = true;
+      if (notificationStore.unreadCount > 0) notificationStore.unreadCount--;
+    } catch(e) {}
+  }
 };
 
 // Check time diff helper

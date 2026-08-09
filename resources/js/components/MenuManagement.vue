@@ -182,6 +182,14 @@
                 <!-- Actions -->
                 <div class="flex space-x-1.5">
                   <button
+                    v-if="food.is_bar_item && food.barcode"
+                    @click="printBarcode(food)"
+                    class="p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition duration-200"
+                    title="Shtrix kodni chop etish"
+                  >
+                    <Printer class="w-4 h-4" />
+                  </button>
+                  <button
                     @click="openFoodModal(food)"
                     class="p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition duration-200"
                     title="Tahrirlash"
@@ -526,8 +534,9 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import {
-  Plus, Edit3, Trash2, Search, X, Loader2, ChefHat, UploadCloud, Scan
+  Plus, Edit3, Trash2, Search, X, Loader2, ChefHat, UploadCloud, Scan, Printer
 } from 'lucide-vue-next';
+import JsBarcode from 'jsbarcode';
 import { useMenuStore } from '@/stores/menu';
 import { useIngredientsStore } from '@/stores/ingredients';
 import { useRecipesStore } from '@/stores/recipes';
@@ -781,6 +790,75 @@ const handleDeleteFood = async (food) => {
 // Utilities
 const formatCurrency = (val) => {
   return new Intl.NumberFormat('uz-UZ').format(val) + ' UZS';
+};
+
+const printBarcode = (food) => {
+  if (!food.barcode) return;
+  
+  // Create a hidden iframe or new window for printing
+  const printWindow = window.open('', '_blank', 'width=400,height=400');
+  if (!printWindow) {
+    alert('Pop-up blocker is preventing the print window from opening.');
+    return;
+  }
+  
+  // We use SVG for jsbarcode
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  JsBarcode(svg, food.barcode, {
+    format: 'CODE128',
+    lineColor: '#000',
+    width: 2,
+    height: 60,
+    displayValue: true
+  });
+  
+  // Prepare HTML content for the printer
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Shtrix kod chop etish - ${food.name}</title>
+        <style>
+          body { 
+            margin: 0; 
+            padding: 10px; 
+            text-align: center; 
+            font-family: sans-serif;
+          }
+          .label-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          }
+          .food-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+          }
+          .food-price {
+            font-size: 12px;
+            margin-top: 5px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="label-container">
+          <div class="food-name">${food.name}</div>
+          ${svg.outerHTML}
+          <div class="food-price">${formatCurrency(food.price)}</div>
+        </div>
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+              window.close();
+            }, 300);
+          }
+        <\/script>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
 };
 </script>
 

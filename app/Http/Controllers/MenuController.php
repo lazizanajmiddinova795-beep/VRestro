@@ -74,6 +74,11 @@ class MenuController extends Controller
                 : $request->input('sizes');
         }
 
+        // Auto-generate barcode if it's a bar item and barcode is empty
+        if (!empty($itemData['is_bar_item']) && empty($itemData['barcode'])) {
+            $itemData['barcode'] = $this->generateUniqueBarcode();
+        }
+
         $food = $this->menuService->createFood($itemData, $imageFile);
 
         // Sync inline recipe ingredients if provided
@@ -142,6 +147,11 @@ class MenuController extends Controller
             $itemData['sizes'] = is_string($request->input('sizes')) 
                 ? json_decode($request->input('sizes'), true) 
                 : $request->input('sizes');
+        }
+
+        // Auto-generate barcode if it's a bar item and barcode is empty
+        if (!empty($itemData['is_bar_item']) && empty($itemData['barcode'])) {
+            $itemData['barcode'] = $this->generateUniqueBarcode();
         }
 
         $food = $this->menuService->updateFood($id, $itemData, $imageFile);
@@ -218,5 +228,19 @@ class MenuController extends Controller
         }
 
         return response()->json($food);
+    }
+
+    /**
+     * Generate a unique 13-digit EAN-like barcode.
+     *
+     * @return string
+     */
+    protected function generateUniqueBarcode(): string
+    {
+        do {
+            $barcode = '200' . rand(1000000000, 9999999999);
+        } while (\App\Models\Food::where('barcode', $barcode)->exists());
+
+        return $barcode;
     }
 }

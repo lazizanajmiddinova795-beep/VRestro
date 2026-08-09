@@ -29,10 +29,30 @@
       </button>
     </div>
 
+    <!-- Floor Filters -->
+    <div v-if="!waiterStore.error && availableFloors.length > 0" class="flex items-center space-x-2 overflow-x-auto pb-2">
+      <button 
+        @click="selectedFloor = 'all'"
+        class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors"
+        :class="selectedFloor === 'all' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50'"
+      >
+        {{ t('all_tables') }}
+      </button>
+      <button 
+        v-for="floor in availableFloors" 
+        :key="floor"
+        @click="selectedFloor = floor"
+        class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors"
+        :class="selectedFloor === floor ? 'bg-indigo-600 text-white shadow-md' : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50'"
+      >
+        {{ floor }}
+      </button>
+    </div>
+
     <!-- Tables Matrix -->
-    <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 pb-24">
+    <div v-if="!waiterStore.loading && !waiterStore.error" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 pb-24">
       <div 
-        v-for="table in waiterStore.tables" 
+        v-for="table in filteredTables" 
         :key="table.id"
         @click="handleTableClick(table)"
         class="relative overflow-hidden rounded-xl p-2 flex flex-col justify-center items-center min-h-[90px] aspect-[4/3] border transition-all duration-300 cursor-pointer text-center shadow-sm hover:shadow-md"
@@ -115,6 +135,7 @@ const currentLang = computed(() => localStorage.getItem('waiter_lang') || 'uz');
 const dictionary = {
   uz: {
     total_tables: "Jami stollar",
+    all_tables: "Barchasi",
     my_tables: "Mening stollarim",
     empty_tables: "Bo'sh stollar",
     try_again: "Qayta urinib ko'rish",
@@ -128,6 +149,7 @@ const dictionary = {
   },
   ru: {
     total_tables: "Всего столов",
+    all_tables: "Все",
     my_tables: "Мои столы",
     empty_tables: "Свободные столы",
     try_again: "Повторить попытку",
@@ -151,6 +173,20 @@ const myTablesCount = computed(() => {
 
 const emptyTablesCount = computed(() => {
   return waiterStore.tables.filter(t => t.status === 'empty').length;
+});
+
+const selectedFloor = ref('all');
+
+const availableFloors = computed(() => {
+  if (!waiterStore.tables) return [];
+  const floors = new Set(waiterStore.tables.map(t => t.floor).filter(Boolean));
+  return Array.from(floors).sort();
+});
+
+const filteredTables = computed(() => {
+  if (!waiterStore.tables) return [];
+  if (selectedFloor.value === 'all') return waiterStore.tables;
+  return waiterStore.tables.filter(t => t.floor === selectedFloor.value);
 });
 
 const tableCardClasses = (table) => {
