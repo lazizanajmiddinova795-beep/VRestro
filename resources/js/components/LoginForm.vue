@@ -306,6 +306,7 @@ const removePin = () => {
 };
 
 const handlePinSubmit = async () => {
+  if (loading.value) return;
   error.value = '';
   loading.value = true;
   try {
@@ -330,6 +331,7 @@ const handlePinSubmit = async () => {
     if (data.requires_otp) {
       otpCode.value = '';
       authStore.setTempUser(data.user);
+      loading.value = false;
     } else if (data.token) {
       authStore.setAuth(data.user, data.token);
       let dashboardName = 'admin-dashboard';
@@ -351,12 +353,12 @@ const handlePinSubmit = async () => {
     }
   } catch (err) {
     error.value = err.message;
-  } finally {
     loading.value = false;
   }
 };
 
 const handleCredentialsSubmit = async () => {
+  if (loading.value) return;
   error.value = '';
   loading.value = true;
   try {
@@ -381,6 +383,7 @@ const handleCredentialsSubmit = async () => {
     if (data.requires_otp) {
       otpCode.value = '';
       authStore.setTempUser(data.user);
+      loading.value = false;
     } else if (data.token) {
       authStore.setAuth(data.user, data.token);
       let dashboardName = 'admin-dashboard';
@@ -399,10 +402,10 @@ const handleCredentialsSubmit = async () => {
       setTimeout(() => {
         router.push({ name: dashboardName });
       }, 300);
+      // We do not set loading.value to false here so the button remains disabled during redirect
     }
   } catch (err) {
     error.value = err.message;
-  } finally {
     loading.value = false;
   }
 };
