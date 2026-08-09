@@ -133,6 +133,67 @@ export const usePaymentStore = defineStore('payment', () => {
         }
     };
 
+    const updatePayment = async (paymentId, payload) => {
+        loading.value = true;
+        error.value = '';
+        try {
+            const response = await fetch(`/api/payments/${paymentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${authStore.token}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'To\'lovni tahrirlashda xatolik.');
+            }
+
+            await fetchTodayRevenue();
+            await fetchPayments();
+            return data.payment;
+        } catch (err) {
+            error.value = err.message;
+            throw err;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const deletePayment = async (paymentId) => {
+        loading.value = true;
+        error.value = '';
+        try {
+            const response = await fetch(`/api/payments/${paymentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${authStore.token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'To\'lovni o\'chirishda xatolik.');
+            }
+
+            await fetchTodayRevenue();
+            await fetchPayments();
+            return data;
+        } catch (err) {
+            error.value = err.message;
+            throw err;
+        } finally {
+            loading.value = false;
+        }
+    };
+
     return {
         payments,
         todayRevenue,
@@ -141,6 +202,8 @@ export const usePaymentStore = defineStore('payment', () => {
         fetchPayments,
         fetchTodayRevenue,
         processPayment,
-        refundPayment
+        refundPayment,
+        updatePayment,
+        deletePayment
     };
 });

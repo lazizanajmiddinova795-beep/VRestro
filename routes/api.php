@@ -136,6 +136,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/payments', [PaymentController::class, 'index']);
         Route::get('/payments/revenue', [PaymentController::class, 'revenueBreakdown']);
         Route::post('/payments', [PaymentController::class, 'store']);
+        Route::put('/payments/{id}', [PaymentController::class, 'update']);
+        Route::delete('/payments/{id}', [PaymentController::class, 'destroy']);
         Route::post('/payments/{id}/refund', [PaymentController::class, 'refund']);
     });
 

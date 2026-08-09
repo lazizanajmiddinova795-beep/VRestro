@@ -18,6 +18,8 @@ class Order extends Model
         'waiter_id',
         'total_amount',
         'status',
+        'order_type',
+        'customer_phone',
         'discount_id',
         'discount_amount',
         'is_printed',

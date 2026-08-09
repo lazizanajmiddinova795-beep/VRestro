@@ -107,23 +107,55 @@
       <div class="flex-grow flex flex-col overflow-hidden">
         <h3 class="text-xs font-extrabold uppercase text-slate-700 tracking-wider shrink-0 mb-3">{{ cashierStore.t('savatcha') }}</h3>
 
-        <!-- Table / Takeaway selector - visible while building the order, not just at checkout -->
-        <div class="shrink-0 mb-4 space-y-1.5">
-          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ cashierStore.t('stol') }}</label>
-          <div class="flex items-center gap-2">
+        <!-- Table / Takeaway / Delivery selector -->
+        <div class="shrink-0 mb-4 space-y-2">
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Buyurtma Turi</label>
+          <div class="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-xl">
             <button
               type="button"
-              @click="selectedTableId = null"
-              class="px-3 py-2 rounded-xl text-xs font-bold border transition shrink-0"
-              :class="selectedTableId === null ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200'"
+              @click="orderType = 'dine_in'"
+              class="py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1"
+              :class="orderType === 'dine_in' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
             >
-              {{ cashierStore.t('olib_ketish') }}
+              Stolda
             </button>
+            <button
+              type="button"
+              @click="orderType = 'takeaway'"
+              class="py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1"
+              :class="orderType === 'takeaway' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+            >
+              Olib ketish
+            </button>
+            <button
+              type="button"
+              @click="orderType = 'delivery'"
+              class="py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1"
+              :class="orderType === 'delivery' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+            >
+              Dastavka
+            </button>
+          </div>
+
+          <!-- If Delivery: Phone Number Input -->
+          <div v-if="orderType === 'delivery'" class="space-y-1 animate-fadeIn">
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Mijoz Telefon Raqami *</label>
+            <input
+              type="text"
+              v-model="customerPhone"
+              placeholder="+998 (90) 123-45-67"
+              class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-xs font-bold text-slate-900 focus:outline-none transition"
+            />
+          </div>
+
+          <!-- Table Selector -->
+          <div v-if="orderType !== 'delivery'" class="space-y-1">
+            <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">Stol Tanlash (Ixtiyoriy)</label>
             <select
               v-model="selectedTableId"
-              class="flex-grow px-3 py-2 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-xs font-bold text-slate-900 focus:outline-none transition"
+              class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-xs font-bold text-slate-900 focus:outline-none transition"
             >
-              <option :value="null">{{ cashierStore.t('olib_ketish') }}</option>
+              <option :value="null">Stol biriktirilmagan</option>
               <option
                 v-for="t in allTablesList"
                 :key="t.id"
@@ -190,11 +222,11 @@
             <span class="text-slate-600 font-bold">{{ cashierStore.t('oraliq_jami') }}:</span>
             <span class="font-mono text-slate-900 font-bold">{{ formatCurrency(totals.subtotal) }}</span>
           </div>
-          <div class="flex justify-between">
+          <div class="flex justify-between" v-if="totals.service > 0">
             <span class="text-slate-600 font-bold">{{ cashierStore.t('xizmat_haqi') }} ({{ serviceChargeRate }}%):</span>
             <span class="font-mono text-slate-900 font-bold">{{ formatCurrency(totals.service) }}</span>
           </div>
-          <div class="flex justify-between">
+          <div class="flex justify-between" v-if="totals.tax > 0">
             <span class="text-slate-600 font-bold">{{ cashierStore.t('qqs') }} ({{ taxRate }}%):</span>
             <span class="font-mono text-slate-900 font-bold">{{ formatCurrency(totals.tax) }}</span>
           </div>
@@ -468,6 +500,8 @@ const loading = ref(false);
 const selectedCategory = ref('all');
 const selectedMenuType = ref('kitchen'); // 'kitchen' or 'bar'
 const selectedTableId = ref(null);
+const orderType = ref('dine_in'); // 'dine_in', 'takeaway', 'delivery'
+const customerPhone = ref('');
 
 // Checkout modal states
 const showCheckoutModal = ref(false);
@@ -492,8 +526,8 @@ const modal = ref({
 });
 
 // Settings defaults
-const taxRate = computed(() => settingStore.settings.tax_rate || 12);
-const serviceChargeRate = computed(() => settingStore.settings.service_charge_rate || 10);
+const taxRate = computed(() => settingStore.settings.tax_rate !== undefined && settingStore.settings.tax_rate !== '' ? Number(settingStore.settings.tax_rate) : 12);
+const serviceChargeRate = computed(() => settingStore.settings.service_charge_rate !== undefined && settingStore.settings.service_charge_rate !== '' ? Number(settingStore.settings.service_charge_rate) : 10);
 
 // Computed stats
 const setMenuType = (type) => {
@@ -628,7 +662,9 @@ const submitCheckout = async () => {
   try {
     // 1. Create Order
     const orderPayload = {
-      table_id: checkoutForm.value.table_id || null,
+      table_id: checkoutForm.value.table_id || selectedTableId.value || null,
+      order_type: orderType.value,
+      customer_phone: customerPhone.value || null,
       waiter_id: authStore.user?.id || null,
       items: cashierStore.cart.map(it => ({
         food_id: it.food_id,

@@ -445,6 +445,12 @@
                   <button @click="printReceiptAction(p.id)" class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition" title="Yuklab olish (PDF)">
                     <Download class="w-4 h-4" />
                   </button>
+                  <button @click="openEditModal(p)" class="p-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white transition" title="Tahrirlash">
+                    <Pencil class="w-4 h-4" />
+                  </button>
+                  <button @click="confirmDeletePayment(p)" class="p-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition" title="O'chirish">
+                    <Trash2 class="w-4 h-4" />
+                  </button>
                 </div>
               </td>
             </tr>
@@ -463,6 +469,43 @@
         <p class="text-xs text-slate-500 mt-0.5">{{ alertMessage }}</p>
       </div>
     </div>
+
+    <!-- Edit Payment Modal -->
+    <div v-if="editingPayment" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-scaleIn">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h3 class="font-bold text-slate-900 text-lg">To'lovni Tahrirlash #{{ editingPayment.id }}</h3>
+          <button @click="editingPayment = null" class="text-slate-400 hover:text-slate-600">
+            <X class="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">To'lov Turi</label>
+            <select v-model="editForm.payment_method" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-sm">
+              <option value="cash">Naqd (Cash)</option>
+              <option value="card">Karta (Card)</option>
+              <option value="qr">QR / Click / Payme</option>
+              <option value="mixed">Aralash (Mixed)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Jami Summa (UZS)</label>
+            <input type="number" v-model.number="editForm.total_amount" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-sm font-mono font-bold" />
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <button @click="editingPayment = null" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+            Bekor qilish
+          </button>
+          <button @click="savePaymentEdit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition">
+            Saqlash
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -473,7 +516,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import {
   DollarSign, Banknote, CreditCard, QrCode, Layers,
-  Clock, CheckCircle, User, ShoppingBag, X, Search, Loader2, History, RefreshCw, Printer, Download
+  Clock, CheckCircle, User, ShoppingBag, X, Search, Loader2, History, RefreshCw, Printer, Download, Pencil, Trash2
 } from 'lucide-vue-next';
 import { usePaymentStore } from '@/stores/payment';
 import { useOrdersStore } from '@/stores/orders';
@@ -681,6 +724,42 @@ const submitPayment = async () => {
     alert(err.message || settingsStore.t('payments.error_completing'));
   } finally {
     loading.value = false;
+  }
+};
+
+const editingPayment = ref(null);
+const editForm = ref({
+  payment_method: 'cash',
+  total_amount: 0
+});
+
+const openEditModal = (p) => {
+  editingPayment.value = p;
+  editForm.value = {
+    payment_method: p.payment_method || 'cash',
+    total_amount: p.total_amount || 0
+  };
+};
+
+const savePaymentEdit = async () => {
+  if (!editingPayment.value) return;
+  try {
+    await paymentStore.updatePayment(editingPayment.value.id, editForm.value);
+    triggerAlert("Muvaffaqiyatli", "To'lov ma'lumotlari yangilandi.");
+    editingPayment.value = null;
+  } catch (err) {
+    alert(err.message || "Tahrirlashda xatolik yuz berdi.");
+  }
+};
+
+const confirmDeletePayment = async (p) => {
+  if (confirm(`Haqiqatdan ham #${p.id} sonli to'lovni o'chirib tashlamoqchimisiz?`)) {
+    try {
+      await paymentStore.deletePayment(p.id);
+      triggerAlert("Muvaffaqiyatli", "To'lov o'chirildi.");
+    } catch (err) {
+      alert(err.message || "O'chirishda xatolik yuz berdi.");
+    }
   }
 };
 

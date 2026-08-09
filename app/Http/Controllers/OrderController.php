@@ -50,6 +50,8 @@ class OrderController extends Controller
         $data = $request->validate([
             'table_id' => ['nullable', 'exists:tables,id'],
             'waiter_id' => ['nullable', 'exists:users,id'],
+            'order_type' => ['nullable', 'string', 'in:dine_in,takeaway,delivery'],
+            'customer_phone' => ['nullable', 'string', 'max:50'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.food_id' => ['required', 'exists:foods,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],

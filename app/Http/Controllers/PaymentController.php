@@ -115,4 +115,53 @@ class PaymentController extends Controller
             'payment' => $payment
         ]);
     }
+
+    /**
+     * Update an existing payment.
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $payment = \App\Models\Payment::findOrFail($id);
+        $data = $request->validate([
+            'payment_method' => ['nullable', 'string'],
+            'total_amount' => ['nullable', 'numeric'],
+            'cash_amount' => ['nullable', 'numeric'],
+            'card_amount' => ['nullable', 'numeric'],
+            'qr_amount' => ['nullable', 'numeric'],
+        ]);
+
+        $payment->update(array_filter($data, fn($v) => !is_null($v)));
+
+        ActivityLog::record(
+            'payment_updated',
+            "To'lov #{$id} tahrirlandi",
+            'payments',
+            ['payment_id' => $id, 'data' => $data]
+        );
+
+        return response()->json([
+            'message' => 'To\'lov ma\'lumotlari yangilandi.',
+            'payment' => $payment
+        ]);
+    }
+
+    /**
+     * Delete a payment record.
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $payment = \App\Models\Payment::findOrFail($id);
+        $payment->delete();
+
+        ActivityLog::record(
+            'payment_deleted',
+            "To'lov #{$id} o'chirildi",
+            'payments',
+            ['payment_id' => $id]
+        );
+
+        return response()->json([
+            'message' => 'To\'lov muvaffaqiyatli o\'chirildi.'
+        ]);
+    }
 }

@@ -236,11 +236,11 @@
                 <span>{{ cashierStore.t('chegirma') }}:</span>
                 <span>-{{ formatCurrency(getDiscountAmount()) }}</span>
               </div>
-              <div class="flex justify-between">
+              <div class="flex justify-between" v-if="getServiceCharge() > 0">
                 <span>{{ cashierStore.t('xizmat_haqi') }} ({{ serviceChargeRate }}%):</span>
                 <span>{{ formatCurrency(getServiceCharge()) }}</span>
               </div>
-              <div class="flex justify-between">
+              <div class="flex justify-between" v-if="getTax() > 0">
                 <span>{{ cashierStore.t('qqs') }} ({{ taxRate }}%):</span>
                 <span>{{ formatCurrency(getTax()) }}</span>
               </div>
@@ -365,11 +365,11 @@
             <span>{{ cashierStore.t('chegirma') }}:</span>
             <span>-{{ formatCurrency(getDiscountAmount()) }}</span>
           </div>
-          <div class="flex-row">
+          <div class="flex-row" v-if="getServiceCharge() > 0">
             <span>{{ cashierStore.t('xizmat_haqi') }} ({{ serviceChargeRate }}%):</span>
             <span>{{ formatCurrency(getServiceCharge()) }}</span>
           </div>
-          <div class="flex-row">
+          <div class="flex-row" v-if="getTax() > 0">
             <span>{{ cashierStore.t('qqs') }} ({{ taxRate }}%):</span>
             <span>{{ formatCurrency(getTax()) }}</span>
           </div>
@@ -542,11 +542,11 @@
                     <span>{{ cashierStore.t('chegirma') }}:</span>
                     <span class="font-mono">-{{ formatCurrency(orderCalculations.discount) }}</span>
                   </div>
-                  <div class="flex justify-between">
+                  <div class="flex justify-between" v-if="orderCalculations.service > 0">
                     <span class="text-slate-500">{{ cashierStore.t('xizmat_haqi') }} ({{ serviceChargeRate }}%):</span>
                     <span class="font-mono text-slate-900">{{ formatCurrency(orderCalculations.service) }}</span>
                   </div>
-                  <div class="flex justify-between">
+                  <div class="flex justify-between" v-if="orderCalculations.tax > 0">
                     <span class="text-slate-500">{{ cashierStore.t('qqs') }} ({{ taxRate }}%):</span>
                     <span class="font-mono text-slate-900">{{ formatCurrency(orderCalculations.tax) }}</span>
                   </div>
@@ -885,8 +885,8 @@ const modal = ref({
 });
 
 // Settings defaults
-const taxRate = computed(() => settingStore.settings.tax_rate || 12);
-const serviceChargeRate = computed(() => settingStore.settings.service_charge_rate || 10);
+const taxRate = computed(() => settingStore.settings.tax_rate !== undefined && settingStore.settings.tax_rate !== '' ? Number(settingStore.settings.tax_rate) : 12);
+const serviceChargeRate = computed(() => settingStore.settings.service_charge_rate !== undefined && settingStore.settings.service_charge_rate !== '' ? Number(settingStore.settings.service_charge_rate) : 10);
 
 const qrCodeUrl = computed(() => {
   const name = settingStore.branding?.name || 'FoodFlow';

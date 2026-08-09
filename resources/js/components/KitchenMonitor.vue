@@ -61,7 +61,7 @@
                   isOverdue(ticket.created_at) && ticket.status !== 'ready' ? 'text-red-950' : ''
                 ]"
               >
-                {{ ticket.order?.table?.table_number || 'Olib ketish' }}
+                {{ ticket.order?.order_type === 'delivery' ? 'Dastavka: ' + (ticket.order?.customer_phone || '') : (ticket.order?.table?.table_number ? 'Stol: ' + ticket.order.table.table_number : 'Olib ketish') }}
               </div>
               <div
                 class="mt-1 flex items-center space-x-1 font-bold"

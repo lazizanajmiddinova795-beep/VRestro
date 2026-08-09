@@ -48,6 +48,8 @@ class OrderService
                 'order_number' => $orderNumber,
                 'table_id' => $data['table_id'] ?? null,
                 'waiter_id' => $data['waiter_id'] ?? null,
+                'order_type' => $data['order_type'] ?? 'dine_in',
+                'customer_phone' => $data['customer_phone'] ?? null,
                 'status' => 'new',
                 'total_amount' => 0, // updated below
             ]);
