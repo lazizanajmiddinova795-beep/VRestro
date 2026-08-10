@@ -759,7 +759,9 @@ const fetchActiveOrderForTable = async (tableId) => {
     if (res.ok) {
       const ordersData = await res.json();
       const ordersList = Array.isArray(ordersData) ? ordersData : (ordersData.data || []);
-      const active = ordersList.find(o => !o.payments || o.payments.length === 0);
+      // Filter specifically for orders belonging to THIS table_id
+      const tableOrders = ordersList.filter(o => String(o.table_id) === String(tableId));
+      const active = tableOrders.find(o => !o.payments || o.payments.length === 0);
       if (active && active.items && active.items.length > 0) {
         cashierStore.clearCart();
         for (const it of active.items) {
@@ -777,6 +779,8 @@ const fetchActiveOrderForTable = async (tableId) => {
 watch(selectedTableId, (newId) => {
   if (newId) {
     fetchActiveOrderForTable(newId);
+  } else {
+    cashierStore.clearCart();
   }
 });
 
@@ -785,14 +789,17 @@ const submitOrderOnly = async () => {
   loadingOrderSubmit.value = true;
 
   try {
+    const parsedTableId = selectedTableId.value ? parseInt(selectedTableId.value, 10) : null;
+    const parsedWaiterId = authStore.user?.id ? parseInt(authStore.user.id, 10) : null;
+
     const orderPayload = {
-      table_id: selectedTableId.value || null,
+      table_id: parsedTableId,
       order_type: orderType.value,
       customer_phone: customerPhone.value || null,
-      waiter_id: authStore.user?.id || null,
+      waiter_id: parsedWaiterId,
       items: cashierStore.cart.map(it => ({
-        food_id: it.food_id,
-        quantity: it.quantity,
+        food_id: parseInt(it.food_id, 10),
+        quantity: parseInt(it.quantity, 10),
         size_name: it.size_name || null,
         notes: it.notes || null
       }))
@@ -810,7 +817,8 @@ const submitOrderOnly = async () => {
 
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.message || 'Buyurtma yuborishda xatolik yuz berdi.');
+      const errorMsg = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || 'Buyurtma yuborishda xatolik yuz berdi.');
+      throw new Error(errorMsg);
     }
 
     cashierStore.clearCart();

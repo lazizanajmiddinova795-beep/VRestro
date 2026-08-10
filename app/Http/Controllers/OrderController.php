@@ -29,7 +29,8 @@ class OrderController extends Controller
     public function index(Request $request): JsonResponse
     {
         $filters = $request->validate([
-            'status' => ['nullable', 'string', 'in:new,cooking,ready,delivered,cancelled'],
+            'status' => ['nullable', 'string'],
+            'table_id' => ['nullable', 'integer', 'exists:tables,id'],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date'],
         ]);

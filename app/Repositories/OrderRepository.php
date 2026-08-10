@@ -18,9 +18,19 @@ class OrderRepository implements OrderRepositoryInterface
     {
         $query = Order::with(['table', 'waiter', 'items.food']);
 
+        // Filter by table_id
+        if (!empty($filters['table_id'])) {
+            $query->where('table_id', $filters['table_id']);
+        }
+
         // Filter by status
         if (!empty($filters['status'])) {
-            $query->where('status', $filters['status']);
+            if (str_contains($filters['status'], ',')) {
+                $statuses = explode(',', $filters['status']);
+                $query->whereIn('status', array_map('trim', $statuses));
+            } else {
+                $query->where('status', $filters['status']);
+            }
         }
 
         // Filter by date range

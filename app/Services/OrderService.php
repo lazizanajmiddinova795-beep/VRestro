@@ -104,18 +104,19 @@ class OrderService
                     'size_name' => $sizeName,
                     'status' => $itemStatus,
                 ]);
-
-                $totalAmount += $quantity * $priceSnapshot;
             }
 
-            // Calculate and apply service charge rate from settings
+            // 4. Recalculate Total Amount cleanly from ALL non-cancelled order items
+            $order->load('items');
+            $activeItems = $order->items->filter(fn($i) => $i->status !== 'cancelled');
+            $rawTotal = $activeItems->reduce(fn($sum, $i) => $sum + ($i->price * $i->quantity), 0);
+
             $serviceChargeRate = (float) app(\App\Repositories\Contracts\SettingRepositoryInterface::class)->getByKey('service_charge_rate');
+            $totalAmount = $rawTotal;
             if ($serviceChargeRate > 0) {
-                $serviceFee = $totalAmount * ($serviceChargeRate / 100);
-                $totalAmount += $serviceFee;
+                $totalAmount += $rawTotal * ($serviceChargeRate / 100);
             }
 
-            // 4. Update Order Total
             $order->update(['total_amount' => $totalAmount]);
 
             // Check if all items are bar items (ready). If so, update order to ready instantly
