@@ -475,6 +475,12 @@ const triggerFetch = async () => {
   });
 };
 
+const resolveMemberRole = (member) => {
+  if (member.is_superadmin) return 'Admin';
+  if (member.roles && member.roles.length > 0) return member.roles[0].name;
+  return member.role || 'Waiter';
+};
+
 const openAddEditModal = (member = null) => {
   editingStaff.value = member;
   avatarFile.value = null;
@@ -485,7 +491,7 @@ const openAddEditModal = (member = null) => {
     password: '',
     pin: member.pin || '',
     shift_hours: member.shift_hours || '',
-    role: member.roles?.[0]?.name || 'Waiter',
+    role: resolveMemberRole(member),
     status: member.status,
     email: member.email || '',
     passport_number: member.passport_number || '',
