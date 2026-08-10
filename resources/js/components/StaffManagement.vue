@@ -69,7 +69,8 @@
           class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-indigo-500 transition"
         >
           <option value="">{{ settingsStore.t('staff.all_roles') }}</option>
-          <option value="Manager" v-if="authStore.user?.is_superadmin">{{ settingsStore.t('staff.admin') }}</option>
+          <option value="Admin">Tizim administratori (Admin)</option>
+          <option value="Manager">Filial menejeri (Manager)</option>
           <option value="Chef">{{ settingsStore.t('staff.role_chef_opt') }}</option>
           <option value="Waiter">{{ settingsStore.t('staff.role_waiter_opt') }}</option>
           <option value="Cashier">{{ settingsStore.t('staff.role_cashier_opt') }}</option>
@@ -280,7 +281,8 @@
                     <div class="relative">
                         <select v-model="staffForm.role" required
                                 class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition-all appearance-none">
-                            <option v-if="authStore.user?.is_superadmin" value="Manager" class="bg-white text-slate-900">{{ settingsStore.t('staff.admin') }}</option>
+                            <option value="Admin" class="bg-white text-slate-900">Tizim administratori (Admin - Barcha filiallar)</option>
+                            <option value="Manager" class="bg-white text-slate-900">Filial menejeri (Manager - Muayyan filial)</option>
                             <option value="Chef" class="bg-white text-slate-900">{{ settingsStore.t('staff.role_chef_opt') }}</option>
                             <option value="Waiter" class="bg-white text-slate-900">{{ settingsStore.t('staff.role_waiter_opt') }}</option>
                             <option value="Cashier" class="bg-white text-slate-900">{{ settingsStore.t('staff.role_cashier_opt') }}</option>

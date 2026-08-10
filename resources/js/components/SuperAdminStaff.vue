@@ -322,7 +322,21 @@
             </div>
 
             <div class="sm:col-span-2">
-              <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Biriktirilgan Filial</label>
+              <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Xodim Roli *</label>
+              <div class="relative">
+                <select v-model="managerForm.role" required
+                        class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition appearance-none">
+                  <option value="Admin">Tizim administratori (Admin - Barcha filiallar nazorati)</option>
+                  <option value="Manager">Filial menejeri (Manager - Muayyan filial)</option>
+                </select>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 block">Biriktirilgan Filial {{ managerForm.role === 'Admin' ? '(Ixtiyoriy)' : '*' }}</label>
               <div class="relative">
                 <select v-model="managerForm.branch_id"
                         class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl outline-none transition appearance-none">
@@ -464,13 +478,14 @@ const managerForm = ref({
 const openManagerModal = (manager = null) => {
   editingManager.value = manager;
   if (manager) {
+    const isAdmin = manager.is_superadmin || manager.roles?.[0]?.name === 'Admin';
     managerForm.value = {
       name: manager.name,
       login: manager.login,
       password: '',
       phone: manager.phone || '',
       email: manager.email || '',
-      role: 'Manager',
+      role: isAdmin ? 'Admin' : 'Manager',
       branch_id: manager.branch_id || '',
       status: manager.status || 'active'
     };
@@ -499,7 +514,7 @@ const submitManagerForm = async () => {
     }
     formData.append('phone', managerForm.value.phone || '');
     formData.append('email', managerForm.value.email || '');
-    formData.append('role', 'Manager');
+    formData.append('role', managerForm.value.role || 'Manager');
     formData.append('branch_id', managerForm.value.branch_id || '');
     formData.append('status', managerForm.value.status);
 

@@ -30,6 +30,13 @@ class StaffService
             $data['password'] = Hash::make($data['password']);
             $data['face_registered'] = false; // Initial onboarding requires face register via auth controller later
 
+            if ($data['role'] === 'Admin') {
+                $data['is_superadmin'] = true;
+                \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin']);
+            } else {
+                $data['is_superadmin'] = false;
+            }
+
             $user = $this->userRepository->create($data);
             
             // Assign Spatie permission role
@@ -69,15 +76,15 @@ class StaffService
             }
 
             // Prevent self-role modification if changing from Admin to something else
-            if ($id === $currentUserId && $data['role'] !== 'Manager' && $user->hasRole('Manager')) {
+            if ($id === $currentUserId && !in_array($data['role'], ['Admin', 'Manager']) && ($user->hasRole('Admin') || $user->hasRole('Manager'))) {
                 throw ValidationException::withMessages([
                     'role' => ['O\'zingizning administratorlik rolingizni o\'zgartira olmaysiz.'],
                 ]);
             }
 
             // Last active admin safeguard
-            if ($user->hasRole('Manager') && ($data['role'] !== 'Manager' || $data['status'] === 'inactive')) {
-                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->where('name', 'Manager'))
+            if (($user->hasRole('Admin') || $user->hasRole('Manager')) && (!in_array($data['role'], ['Admin', 'Manager']) || $data['status'] === 'inactive')) {
+                $activeAdminsCount = User::whereHas('roles', fn($q) => $q->whereIn('name', ['Admin', 'Manager']))
                     ->where('status', 'active')
                     ->where('id', '!=', $id)
                     ->count();
@@ -94,6 +101,13 @@ class StaffService
                 $data['password'] = Hash::make($data['password']);
             } else {
                 unset($data['password']);
+            }
+
+            if ($data['role'] === 'Admin') {
+                $data['is_superadmin'] = true;
+                \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin']);
+            } else {
+                $data['is_superadmin'] = false;
             }
 
             $updatedUser = $this->userRepository->update($id, $data);

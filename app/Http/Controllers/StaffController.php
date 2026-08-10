@@ -32,15 +32,15 @@ class StaffController extends Controller
 
         $filters = $request->validate([
             'status' => ['nullable', 'string', 'in:active,inactive'],
-            'role' => ['nullable', 'string', 'in:Manager,Chef,Waiter,Cashier'],
+            'role' => ['nullable', 'string', 'in:Admin,Manager,Chef,Waiter,Cashier'],
             'search' => ['nullable', 'string', 'max:100'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]);
 
-        // Managers should NOT see other Managers or SuperAdmin in their staff list
+        // Managers should NOT see other Managers or Admin/SuperAdmin unless they are SuperAdmin/Admin
         $user = $request->user();
-        if (!$user->is_superadmin) {
-            $filters['exclude_roles'] = ['Manager'];
+        if (!$user->is_superadmin && !$user->hasRole('Admin')) {
+            $filters['exclude_roles'] = ['Manager', 'Admin'];
             $filters['exclude_superadmin'] = true;
         }
 
@@ -65,7 +65,7 @@ class StaffController extends Controller
             'login' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z0-9_\.]+$/', 'unique:users,login'],
             'password' => ['required', 'string', 'min:4', 'max:100'],
             'pin' => ['nullable', 'string', 'digits:5', 'unique:users,pin'],
-            'role' => ['required', 'string', 'in:Manager,Chef,Waiter,Cashier'],
+            'role' => ['required', 'string', 'in:Admin,Manager,Chef,Waiter,Cashier'],
             'shift_hours' => ['nullable', 'string', 'max:100'],
             'status' => ['required', 'string', 'in:active,inactive'],
             'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
@@ -115,7 +115,7 @@ class StaffController extends Controller
             'login' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z0-9_\.]+$/', 'unique:users,login,' . $id],
             'password' => ['nullable', 'string', 'min:4', 'max:100'],
             'pin' => ['nullable', 'string', 'digits:5', 'unique:users,pin,' . $id],
-            'role' => ['required', 'string', 'in:Manager,Chef,Waiter,Cashier'],
+            'role' => ['required', 'string', 'in:Admin,Manager,Chef,Waiter,Cashier'],
             'shift_hours' => ['nullable', 'string', 'max:100'],
             'status' => ['required', 'string', 'in:active,inactive'],
             'email' => ['nullable', 'email', 'max:100', 'unique:users,email,' . $id],
@@ -188,14 +188,15 @@ class StaffController extends Controller
     }
 
     /**
-     * Verify that current calling user is Admin.
+     * Verify that current calling user is Admin or Manager.
      *
      * @param Request $request
      * @return void
      */
     protected function authorizeAdmin(Request $request): void
     {
-        if (!$request->user()->hasRole('Manager')) {
+        $user = $request->user();
+        if (!$user->is_superadmin && !$user->hasRole('Admin') && !$user->hasRole('Manager')) {
             abort(403, 'Ushbu amalni bajarish uchun sizda ruxsat yo\'q.');
         }
     }
