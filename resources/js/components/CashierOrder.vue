@@ -457,6 +457,9 @@
       </div>
     </Transition>
 
+    <!-- KOT PRINT -->
+    <PrintKot v-if="kotOrder" :order="kotOrder" />
+
     <!-- ACTUAL PRINT ONLY CONTENT (Hidden on screen, shown when printing) -->
     <div id="physical-thermal-receipt" class="print-only" v-if="lastCompletedPayment">
       <div class="ticket-ticket">
@@ -563,6 +566,7 @@ import { Plus, Trash2, Receipt, X, CheckCircle, Send, CreditCard, Loader2 } from
 import { useCashierStore } from '@/stores/cashier';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingStore } from '@/stores/settings';
+import PrintKot from './PrintKot.vue';
 import { useRouter, useRoute } from 'vue-router';
 import ProductOptionsSheet from './ProductOptionsSheet.vue';
 
@@ -877,6 +881,7 @@ const printGetServiceCharge = () => (printGetSubtotal() - printGetDiscountAmount
 const printGetTax = () => (printGetSubtotal() - printGetDiscountAmount()) * (parseFloat(settingStore.settings?.tax_rate || 0) / 100);
 
 const loadingOrderSubmit = ref(false);
+const kotOrder = ref(null);
 
 
 const fetchActiveOrderForTable = async (tableId) => {
@@ -950,12 +955,21 @@ const submitOrderOnly = async () => {
       throw new Error(errorMsg);
     }
 
+    
     cashierStore.clearCart();
     const tableMsg = selectedTableId.value ? ' va stol band qilindi' : '';
-    openModal("Muvaffaqiyatli!", `Buyurtma #${data.order_number || data.id || ''} oshxonaga yuborildi${tableMsg}.`, "success", CheckCircle);
+    openModal("Muvaffaqiyatli!", `Buyurtma #${data.order.order_number || data.order.id || ''} oshxonaga yuborildi${tableMsg}.`, "success", CheckCircle);
+
+    // KOT Printing Logic
+    kotOrder.value = data.order;
+    setTimeout(() => {
+        window.print();
+        kotOrder.value = null; // Clear after printing
+    }, 250);
 
     if (selectedTableId.value) {
       setTimeout(() => {
+(()(() => {
         router.push({ path: '/cashier/tables' });
       }, 1200);
     }

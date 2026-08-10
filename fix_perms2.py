@@ -1,0 +1,15 @@
+﻿import paramiko
+import time
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.connect('100.65.139.1', username='foodflow', password='clone2026', timeout=10)
+shell = ssh.invoke_shell()
+shell.send('sudo chown -R www-data:www-data /home/foodflow/VRestro/storage /home/foodflow/VRestro/bootstrap/cache\n')
+time.sleep(1)
+shell.send('clone2026\n')
+time.sleep(1)
+shell.send('sudo chmod -R 775 /home/foodflow/VRestro/storage /home/foodflow/VRestro/bootstrap/cache\n')
+time.sleep(1)
+out = shell.recv(9999).decode('utf-8')
+print(out)
+ssh.close()

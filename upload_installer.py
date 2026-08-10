@@ -1,0 +1,10 @@
+import paramiko
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.connect('100.65.139.1', username='foodflow', password='clone2026', timeout=10)
+sftp = ssh.open_sftp()
+sftp.put('D:/loyhalar/VRestro/public/foodflow-setup.exe', '/home/foodflow/VRestro/public/foodflow-setup.exe')
+sftp.close()
+stdin, stdout, stderr = ssh.exec_command(r'''sed -i 's/favicon.png/favicon.png?v=2/g' /home/foodflow/VRestro/resources/views/welcome.blade.php''')
+print('Upload successful!')
+ssh.close()

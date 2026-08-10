@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <!-- Hidden element that only shows up during printing -->
-    <div v-if="order" id="print-kot-container" class="print-only thermal-ticket p-4 bg-white text-black">
+    <div v-if="order && kotItems.length > 0" id="print-kot-container" class="print-only thermal-ticket p-4 bg-white text-black">
       <div class="ticket-center mb-4">
         <div class="ticket-center" style="margin-bottom: 5px;">
            <img :src="'/foodflow_logo.png'" style="width: 48px; height: 48px; display: block; margin: 0 auto; filter: grayscale(100%);" alt="Logo" />
@@ -35,7 +35,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in order.items" :key="item.id" class="border-b border-gray-300 border-dashed">
+          <tr v-for="item in kotItems" :key="item.id" class="border-b border-gray-300 border-dashed">
             <td class="py-2">
               <div class="font-bold">{{ item.food?.name || item.name }}</div>
               <div v-if="item.notes" class="text-xs italic mt-0.5 text-gray-700">* {{ item.notes }}</div>
@@ -61,7 +61,28 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
+
+
+const kotItems = computed(() => {
+  if (!props.order || !props.order.items) return [];
+  
+  return props.order.items.filter(item => {
+    // Check if it's explicitly a bar item
+    const isBarItem = item.food?.is_bar_item === true || item.food?.is_bar_item === 1;
+    if (!isBarItem) return true; // Food always goes to KOT
+    
+    // Check for cocktail keywords
+    const categoryName = (item.food?.category?.name || '').toLowerCase();
+    const foodName = (item.food?.name || item.name || '').toLowerCase();
+    
+    const isCocktail = categoryName.includes('koktel') || categoryName.includes('cocktail') || categoryName.includes('kokteyl') || 
+                       foodName.includes('koktel') || foodName.includes('cocktail') || foodName.includes('kokteyl');
+                       
+    // If it's a bar item, only print if it's a cocktail/prepared drink
+    return isCocktail;
+  });
+});
 
 const props = defineProps({
   order: {
