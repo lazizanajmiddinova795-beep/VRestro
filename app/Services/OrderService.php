@@ -146,7 +146,7 @@ class OrderService
             Cache::forget('admin_dashboard_analytics');
 
             DB::commit();
-            return $order->load(['table', 'waiter', 'items.food']);
+            return $order->load(['table', 'waiter', 'items.food', 'payments']);
 
         } catch (\Exception $e) {
             DB::rollBack();

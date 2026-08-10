@@ -75,4 +75,14 @@ class Order extends Model
     {
         return $this->belongsTo(Discount::class, 'discount_id');
     }
+
+    /**
+     * Get the payments for the order.
+     *
+     * @return HasMany
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'order_id');
+    }
 }

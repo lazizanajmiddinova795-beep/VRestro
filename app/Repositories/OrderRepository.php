@@ -16,7 +16,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function getAllOrders(array $filters): Collection
     {
-        $query = Order::with(['table', 'waiter', 'items.food']);
+        $query = Order::with(['table', 'waiter', 'items.food', 'payments']);
 
         // Filter by table_id
         if (!empty($filters['table_id'])) {
