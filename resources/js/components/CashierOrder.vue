@@ -456,8 +456,104 @@
         </div>
       </div>
     </Transition>
+
+    <!-- ACTUAL PRINT ONLY CONTENT (Hidden on screen, shown when printing) -->
+    <div id="physical-thermal-receipt" class="print-only" v-if="lastCompletedPayment">
+      <div class="ticket-ticket">
+        <div class="ticket-center" style="margin-bottom: 5px;">
+           <img :src="'/foodflow_logo.png'" style="width: 48px; height: 48px; display: block; margin: 0 auto; filter: grayscale(100%);" alt="Logo" />
+        </div>
+        <div class="ticket-center font-bold font-large">{{ settingStore.branding?.name || 'FoodFlow' }}</div>
+        <div class="ticket-center">{{ settingStore.branding?.address || 'Toshkent, O\'zbekiston' }}</div>
+        <div class="ticket-center">Tel: {{ settingStore.branding?.phone || '+998 90 123 45 67' }}</div>
+        
+        <div class="ticket-divider"></div>
+
+        <div>{{ cashierStore.t('chek_no') }}: #{{ String(lastCompletedPayment.id).padStart(6, '0') }}</div>
+        <div>{{ cashierStore.t('buyurtma_no') }}: {{ lastCompletedPayment.order?.order_number }}</div>
+        <div>{{ cashierStore.t('sana') }}: {{ printFormatDateTime(lastCompletedPayment.created_at) }}</div>
+        <div v-if="lastCompletedPayment.order?.table?.table_number">{{ cashierStore.t('stol') }}: {{ lastCompletedPayment.order.table.table_number }}</div>
+        <div>{{ cashierStore.t('kassir') }}: {{ authStore.user?.name }}</div>
+
+        <div class="ticket-divider"></div>
+
+        <table class="ticket-table">
+          <thead>
+            <tr>
+              <th align="left">{{ cashierStore.t('nomi') }}</th>
+              <th align="center">{{ cashierStore.t('soni') }}</th>
+              <th align="right">{{ cashierStore.t('summa') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in lastCompletedPayment.order?.items" :key="item.id">
+              <td>{{ item.food?.name }}</td>
+              <td align="center">x{{ item.quantity }}</td>
+              <td align="right">{{ formatCurrency(item.quantity * item.price) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-totals">
+          <div class="flex-row">
+            <span>{{ cashierStore.t('oraliq_jami') }}:</span>
+            <span>{{ formatCurrency(printGetSubtotal()) }}</span>
+          </div>
+          <div class="flex-row font-italic" v-if="printGetDiscountAmount() > 0">
+            <span>{{ cashierStore.t('chegirma') }}:</span>
+            <span>-{{ formatCurrency(printGetDiscountAmount()) }}</span>
+          </div>
+          <div class="flex-row" v-if="printGetServiceCharge() > 0">
+            <span>{{ cashierStore.t('xizmat_haqi') }} ({{ settingStore.settings?.service_charge_rate || 0 }}%):</span>
+            <span>{{ formatCurrency(printGetServiceCharge()) }}</span>
+          </div>
+          <div class="flex-row" v-if="printGetTax() > 0">
+            <span>{{ cashierStore.t('qqs') }} ({{ settingStore.settings?.tax_rate || 0 }}%):</span>
+            <span>{{ formatCurrency(printGetTax()) }}</span>
+          </div>
+
+          <div class="ticket-divider-thin"></div>
+          <div class="ticket-bold">{{ cashierStore.t('tolov_shakli') }}:</div>
+          <div class="flex-row pl-2" v-if="parseFloat(lastCompletedPayment.cash_amount) > 0">
+            <span>{{ cashierStore.t('naqd') }}:</span>
+            <span>{{ formatCurrency(lastCompletedPayment.cash_amount) }}</span>
+          </div>
+          <div class="flex-row pl-2" v-if="parseFloat(lastCompletedPayment.card_amount) > 0">
+            <span>{{ cashierStore.t('karta') }}:</span>
+            <span>{{ formatCurrency(lastCompletedPayment.card_amount) }}</span>
+          </div>
+          <div class="flex-row pl-2" v-if="parseFloat(lastCompletedPayment.qr_amount) > 0">
+            <span>{{ cashierStore.t('qr_tolov') }}:</span>
+            <span>{{ formatCurrency(lastCompletedPayment.qr_amount) }}</span>
+          </div>
+
+          <div class="ticket-divider"></div>
+          <div class="flex-row ticket-bold font-large">
+            <span>{{ cashierStore.t('jami_to_lov') }}:</span>
+            <span>{{ formatCurrency(lastCompletedPayment.total_amount) }}</span>
+          </div>
+        </div>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-center" style="margin: 12px 0;">
+          <img :src="printQrCodeUrl" style="width: 2.2cm; height: 2.2cm; display: block; margin: 0 auto;" alt="QR Code" />
+          <div style="font-size: 7.5pt; font-family: monospace; margin-top: 4px; text-transform: uppercase;">{{ cashierStore.t('scan_to_verify') }}</div>
+        </div>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-center ticket-footer-text">
+          <p>{{ settingStore.settings?.receipt_header || 'FoodFlow - Xizmatimizdan mamnunmisiz?' }}</p>
+          <p class="ticket-bold">{{ settingStore.settings?.receipt_footer || 'Xaridingiz uchun rahmat! Yana keling!' }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
 
 <script setup>
 import { useSettingsStore } from '@/stores/settings';
@@ -736,9 +832,15 @@ const submitCheckout = async () => {
     selectedTableId.value = null;
     showCheckoutModal.value = false;
 
-    // Directly navigate to receipts and auto-select/print the just-created
-    // receipt, so the cashier doesn't have to find it in the list manually.
-    router.push({ path: '/cashier/receipts', query: { print: payData.payment.id } });
+    
+    lastCompletedPayment.value = payData.payment;
+    
+    // Wait for Vue to render the hidden receipt, then print
+    setTimeout(() => {
+      window.print();
+      // Clear the receipt from DOM after printing dialog closes
+      lastCompletedPayment.value = null;
+    }, 200);
 
   } catch (err) {
     alert(err.message);
@@ -747,7 +849,35 @@ const submitCheckout = async () => {
   }
 };
 
+
+// Print receipt logic
+const lastCompletedPayment = ref(null);
+
+const printQrCodeUrl = computed(() => {
+  const name = settingStore.branding?.name || 'FoodFlow';
+  const address = settingStore.branding?.address || "Toshkent, O'zbekiston";
+  return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(name + ' - ' + address)}`;
+});
+
+const printFormatDateTime = (dateStr) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleString('uz-UZ', { 
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  });
+};
+
+const printGetSubtotal = () => {
+  if (!lastCompletedPayment.value || !lastCompletedPayment.value.order) return 0;
+  return lastCompletedPayment.value.order.items.reduce((acc, item) => acc + (parseFloat(item.price) * item.quantity), 0);
+};
+const printGetDiscountAmount = () => parseFloat(lastCompletedPayment.value?.order?.discount_amount) || 0;
+const printGetServiceCharge = () => (printGetSubtotal() - printGetDiscountAmount()) * (parseFloat(settingStore.settings?.service_charge_rate || 0) / 100);
+const printGetTax = () => (printGetSubtotal() - printGetDiscountAmount()) * (parseFloat(settingStore.settings?.tax_rate || 0) / 100);
+
 const loadingOrderSubmit = ref(false);
+
 
 const fetchActiveOrderForTable = async (tableId) => {
   if (!tableId) return;
