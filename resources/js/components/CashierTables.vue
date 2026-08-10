@@ -264,13 +264,7 @@ const getModalIconColor = (type) => {
 
 // Interaction Handler
 const handleTableClick = (table) => {
-  if (table.status === 'occupied' || table.status === 'waiting_checkout') {
-    // Navigate to receipts/payments for this table (you can pass the order ID if needed)
-    router.push({ path: '/cashier/receipts' });
-  } else {
-    // Navigate directly to the Cashier Order page with this table pre-selected
-    router.push({ path: '/cashier/order', query: { table_id: table.id } });
-  }
+  router.push({ path: '/cashier/order', query: { table_id: table.id } });
 };
 
 const closeModal = () => {

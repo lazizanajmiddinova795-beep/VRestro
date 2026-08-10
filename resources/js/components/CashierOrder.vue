@@ -238,13 +238,30 @@
           </div>
         </div>
 
-        <button 
-          @click="openCheckout"
-          :disabled="cashierStore.cart.length === 0"
-          class="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 font-extrabold text-xs text-white tracking-wider shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {{ cashierStore.t('to_lovga_o_tish') }}
-        </button>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <!-- Button 1: Send Order / Mark Table Occupied (No immediate payment) -->
+          <button 
+            v-if="orderType !== 'delivery'"
+            @click="submitOrderOnly"
+            :disabled="cashierStore.cart.length === 0 || loadingOrderSubmit"
+            class="py-3.5 px-3 rounded-2xl bg-slate-800 hover:bg-slate-900 font-extrabold text-xs text-white shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
+          >
+            <Send v-if="!loadingOrderSubmit" class="w-4 h-4" />
+            <Loader2 v-else class="w-4 h-4 animate-spin" />
+            <span>{{ selectedTableId ? 'Stolni Band qil (Oshxonaga yubor)' : 'Oshxonaga Yubor' }}</span>
+          </button>
+
+          <!-- Button 2: Immediate Checkout & Payment -->
+          <button 
+            @click="openCheckout"
+            :disabled="cashierStore.cart.length === 0"
+            class="py-3.5 px-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 font-extrabold text-xs text-white shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
+            :class="orderType === 'delivery' ? 'w-full col-span-2' : ''"
+          >
+            <CreditCard class="w-4 h-4" />
+            <span>{{ cashierStore.t('to_lovga_o_tish') }}</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -446,7 +463,7 @@
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
 import { ref, onMounted, onUnmounted, computed, watch, markRaw } from 'vue';
-import { Plus, Trash2, Receipt, X, CheckCircle } from 'lucide-vue-next';
+import { Plus, Trash2, Receipt, X, CheckCircle, Send, CreditCard, Loader2 } from 'lucide-vue-next';
 import { useCashierStore } from '@/stores/cashier';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingStore } from '@/stores/settings';
@@ -731,6 +748,87 @@ const submitCheckout = async () => {
   }
 };
 
+const loadingOrderSubmit = ref(false);
+
+const fetchActiveOrderForTable = async (tableId) => {
+  if (!tableId) return;
+  try {
+    const res = await fetch(`/api/orders?table_id=${tableId}&status=new,cooking,ready,delivered`, {
+      headers: { 'Authorization': `Bearer ${authStore.token}`, 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const ordersData = await res.json();
+      const ordersList = Array.isArray(ordersData) ? ordersData : (ordersData.data || []);
+      const active = ordersList.find(o => !o.payments || o.payments.length === 0);
+      if (active && active.items && active.items.length > 0) {
+        cashierStore.clearCart();
+        for (const it of active.items) {
+          if (it.food) {
+            cashierStore.addToCart(it.food, it.size_name, parseFloat(it.price), it.notes, it.quantity);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Active order loading error:', err);
+  }
+};
+
+watch(selectedTableId, (newId) => {
+  if (newId) {
+    fetchActiveOrderForTable(newId);
+  }
+});
+
+const submitOrderOnly = async () => {
+  if (cashierStore.cart.length === 0) return;
+  loadingOrderSubmit.value = true;
+
+  try {
+    const orderPayload = {
+      table_id: selectedTableId.value || null,
+      order_type: orderType.value,
+      customer_phone: customerPhone.value || null,
+      waiter_id: authStore.user?.id || null,
+      items: cashierStore.cart.map(it => ({
+        food_id: it.food_id,
+        quantity: it.quantity,
+        size_name: it.size_name || null,
+        notes: it.notes || null
+      }))
+    };
+
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${authStore.token}`
+      },
+      body: JSON.stringify(orderPayload)
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || 'Buyurtma yuborishda xatolik yuz berdi.');
+    }
+
+    cashierStore.clearCart();
+    const tableMsg = selectedTableId.value ? ' va stol band qilindi' : '';
+    openModal("Muvaffaqiyatli!", `Buyurtma #${data.order_number || data.id || ''} oshxonaga yuborildi${tableMsg}.`, "success", CheckCircle);
+
+    if (selectedTableId.value) {
+      setTimeout(() => {
+        router.push({ path: '/cashier/tables' });
+      }, 1200);
+    }
+  } catch (err) {
+    alert(err.message || 'Buyurtma yuborishda xatolik yuz berdi.');
+  } finally {
+    loadingOrderSubmit.value = false;
+  }
+};
+
 const closeModal = () => {
   modal.value.show = false;
 };
@@ -741,6 +839,7 @@ onMounted(async () => {
   // Set selectedTableId from query param if available
   if (route.query.table_id) {
     selectedTableId.value = parseInt(route.query.table_id, 10);
+    fetchActiveOrderForTable(selectedTableId.value);
   }
   if (route.query.type) {
     orderType.value = route.query.type;

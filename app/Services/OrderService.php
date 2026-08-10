@@ -40,21 +40,36 @@ class OrderService
         DB::beginTransaction();
 
         try {
-            // 1. Generate Order Number
-            $orderNumber = $this->orderRepository->generateOrderNumber();
+            $tableId = $data['table_id'] ?? null;
+            $order = null;
 
-            // 2. Create Order Container
-            $order = $this->orderRepository->create([
-                'order_number' => $orderNumber,
-                'table_id' => $data['table_id'] ?? null,
-                'waiter_id' => $data['waiter_id'] ?? null,
-                'order_type' => $data['order_type'] ?? 'dine_in',
-                'customer_phone' => $data['customer_phone'] ?? null,
-                'status' => 'new',
-                'total_amount' => 0, // updated below
-            ]);
+            // 1. Check if table has an active order
+            if ($tableId) {
+                $order = Order::where('table_id', $tableId)
+                    ->whereIn('status', ['new', 'cooking', 'ready', 'delivered'])
+                    ->doesntHave('payments')
+                    ->first();
+            }
 
-            $totalAmount = 0;
+            // 2. Create Order Container if no active order exists
+            if (!$order) {
+                $orderNumber = $this->orderRepository->generateOrderNumber();
+                $order = $this->orderRepository->create([
+                    'order_number' => $orderNumber,
+                    'table_id' => $tableId,
+                    'waiter_id' => $data['waiter_id'] ?? null,
+                    'order_type' => $data['order_type'] ?? 'dine_in',
+                    'customer_phone' => $data['customer_phone'] ?? null,
+                    'status' => 'new',
+                    'total_amount' => 0,
+                ]);
+
+                if ($tableId) {
+                    \App\Models\Table::where('id', $tableId)->update(['status' => 'occupied']);
+                }
+            }
+
+            $totalAmount = (float) $order->total_amount;
 
             // 3. Attach Items
             foreach ($data['items'] as $item) {
