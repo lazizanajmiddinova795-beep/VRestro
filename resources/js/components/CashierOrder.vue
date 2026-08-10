@@ -900,13 +900,14 @@ const fetchActiveOrderForTable = async (tableId) => {
       // Always clear cart when switching tables
       cashierStore.clearCart();
       
-      if (active && active.items && active.items.length > 0) {
-        for (const it of active.items) {
-          if (it.food) {
-            cashierStore.addToCart(it.food, it.size_name, parseFloat(it.price), it.notes, it.quantity);
-          }
-        }
-      }
+      // DO NOT AUTO-POPULATE THE CART! The user complained it adds items automatically.
+      // if (active && active.items && active.items.length > 0) {
+      //   for (const it of active.items) {
+      //     if (it.food) {
+      //       cashierStore.addToCart(it.food, it.size_name, parseFloat(it.price), it.notes, it.quantity);
+      //     }
+      //   }
+      // }
     }
   } catch (err) {
     console.error('Active order loading error:', err);
