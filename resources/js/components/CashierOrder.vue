@@ -896,8 +896,11 @@ const fetchActiveOrderForTable = async (tableId) => {
       // Filter specifically for orders belonging to THIS table_id
       const tableOrders = ordersList.filter(o => String(o.table_id) === String(tableId));
       const active = tableOrders.find(o => !o.payments || o.payments.length === 0);
+      
+      // Always clear cart when switching tables
+      cashierStore.clearCart();
+      
       if (active && active.items && active.items.length > 0) {
-        cashierStore.clearCart();
         for (const it of active.items) {
           if (it.food) {
             cashierStore.addToCart(it.food, it.size_name, parseFloat(it.price), it.notes, it.quantity);
