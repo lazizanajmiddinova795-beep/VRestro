@@ -837,6 +837,10 @@ const submitOrderOnly = async () => {
   }
 };
 
+const openModal = (title, message, type, icon) => {
+  modal.value = { show: true, title, message, type, icon };
+};
+
 const closeModal = () => {
   modal.value.show = false;
 };
