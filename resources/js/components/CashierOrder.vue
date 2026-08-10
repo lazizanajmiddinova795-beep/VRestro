@@ -479,8 +479,7 @@ const router = useRouter();
 const route = useRoute();
 
 const triggerAddFlow = (food) => {
-  editingCartItem.value = null;
-  activeCustomFood.value = food;
+  cashierStore.addToCart(food, null, food.price, '', 1);
 };
 
 const triggerEditFlow = (item) => {
