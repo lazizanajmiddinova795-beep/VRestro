@@ -8,12 +8,21 @@
       </div>
       <div class="flex items-center space-x-3 shrink-0">
         <router-link 
-          to="/cashier/order"
+          to="/cashier/order?type=takeaway"
           class="px-4 py-2.5 rounded-xl bg-indigo-600 font-bold text-sm text-white shadow-md hover:bg-indigo-700 transition-all flex items-center justify-center space-x-2"
         >
-          <Plus class="w-4 h-4" />
-          <span>{{ cashierStore.t('yangi_buyurtma') }}</span>
+          <ShoppingBag class="w-4 h-4" />
+          <span>+ Olib ketish</span>
         </router-link>
+
+        <router-link 
+          to="/cashier/order?type=delivery"
+          class="px-4 py-2.5 rounded-xl bg-emerald-600 font-bold text-sm text-white shadow-md hover:bg-emerald-700 transition-all flex items-center justify-center space-x-2"
+        >
+          <Truck class="w-4 h-4" />
+          <span>+ Dastavka (Yetkazib berish)</span>
+        </router-link>
+
         <button 
           @click="refreshTables" 
           :disabled="cashierTablesStore.loading"
@@ -174,7 +183,7 @@
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
 import { ref, computed, onMounted, onUnmounted, markRaw } from 'vue';
-import { RotateCw, Users as UsersIcon, HelpCircle, CheckCircle, Play, Plus } from 'lucide-vue-next';
+import { RotateCw, Users as UsersIcon, HelpCircle, CheckCircle, Play, Plus, ShoppingBag, Truck } from 'lucide-vue-next';
 import { useCashierTablesStore } from '@/stores/cashierTables';
 import { useCashierStore } from '@/stores/cashier';
 import { useRouter } from 'vue-router';

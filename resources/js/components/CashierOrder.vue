@@ -742,6 +742,9 @@ onMounted(async () => {
   if (route.query.table_id) {
     selectedTableId.value = parseInt(route.query.table_id, 10);
   }
+  if (route.query.type) {
+    orderType.value = route.query.type;
+  }
   
   // Load categories
   try {
