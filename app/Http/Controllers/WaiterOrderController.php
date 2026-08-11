@@ -128,7 +128,10 @@ class WaiterOrderController extends Controller
         return DB::transaction(function () use ($itemId) {
             $item = OrderItem::lockForUpdate()->findOrFail($itemId);
 
-            if ($item->status !== 'pending') {
+            $user = auth()->user();
+            $canDeleteAny = $user && $user->hasAnyRole(['Super Admin', 'Admin', 'Cashier', 'Manager']);
+
+            if (!$canDeleteAny && $item->status !== 'pending') {
                 return response()->json([
                     'success' => false,
                     'message' => 'Faqat kutilayotgan (pending) taomlarni bekor qilish mumkin.'

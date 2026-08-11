@@ -183,7 +183,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Waiter panel routes
-    Route::middleware('permission:view waiter panel')->group(function () {
+    Route::middleware('permission:view waiter panel|view cashier dashboard')->group(function () {
         Route::get('/waiter/tables', [\App\Http\Controllers\WaiterController::class, 'tables']);
         Route::post('/waiter/orders/submit', [\App\Http\Controllers\WaiterOrderController::class, 'submit']);
         Route::get('/waiter/orders/active-status', [\App\Http\Controllers\WaiterOrderController::class, 'activeStatus']);

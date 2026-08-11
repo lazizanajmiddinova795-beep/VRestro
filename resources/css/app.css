@@ -314,3 +314,86 @@ html.night-filter {
   font-size: 16px;
 }
 
+/* Hide print content on standard screens */
+.print-only {
+  display: none;
+}
+
+/* Print CSS Configurations specifically for 80mm roll */
+@media print {
+  @page {
+    size: 57mm auto;
+    margin: 0mm;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body * {
+    visibility: hidden;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  .no-print, .no-print * {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .print-only, .print-only * {
+    visibility: visible;
+  }
+
+  #physical-thermal-receipt, #print-kot-container, #prebill-receipt {
+    display: block !important;
+    width: 57mm;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 1mm;
+    box-sizing: border-box;
+  }
+
+  .thermal-ticket {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10pt;
+    line-height: 1.25;
+    width: 100%;
+    color: #000000;
+  }
+
+  .ticket-center {
+    text-align: center;
+  }
+  
+  .ticket-divider {
+    border-top: 1px dashed #000;
+    margin: 5px 0;
+  }
+  .ticket-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+    font-size: inherit;
+  }
+  
+  .ticket-table th {
+    border-bottom: 1px solid #000;
+    font-weight: bold;
+    padding-bottom: 4px;
+  }
+  
+  .ticket-table td {
+    padding: 3px 0;
+  }
+  
+  .ticket-totals {
+    font-size: inherit;
+  }
+  
+  .ticket-footer-text {
+    font-size: inherit;
+    margin-top: 8px;
+  }
+}

@@ -1,5 +1,6 @@
 <template>
-  <div class="h-full flex flex-col lg:flex-row gap-6 overflow-hidden bg-[#F1F5F9] p-1">
+  <div class="h-full">
+    <div class="h-full flex flex-col lg:flex-row gap-6 overflow-hidden bg-[#F1F5F9] p-1 no-print">
     
     <!-- LEFT COLUMN: Categories and Foods Grid (60% width) -->
     <div class="w-full lg:w-3/5 flex flex-col h-full overflow-hidden bg-white border border-slate-200 rounded-3xl p-6 shadow-md">
@@ -167,8 +168,44 @@
           </div>
         </div>
 
-        <!-- Cart Items List -->
+        <!-- Active Order Items List (Sent to Kitchen) -->
+        <div v-if="activeOrderItems.length > 0" class="flex-grow overflow-y-auto pr-1 divide-y divide-slate-200 space-y-2 mb-2 bg-slate-50 rounded-xl p-2 border border-slate-100">
+          <div class="text-3xs font-black text-slate-400 uppercase tracking-widest mb-1 px-1">Mavjud buyurtmalar</div>
+          <div
+            v-for="item in activeOrderItems"
+            :key="'active-' + item.id"
+            class="flex items-center justify-between py-1.5 text-xs opacity-80 hover:opacity-100 transition group"
+          >
+            <div class="space-y-0.5 truncate max-w-[170px]">
+              <h4 class="font-bold text-slate-700 truncate flex items-center gap-1">
+                {{ item.food?.name }}
+                <span v-if="item.size_name" class="text-[9px] px-1.5 py-0.5 rounded bg-slate-200 border border-slate-300 text-slate-700 font-bold">
+                  {{ item.size_name }}
+                </span>
+                <span v-if="item.status !== 'pending'" class="text-[8px] px-1 py-0.5 rounded bg-amber-100 text-amber-700 font-bold uppercase tracking-wider ml-1">
+                  {{ item.status }}
+                </span>
+              </h4>
+              <p class="font-mono text-slate-500 text-[10px]">{{ formatCurrency(item.price) }}</p>
+            </div>
+            <!-- Quantity and Delete -->
+            <div class="flex items-center space-x-2 shrink-0">
+              <span class="font-bold font-mono text-slate-700 text-xs w-6 text-right">x{{ item.quantity }}</span>
+              <button
+                v-if="item.status !== 'cancelled'"
+                @click="deleteActiveOrderItem(item.id)"
+                title="Bekor qilish"
+                class="p-1 rounded bg-rose-50 text-rose-400 hover:bg-rose-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all duration-200"
+              >
+                <Trash2 class="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cart Items List (New Items) -->
         <div class="flex-grow overflow-y-auto pr-1 divide-y divide-slate-200 space-y-2 mb-4">
+          <div class="text-3xs font-black text-slate-400 uppercase tracking-widest mb-1 px-1" v-if="cashierStore.cart.length > 0">Yangi qo'shilayotganlar</div>
           <div
             v-for="item in cashierStore.cart"
             :key="item.food_id + '-' + (item.size_name || 'default')"
@@ -209,8 +246,11 @@
             </div>
           </div>
 
-          <div v-if="cashierStore.cart.length === 0" class="text-center py-16 text-slate-500 text-xs">
+          <div v-if="cashierStore.cart.length === 0 && activeOrderItems.length === 0" class="text-center py-16 text-slate-500 text-xs">
             Savatcha hozircha bo'sh. Chap tomondan taom qo'shing.
+          </div>
+          <div v-if="cashierStore.cart.length === 0 && activeOrderItems.length > 0" class="text-center py-6 text-slate-400 text-xs italic">
+            Yangi taom qo'shish uchun chap tomondan tanlang
           </div>
         </div>
       </div>
@@ -254,7 +294,7 @@
           <!-- Button 2: Immediate Checkout & Payment -->
           <button 
             @click="openCheckout"
-            :disabled="cashierStore.cart.length === 0"
+            :disabled="cashierStore.cart.length === 0 && activeOrderItems.length === 0"
             class="py-3.5 px-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 font-extrabold text-xs text-white shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
             :class="orderType === 'delivery' ? 'w-full col-span-2' : ''"
           >
@@ -457,12 +497,14 @@
       </div>
     </Transition>
 
+    </div>
+
     <!-- KOT PRINT -->
     <PrintKot v-if="kotOrder" :order="kotOrder" />
 
     <!-- ACTUAL PRINT ONLY CONTENT (Hidden on screen, shown when printing) -->
     <div id="physical-thermal-receipt" class="print-only" v-if="lastCompletedPayment">
-      <div class="ticket-ticket">
+      <div class="thermal-ticket">
         <div class="ticket-center" style="margin-bottom: 5px;">
            <img :src="'/foodflow_logo.png'" style="width: 48px; height: 48px; display: block; margin: 0 auto; filter: grayscale(100%);" alt="Logo" />
         </div>
@@ -541,10 +583,10 @@
 
         <div class="ticket-divider"></div>
 
-        <div class="ticket-center" style="margin: 12px 0;">
-          <img :src="printQrCodeUrl" style="width: 2.2cm; height: 2.2cm; display: block; margin: 0 auto;" alt="QR Code" />
-          <div style="font-size: 7.5pt; font-family: monospace; margin-top: 4px; text-transform: uppercase;">{{ cashierStore.t('scan_to_verify') }}</div>
+        <div class="ticket-center" style="margin-bottom: 10px;" v-if="printQrCodeUrl">
+           <img :src="printQrCodeUrl" style="width: 100px; height: 100px; display: block; margin: 0 auto;" alt="QR Code" @load="onQrLoaded" @error="onQrLoaded" />
         </div>
+        <div style="font-size: 7.5pt; font-family: monospace; margin-top: 4px; text-transform: uppercase;">{{ cashierStore.t('scan_to_verify') }}</div>
 
         <div class="ticket-divider"></div>
 
@@ -671,8 +713,12 @@ const filteredFoods = computed(() => {
 });
 
 const totals = computed(() => {
+  const activeOrderTotal = activeOrder.value ? parseFloat(activeOrder.value.total_amount) : 0;
+  
   const cart = cashierStore.cart || [];
-  const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const cartSubtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const subtotal = cartSubtotal + activeOrderTotal;
+  
   const discount = cashierStore.discountAmount;
   const service = (subtotal - discount) * (parseFloat(serviceChargeRate.value) / 100);
   const tax = (subtotal - discount) * (parseFloat(taxRate.value) / 100);
@@ -772,42 +818,47 @@ watch(() => checkoutForm.value.bonus_used, (newBonus) => {
 });
 
 const submitCheckout = async () => {
-  if (cashierStore.cart.length === 0) return;
+  if (cashierStore.cart.length === 0 && !activeOrder.value) return;
 
   loadingSubmit.value = true;
   try {
-    // 1. Create Order
-    const orderPayload = {
-      table_id: checkoutForm.value.table_id || selectedTableId.value || null,
-      order_type: orderType.value,
-      customer_phone: customerPhone.value || null,
-      waiter_id: authStore.user?.id || null,
-      items: cashierStore.cart.map(it => ({
-        food_id: it.food_id,
-        quantity: it.quantity,
-        size_name: it.size_name || null,
-        notes: it.notes || null
-      }))
-    };
+    let orderId = activeOrder.value ? activeOrder.value.id : null;
 
-    const orderRes = await fetch('/api/orders', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
-      body: JSON.stringify(orderPayload)
-    });
+    if (cashierStore.cart.length > 0) {
+      // 1. Create Order / Append to existing order
+      const orderPayload = {
+        table_id: checkoutForm.value.table_id || selectedTableId.value || null,
+        order_type: orderType.value,
+        customer_phone: customerPhone.value || null,
+        waiter_id: authStore.user?.id || null,
+        items: cashierStore.cart.map(it => ({
+          food_id: it.food_id,
+          quantity: it.quantity,
+          size_name: it.size_name || null,
+          notes: it.notes || null
+        }))
+      };
 
-    const orderData = await orderRes.json();
-    if (!orderRes.ok) {
-      throw new Error(orderData.message || 'Tezkor buyurtma yaratishda xatolik yuz berdi.');
+      const orderRes = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${authStore.token}`
+        },
+        body: JSON.stringify(orderPayload)
+      });
+
+      const orderData = await orderRes.json();
+      if (!orderRes.ok) {
+        throw new Error(orderData.message || 'Tezkor buyurtma yaratishda xatolik yuz berdi.');
+      }
+      orderId = orderData.order.id;
     }
 
     // 2. Process final Checkout Payment
     const paymentPayload = {
-      order_id: orderData.order.id,
+      order_id: orderId,
       customer_id: checkoutForm.value.customer_id,
       payment_method: checkoutForm.value.payment_method,
       cash_amount: checkoutForm.value.cash_amount,
@@ -836,15 +887,22 @@ const submitCheckout = async () => {
     selectedTableId.value = null;
     showCheckoutModal.value = false;
 
-    
     lastCompletedPayment.value = payData.payment;
     
-    // Wait for Vue to render the hidden receipt, then print
-    setTimeout(() => {
-      window.print();
-      // Clear the receipt from DOM after printing dialog closes
+    // Add print event listener to clear receipt after printing dialog closes
+    const handleAfterPrint = () => {
       lastCompletedPayment.value = null;
-    }, 200);
+      window.removeEventListener('afterprint', handleAfterPrint);
+    };
+    window.addEventListener('afterprint', handleAfterPrint);
+
+    // Fallback: if the print dialog doesn't close properly or QR code fails
+    setTimeout(() => {
+      if (lastCompletedPayment.value) {
+        lastCompletedPayment.value = null;
+        window.removeEventListener('afterprint', handleAfterPrint);
+      }
+    }, 60000);
 
   } catch (err) {
     alert(err.message);
@@ -853,11 +911,20 @@ const submitCheckout = async () => {
   }
 };
 
+const onQrLoaded = () => {
+  if (lastCompletedPayment.value) {
+    setTimeout(() => { window.print(); }, 100);
+  }
+};
+
 
 // Print receipt logic
 const lastCompletedPayment = ref(null);
 
 const printQrCodeUrl = computed(() => {
+  if (settingStore.settings?.qr_link) {
+    return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(settingStore.settings.qr_link)}`;
+  }
   const name = settingStore.branding?.name || 'FoodFlow';
   const address = settingStore.branding?.address || "Toshkent, O'zbekiston";
   return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(name + ' - ' + address)}`;
@@ -884,6 +951,9 @@ const loadingOrderSubmit = ref(false);
 const kotOrder = ref(null);
 
 
+const activeOrder = ref(null);
+const activeOrderItems = ref([]);
+
 const fetchActiveOrderForTable = async (tableId) => {
   if (!tableId) return;
   try {
@@ -897,20 +967,45 @@ const fetchActiveOrderForTable = async (tableId) => {
       const tableOrders = ordersList.filter(o => String(o.table_id) === String(tableId));
       const active = tableOrders.find(o => !o.payments || o.payments.length === 0);
       
+      if (active) {
+        activeOrder.value = active;
+        activeOrderItems.value = active.items || [];
+      } else {
+        activeOrder.value = null;
+        activeOrderItems.value = [];
+      }
+      
       // Always clear cart when switching tables
       cashierStore.clearCart();
-      
-      // DO NOT AUTO-POPULATE THE CART! The user complained it adds items automatically.
-      // if (active && active.items && active.items.length > 0) {
-      //   for (const it of active.items) {
-      //     if (it.food) {
-      //       cashierStore.addToCart(it.food, it.size_name, parseFloat(it.price), it.notes, it.quantity);
-      //     }
-      //   }
-      // }
     }
   } catch (err) {
     console.error('Active order loading error:', err);
+  }
+};
+
+const deleteActiveOrderItem = async (itemId) => {
+  if (!confirm("Haqiqatan ham ushbu taomni buyurtmadan o'chirmoqchimisiz?")) return;
+  
+  try {
+    const res = await fetch(`/api/waiter/order-item/${itemId}`, {
+      method: 'DELETE',
+      headers: { 
+        'Authorization': `Bearer ${authStore.token}`,
+        'Accept': 'application/json'
+      }
+    });
+    
+    if (res.ok) {
+      if (selectedTableId.value) {
+        await fetchActiveOrderForTable(selectedTableId.value);
+      }
+    } else {
+      const data = await res.json();
+      alert(data.message || 'Xatolik yuz berdi');
+    }
+  } catch (err) {
+    console.error('Delete item error:', err);
+    alert('Tarmoq xatosi yuz berdi');
   }
 };
 
@@ -918,6 +1013,8 @@ watch(selectedTableId, (newId) => {
   if (newId) {
     fetchActiveOrderForTable(newId);
   } else {
+    activeOrder.value = null;
+    activeOrderItems.value = [];
     cashierStore.clearCart();
   }
 });
