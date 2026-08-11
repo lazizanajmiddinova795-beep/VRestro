@@ -90,7 +90,7 @@ class ChefService
                 try {
                     $tableName = $order->table ? $order->table->table_number : 'Takeaway';
                     $this->notificationService->sendNotification(
-                        'order_ready',
+                        'system',
                         "Buyurtma tayyor",
                         "{$tableName} stoli uchun #{$order->order_number} buyurtmasi to'liq tayyor bo'ldi.",
                         [
