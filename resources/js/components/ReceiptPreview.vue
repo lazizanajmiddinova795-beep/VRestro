@@ -311,7 +311,7 @@
 
     <!-- ACTUAL PRINT ONLY CONTENT (Hidden on screen, shown when printing) -->
     <div id="physical-thermal-receipt" class="print-only" v-if="selectedPayment && printMode !== 'kot'">
-      <div class="ticket-ticket">
+      <div class="thermal-ticket">
         <div class="ticket-center" style="margin-bottom: 5px;">
            <img :src="'/foodflow_logo.png'" style="width: 48px; height: 48px; display: block; margin: 0 auto; filter: grayscale(100%);" alt="Logo" />
         </div>
@@ -891,7 +891,8 @@ const serviceChargeRate = computed(() => settingStore.settings.service_charge_ra
 const qrCodeUrl = computed(() => {
   const name = settingStore.branding?.name || 'FoodFlow';
   const address = settingStore.branding?.address || "Toshkent, O'zbekiston";
-  return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(name + ' - ' + address)}`;
+  const qrLink = settingStore.branding?.qr_link || (name + ' - ' + address);
+  return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrLink)}`;
 });
 
 const selectPayment = (payment) => {
@@ -1366,7 +1367,7 @@ onMounted(async () => {
     width: 100%;
     border-collapse: collapse;
     margin-top: 4px;
-    font-size: 10pt;
+    font-size: inherit;
   }
 
   .ticket-table th {
@@ -1380,7 +1381,7 @@ onMounted(async () => {
   }
 
   .ticket-totals {
-    font-size: 10.5pt;
+    font-size: inherit;
   }
 
   .flex-row {
@@ -1394,7 +1395,7 @@ onMounted(async () => {
   }
 
   .ticket-footer-text {
-    font-size: 9pt;
+    font-size: inherit;
     margin-top: 8px;
   }
 }

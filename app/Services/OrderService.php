@@ -49,11 +49,20 @@ class OrderService
                     ->whereIn('status', ['new', 'cooking', 'ready', 'delivered'])
                     ->doesntHave('payments')
                     ->first();
+                
+                // Ensure table status is updated to occupied if an order is found
+                if ($order) {
+                    \App\Models\Table::where('id', $tableId)->update(['status' => 'occupied']);
+                }
             }
 
             // 2. Create Order Container if no active order exists
             if (!$order) {
-                $orderNumber = $this->orderRepository->generateOrderNumber();
+                $isNew = true;
+                $dateStr = now()->timezone('Asia/Tashkent')->format('Ymd');
+                $dailyCount = Order::whereDate('created_at', now()->timezone('Asia/Tashkent')->toDateString())->count();
+                $orderNumber = 'ORD-' . $dateStr . '-' . str_pad($dailyCount + 1, 3, '0', STR_PAD_LEFT);
+
                 $order = $this->orderRepository->create([
                     'order_number' => $orderNumber,
                     'table_id' => $tableId,

@@ -624,10 +624,10 @@ export const useCashierStore = defineStore('cashier', () => {
     };
 
     // Cart operations
-    const addToCart = (food, sizeName = null, price = null, notes = '', quantity = 1) => {
+    const addToCart = (food, sizeName = null, price = null, notes = '', quantity = 1, is_existing = false) => {
         const finalPrice = price !== null ? parseFloat(price) : parseFloat(food.price);
         const finalQuantity = quantity > 0 ? quantity : 1;
-        const existing = cart.value.find(item => item.food_id === food.id && (item.size_name || null) === sizeName);
+        const existing = cart.value.find(item => item.food_id === food.id && (item.size_name || null) === sizeName && item.is_existing === is_existing);
         if (existing) {
             existing.quantity += finalQuantity;
         } else {
@@ -638,7 +638,8 @@ export const useCashierStore = defineStore('cashier', () => {
                 size_name: sizeName,
                 notes: notes || '',
                 quantity: finalQuantity,
-                food: food
+                food: food,
+                is_existing: is_existing
             });
         }
         playNotificationBeep();

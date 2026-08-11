@@ -18,6 +18,7 @@ export const useSettingsStore = defineStore('settings', () => {
         working_hours: localStorage.getItem('vrestro_brand_hours') || '09:00 - 23:00',
         logo_url: localStorage.getItem('vrestro_brand_logo') || '',
         primary_color: localStorage.getItem('vrestro_brand_color') || '#4f46e5',
+        qr_link: localStorage.getItem('vrestro_brand_qr_link') || '',
     });
 
     const rawSettings = ref({});
@@ -562,6 +563,7 @@ export const useSettingsStore = defineStore('settings', () => {
             'settings.brand_phone': 'Telefon raqami',
             'settings.brand_address': 'Manzil',
             'settings.brand_hours': 'Ish vaqti',
+            'settings.brand_qr_link': 'QR Kod (Manzil/Xarita Havolasi)',
             'settings.primary_color': 'Marka Asosiy Rangi',
             'settings.subtitle_full': 'Restoranning global branding, moliyaviy me\'yorlari va xavfsizlik konfiguratsiyalari.',
             'settings.tab_general': 'Asosiy Sozlamalar',
@@ -1148,6 +1150,7 @@ export const useSettingsStore = defineStore('settings', () => {
             'settings.brand_phone': 'Номер телефона',
             'settings.brand_address': 'Адрес',
             'settings.brand_hours': 'Часы работы',
+            'settings.brand_qr_link': 'QR-код (Ссылка на адрес/карту)',
             'settings.primary_color': 'Основной цвет бренда',
             'settings.subtitle_full': 'Глобальный брендинг ресторана, финансовые нормы и настройки безопасности.',
             'settings.tab_general': 'Основные Настройки',
@@ -1734,6 +1737,7 @@ export const useSettingsStore = defineStore('settings', () => {
             'settings.brand_phone': 'Phone Number',
             'settings.brand_address': 'Address',
             'settings.brand_hours': 'Operating Hours',
+            'settings.brand_qr_link': 'QR Code (Address/Map Link)',
             'settings.primary_color': 'Brand Primary Color',
             'settings.subtitle_full': 'Restaurant\'s global branding, financial norms, and security configuration.',
             'settings.tab_general': 'General Settings',
@@ -1859,6 +1863,7 @@ export const useSettingsStore = defineStore('settings', () => {
                 if (data.restaurant_address) branding.value.address = data.restaurant_address;
                 if (data.restaurant_hours) branding.value.working_hours = data.restaurant_hours;
                 if (data.restaurant_logo) branding.value.logo_url = data.restaurant_logo;
+                if (data.restaurant_qr_link !== undefined) branding.value.qr_link = data.restaurant_qr_link;
             }
         } catch (e) {
             console.error('Settings fetch error:', e);

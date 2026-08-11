@@ -17,8 +17,7 @@
         <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-3 group">
           <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300 overflow-hidden">
-            <img v-if="settingStore.settings.restaurant_logo" :src="settingStore.settings.restaurant_logo" class="w-full h-full object-cover" />
-            <ChefHat v-else class="w-6 h-6 text-white" />
+            <img :src="'/foodflow_logo.png'" alt="Logo" class="w-full h-full object-contain p-1" @error="$event.target.src=''" />
           </div>
           <span class="text-slate-900 font-black text-xl tracking-tight truncate max-w-[130px]" :title="settingStore.settings.restaurant_name">
             {{ settingStore.settings.restaurant_name }}

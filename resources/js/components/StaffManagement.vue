@@ -348,19 +348,7 @@
                       <button v-if="staffForm.avatar_url" type="button" @click="staffForm.avatar_url = ''; avatarFile.value = null" class="text-xs font-bold text-rose-500 hover:underline">{{ settingsStore.t('delete') }}</button>
                     </div>
 
-                    <!-- Presets -->
-                    <div class="grid grid-cols-6 gap-2 pt-1">
-                      <button
-                        type="button"
-                        v-for="(preset, i) in avatarPresets"
-                        :key="i"
-                        @click="staffForm.avatar_url = preset; avatarFile.value = null"
-                        class="w-9 h-9 rounded-full overflow-hidden border-2 transition active:scale-90"
-                        :class="staffForm.avatar_url === preset ? 'border-indigo-500 ring-2 ring-indigo-500/40' : 'border-slate-200 hover:border-slate-400'"
-                      >
-                        <img :src="preset" class="w-full h-full object-cover" />
-                      </button>
-                    </div>
+
                 </div>
 
                 <div class="sm:col-span-2 flex flex-col">

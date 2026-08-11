@@ -32,7 +32,7 @@ class StaffService
 
             if ($data['role'] === 'Admin') {
                 $data['is_superadmin'] = true;
-                \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin']);
+                \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
             } else {
                 $data['is_superadmin'] = false;
             }
@@ -105,7 +105,7 @@ class StaffService
 
             if ($data['role'] === 'Admin') {
                 $data['is_superadmin'] = true;
-                \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin']);
+                \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
             } else {
                 $data['is_superadmin'] = false;
             }

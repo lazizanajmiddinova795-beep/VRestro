@@ -42,7 +42,7 @@ class PaymentService
             ]);
         }
 
-        if ($order->status === 'delivered') {
+        if ($order->payments()->where('status', 'completed')->exists()) {
             throw ValidationException::withMessages([
                 'order_id' => ['Bu buyurtma allaqachon to\'langan.'],
             ]);
@@ -151,7 +151,7 @@ class PaymentService
             Cache::forget('admin_dashboard_analytics');
 
             DB::commit();
-            return $payment->load(['order', 'customer']);
+            return $payment->load(['order.items.food', 'order.table', 'customer']);
 
         } catch (\Exception $e) {
             DB::rollBack();

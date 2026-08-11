@@ -1,5 +1,6 @@
 <template>
-  <div class="space-y-6 bg-[#F1F5F9]">
+  <div class="h-full">
+    <div class="space-y-6 bg-[#F1F5F9] no-print">
     <!-- View Title & Actions -->
     <div class="flex justify-between items-center">
       <div>
@@ -65,11 +66,11 @@
       v-if="filteredTables.length > 0"
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
     >
-      <button
+      <div
         v-for="table in filteredTables"
         :key="table.id"
         @click="handleTableClick(table)"
-        class="relative group p-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[140px] flex flex-col justify-between"
+        class="relative group p-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[140px] flex flex-col justify-between cursor-pointer"
         :class="getStatusClasses(table.status)"
       >
         <!-- Table indicator glow accent -->
@@ -114,20 +115,45 @@
             table.status === 'reserved' ? 'border-amber-300' : 'border-slate-350'
           ]"
         >
-          <div 
-            class="flex items-center space-x-1.5 text-xs font-bold"
-            :class="[
-              table.status === 'empty' ? 'text-emerald-800' : '',
-              table.status === 'occupied' ? 'text-blue-900' : '',
-              table.status === 'waiting_checkout' ? 'text-rose-900' : '',
-              table.status === 'reserved' ? 'text-amber-900' : 'text-slate-700'
-            ]"
-          >
-            <UsersIcon class="w-3.5 h-3.5" />
-            <span>{{ table.capacity }} kishi</span>
+          <div class="flex flex-col space-y-3 w-full">
+            <div 
+              class="flex items-center space-x-1.5 text-xs font-bold"
+              :class="[
+                table.status === 'empty' ? 'text-emerald-800' : '',
+                table.status === 'occupied' ? 'text-blue-900' : '',
+                table.status === 'waiting_checkout' ? 'text-rose-900' : '',
+                table.status === 'reserved' ? 'text-amber-900' : 'text-slate-700'
+              ]"
+            >
+              <UsersIcon class="w-3.5 h-3.5" />
+              <span>{{ table.capacity }} kishi</span>
+            </div>
+            
+            <!-- Actions for Occupied Tables -->
+            <div v-if="table.status === 'occupied'" class="flex space-x-2 w-full">
+              <button 
+                @click.stop="handlePrintPreBill(table)"
+                class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg shadow-sm transition flex items-center justify-center"
+                title="Chek chiqarish"
+              >
+                <Printer class="w-4 h-4" />
+              </button>
+              <button 
+                @click.stop="handleCheckout(table)"
+                class="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-sm transition"
+              >
+                To'lovga o'tish
+              </button>
+              <button 
+                @click.stop="handleAddMore(table)"
+                class="flex-1 py-1.5 bg-slate-200 hover:bg-slate-300 text-blue-900 text-xs font-bold rounded-lg shadow-sm transition"
+              >
+                Yana qo'shish
+              </button>
+            </div>
           </div>
         </div>
-      </button>
+      </div>
     </div>
 
     <!-- Loading Skeleton -->
@@ -176,22 +202,187 @@
         </div>
       </div>
     </Transition>
+    </div> <!-- end no-print space-y-6 bg-[#F1F5F9] -->
+
+    <!-- Pre-bill Print Section -->
+    <div id="physical-thermal-receipt" class="print-only text-black bg-white" v-if="prebillOrder">
+      <div class="thermal-ticket">
+        <div class="ticket-center mb-1">
+          <img :src="'/foodflow_logo.png'" style="width: 1.5cm; height: 1.5cm; display: block; margin: 0 auto; filter: grayscale(100%);" alt="Logo" />
+        </div>
+        <div class="ticket-center font-bold" style="font-size: 14pt;">{{ settingsStore.branding?.name || 'FoodFlow' }}</div>
+        <div class="ticket-center" style="font-size: 9pt;">{{ settingsStore.branding?.address || 'Toshkent, O\'zbekiston' }}</div>
+        <div class="ticket-center" style="font-size: 9pt;">Tel: {{ settingsStore.branding?.phone || '+998 90 123 45 67' }}</div>
+        
+        <div class="ticket-divider"></div>
+
+        <div>{{ cashierStore.t('buyurtma_no') }}: {{ prebillOrder.order_number }}</div>
+        <div>{{ cashierStore.t('sana') }}: {{ printFormatDateTime(new Date()) }}</div>
+        <div v-if="prebillOrder.table?.table_number">{{ cashierStore.t('stol') }}: {{ prebillOrder.table.table_number }}</div>
+        <div>Offitsiant: {{ prebillOrder.waiter?.name || 'Kassir' }}</div>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-center ticket-bold" style="font-size: 14pt; margin: 4px 0;">*** {{ cashierStore.t('navbat_cheki').toUpperCase() }} ***</div>
+        <div class="ticket-center ticket-bold" style="font-size: 18pt; margin: 6px 0; letter-spacing: 1px;">№{{ prebillOrder.order_number }}</div>
+        
+        <div class="ticket-divider"></div>
+
+        <table class="ticket-table">
+          <thead>
+            <tr style="border-bottom: 1px solid #000;">
+              <th align="left" style="padding-bottom: 4px;">{{ cashierStore.t('nomi') }}</th>
+              <th align="center" style="padding-bottom: 4px;">{{ cashierStore.t('soni') }}</th>
+              <th align="right" style="padding-bottom: 4px;">{{ cashierStore.t('summa') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in prebillOrder.items" :key="item.id">
+              <td style="padding: 2px 0;">{{ item.food?.name }}</td>
+              <td align="center" style="padding: 2px 0;">x{{ item.quantity }}</td>
+              <td align="right" style="padding: 2px 0;">{{ formatCurrency(item.quantity * item.price) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-totals">
+          <div style="display: flex; justify-content: space-between;">
+            <span>{{ cashierStore.t('oraliq_jami') }}:</span>
+            <span>{{ formatCurrency(getPrebillSubtotal()) }}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-style: italic;" v-if="parseFloat(prebillOrder.discount_amount) > 0">
+            <span>Chegirma:</span>
+            <span>-{{ formatCurrency(prebillOrder.discount_amount) }}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;" v-if="getPrebillServiceCharge() > 0">
+            <span>Xizmat haqi ({{ settingsStore.settings?.service_charge_rate || 0 }}%):</span>
+            <span>{{ formatCurrency(getPrebillServiceCharge()) }}</span>
+          </div>
+
+          <div class="ticket-divider"></div>
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14pt; margin-top: 5px;">
+            <span>JAMI TO'LOV:</span>
+            <span>{{ formatCurrency(getPrebillTotal()) }}</span>
+          </div>
+        </div>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-center" style="margin: 12px 0;" v-if="printQrCodeUrl">
+          <img :src="printQrCodeUrl" style="width: 2.2cm; height: 2.2cm; display: block; margin: 0 auto;" alt="QR Code" @load="onPrebillQrLoaded" @error="onPrebillQrLoaded" />
+          <div style="font-size: 7.5pt; font-family: monospace; margin-top: 4px; text-transform: uppercase;">SCAN TO VERIFY</div>
+        </div>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-center ticket-footer-text">
+          <p>{{ settingsStore.settings?.receipt_header || 'FoodFlow - Xizmatimizdan mamnunmisiz?' }}</p>
+          <p class="ticket-bold">{{ settingsStore.settings?.receipt_footer || 'Xaridingiz uchun rahmat! Yana keling!' }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
-import { ref, computed, onMounted, onUnmounted, markRaw } from 'vue';
-import { RotateCw, Users as UsersIcon, HelpCircle, CheckCircle, Play, Plus, ShoppingBag, Truck } from 'lucide-vue-next';
+import { ref, computed, onMounted, onUnmounted, markRaw, nextTick } from 'vue';
+import { RotateCw, Users as UsersIcon, HelpCircle, CheckCircle, Play, Plus, ShoppingBag, Truck, Printer } from 'lucide-vue-next';
 import { useCashierTablesStore } from '@/stores/cashierTables';
 import { useCashierStore } from '@/stores/cashier';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
 const cashierTablesStore = useCashierTablesStore();
 const cashierStore = useCashierStore();
 const router = useRouter();
 let pollInterval = null;
+
+const prebillOrder = ref(null);
+const authStore = useAuthStore();
+
+const getPrebillSubtotal = () => {
+  if (!prebillOrder.value || !prebillOrder.value.items) return 0;
+  return prebillOrder.value.items.reduce((acc, item) => acc + (parseFloat(item.price) * item.quantity), 0);
+};
+
+const getPrebillServiceCharge = () => {
+  if (!prebillOrder.value) return 0;
+  const sub = getPrebillSubtotal();
+  const disc = parseFloat(prebillOrder.value.discount_amount) || 0;
+  const rate = parseFloat(settingsStore.settings?.service_charge_rate) || 0;
+  return (sub - disc) * (rate / 100);
+};
+
+const getPrebillTotal = () => {
+  const sub = getPrebillSubtotal();
+  const disc = parseFloat(prebillOrder.value?.discount_amount) || 0;
+  const svc = getPrebillServiceCharge();
+  return sub - disc + svc;
+};
+
+const printQrCodeUrl = computed(() => {
+  const name = settingsStore.branding?.name || 'FoodFlow';
+  const address = settingsStore.branding?.address || "Toshkent, O'zbekiston";
+  return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(name + ' - ' + address)}`;
+});
+
+const formatCurrency = (val) => {
+  if (!val) return '0 so\'m';
+  return parseFloat(val).toLocaleString('uz-UZ') + ' so\'m';
+};
+
+const printFormatDateTime = (dateStr) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleString('uz-UZ', { 
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  });
+};
+
+const handlePrintPreBill = async (table) => {
+  try {
+    const res = await fetch(`/api/orders?table_id=${table.id}&status=new,cooking,ready,delivered`, {
+      headers: { 'Authorization': `Bearer ${authStore.token}`, 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const ordersData = await res.json();
+      const ordersList = Array.isArray(ordersData) ? ordersData : (ordersData.data || []);
+      const tableOrders = ordersList.filter(o => String(o.table_id) === String(table.id));
+      const active = tableOrders.find(o => !o.payments || o.payments.length === 0);
+      
+      if (active) {
+        prebillOrder.value = active;
+        await nextTick();
+        
+        let printTriggered = false;
+        const doPrint = () => {
+          if (printTriggered) return;
+          printTriggered = true;
+          window.print();
+          setTimeout(() => { prebillOrder.value = null; }, 1000);
+        };
+
+        // Assign to a global-like variable or expose it to the template via a ref if needed, 
+        // but it's simpler to just set a longer timeout if we don't have a direct hook.
+        // Wait up to 1500ms for images to load.
+        prebillPrintCallback = doPrint;
+        setTimeout(doPrint, 1500);
+      }
+    }
+  } catch (err) {
+    console.error('Pre-bill loading error:', err);
+  }
+};
+
+let prebillPrintCallback = null;
+const onPrebillQrLoaded = () => {
+  if (prebillPrintCallback) prebillPrintCallback();
+};
 
 const selectedFloor = ref('all');
 
@@ -264,6 +455,16 @@ const getModalIconColor = (type) => {
 
 // Interaction Handler
 const handleTableClick = (table) => {
+  if (table.status !== 'occupied') {
+    router.push({ path: '/cashier/order', query: { table_id: table.id } });
+  }
+};
+
+const handleCheckout = (table) => {
+  router.push({ path: '/cashier/order', query: { table_id: table.id, action: 'checkout' } });
+};
+
+const handleAddMore = (table) => {
   router.push({ path: '/cashier/order', query: { table_id: table.id } });
 };
 

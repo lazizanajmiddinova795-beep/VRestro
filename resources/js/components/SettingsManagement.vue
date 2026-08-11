@@ -206,6 +206,16 @@
           />
         </div>
 
+        <div class="space-y-1.5 md:col-span-2">
+          <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.brand_qr_link') }}</label>
+          <input
+            v-model="generalForm.restaurant_qr_link"
+            type="text"
+            placeholder="https://maps.google.com/..."
+            class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-sm text-slate-900 focus:outline-none transition"
+          />
+        </div>
+
         <!-- Logo drag zone -->
         <div class="space-y-1.5 md:col-span-2">
           <label class="text-3xs text-slate-500 font-bold uppercase tracking-wider">{{ settingsStore.t('settings.restaurant_logo') }}</label>
@@ -499,7 +509,8 @@ const generalForm = ref({
   restaurant_name: '',
   restaurant_phone: '',
   restaurant_hours: '',
-  restaurant_address: ''
+  restaurant_address: '',
+  restaurant_qr_link: '',
 });
 const logoFile = ref(null);
 const logoPreview = ref(null);
@@ -532,10 +543,11 @@ onMounted(async () => {
   await settingStore.fetchSettings();
   
   // Bind form values
-  generalForm.value.restaurant_name = settingStore.settings.restaurant_name;
-  generalForm.value.restaurant_phone = settingStore.settings.restaurant_phone;
-  generalForm.value.restaurant_hours = settingStore.settings.restaurant_hours;
-  generalForm.value.restaurant_address = settingStore.settings.restaurant_address;
+  generalForm.value.restaurant_name = settingStore.settings.restaurant_name || '';
+  generalForm.value.restaurant_phone = settingStore.settings.restaurant_phone || '';
+  generalForm.value.restaurant_hours = settingStore.settings.restaurant_hours || '';
+  generalForm.value.restaurant_address = settingStore.settings.restaurant_address || '';
+  generalForm.value.restaurant_qr_link = settingStore.settings.restaurant_qr_link || '';
   logoPreview.value = settingStore.settings.restaurant_logo;
 
   financeForm.value.tax_rate = parseFloat(settingStore.settings.tax_rate) || 0;
@@ -574,6 +586,7 @@ const saveAllSettings = async () => {
   formData.append('restaurant_phone', generalForm.value.restaurant_phone);
   formData.append('restaurant_hours', generalForm.value.restaurant_hours);
   formData.append('restaurant_address', generalForm.value.restaurant_address);
+  formData.append('restaurant_qr_link', generalForm.value.restaurant_qr_link);
 
   formData.append('tax_rate', financeForm.value.tax_rate);
   formData.append('currency', financeForm.value.currency);
