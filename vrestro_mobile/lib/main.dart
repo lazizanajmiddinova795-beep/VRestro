@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'core/theme/neumorphic_theme.dart';
-import 'core/constants/app_colors.dart';
-import 'features/auth/bloc/auth_bloc.dart';
-import 'features/auth/screens/login_screen.dart';
-import 'features/cashier/bloc/cashier_bloc.dart';
-import 'features/cashier/screens/cashier_layout_screen.dart';
-import 'features/waiter/bloc/waiter_bloc.dart';
-import 'features/waiter/screens/waiter_layout_screen.dart';
-import 'features/kitchen/bloc/kitchen_bloc.dart';
-import 'features/kitchen/screens/chef_layout_screen.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ));
   runApp(const VRestroApp());
 }
 
@@ -21,62 +16,52 @@ class VRestroApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthBloc>(
-          create: (context) => AuthBloc()..add(CheckAuthStatus()),
-        ),
-        BlocProvider<CashierBloc>(
-          create: (context) => CashierBloc(),
-        ),
-        BlocProvider<WaiterBloc>(
-          create: (context) => WaiterBloc(),
-        ),
-        BlocProvider<KitchenBloc>(
-          create: (context) => KitchenBloc(),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'FoodFlow Mobile',
-        debugShowCheckedModeBanner: false,
-        theme: NeumorphicTheme.lightTheme,
-        home: const RootRoleRouter(),
+    return MaterialApp(
+      title: 'FoodFlow POS',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      home: const WebWrapperScreen(),
     );
   }
 }
 
-class RootRoleRouter extends StatelessWidget {
-  const RootRoleRouter({Key? key}) : super(key: key);
+class WebWrapperScreen extends StatefulWidget {
+  const WebWrapperScreen({Key? key}) : super(key: key);
+
+  @override
+  State<WebWrapperScreen> createState() => _WebWrapperScreenState();
+}
+
+class _WebWrapperScreenState extends State<WebWrapperScreen> {
+  late final WebViewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0xFFF8FAFC)) // Match tailwind slate-50
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {},
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+        ),
+      )
+      ..loadRequest(Uri.parse('https://foodfloow.uz'));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        if (state is AuthLoading) {
-          return const Scaffold(
-            backgroundColor: AppColors.background,
-            body: Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            ),
-          );
-        }
-
-        if (state is Authenticated) {
-          final role = state.user.role.toLowerCase();
-
-          if (role.contains('cashier') || role.contains('kassir')) {
-            return const CashierLayoutScreen();
-          } else if (role.contains('chef') || role.contains('oshpaz') || role.contains('kitchen')) {
-            return const ChefLayoutScreen();
-          } else {
-            // Default to Waiter role
-            return const WaiterLayoutScreen();
-          }
-        }
-
-        return const LoginScreen();
-      },
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      body: SafeArea(
+        child: WebViewWidget(controller: controller),
+      ),
     );
   }
 }
