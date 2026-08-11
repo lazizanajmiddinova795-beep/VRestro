@@ -17,9 +17,14 @@ class ChefStopListService
      */
     public function getKitchenMenuWithStatus(): Collection
     {
-        return Category::with(['foods' => function ($query) {
-            $query->orderBy('name', 'asc');
-        }])->orderBy('name', 'asc')->get();
+        return Category::whereHas('foods', function ($query) {
+                $query->where('is_bar_item', false);
+            })
+            ->with(['foods' => function ($query) {
+                $query->where('is_bar_item', false)->orderBy('name', 'asc');
+            }])
+            ->orderBy('name', 'asc')
+            ->get();
     }
 
     /**
