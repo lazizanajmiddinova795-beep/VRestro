@@ -959,7 +959,6 @@ const submitOrderOnly = async () => {
       throw new Error(errorMsg);
     }
 
-    
     cashierStore.clearCart();
     const tableMsg = selectedTableId.value ? ' va stol band qilindi' : '';
     openModal("Muvaffaqiyatli!", `Buyurtma #${data.order.order_number || data.order.id || ''} oshxonaga yuborildi${tableMsg}.`, "success", CheckCircle);
@@ -971,9 +970,9 @@ const submitOrderOnly = async () => {
         kotOrder.value = null; // Clear after printing
     }, 250);
 
+    // If a table was selected, redirect back to tables map
     if (selectedTableId.value) {
       setTimeout(() => {
-(()(() => {
         router.push({ path: '/cashier/tables' });
       }, 1200);
     }
