@@ -6,6 +6,13 @@
         <title>FoodFlow - Restoran boshqaruv tizimi</title>
         <link rel="icon" type="image/png" href="/favicon.png">
         <link rel="manifest" href="/manifest.json">
+        
+        <!-- PWA / iOS Support -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="FoodFlow">
+        <link rel="apple-touch-icon" href="/foodflow_logo.png">
+        <meta name="theme-color" content="#ffffff">
 
         <!-- Google Fonts (Outfit) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

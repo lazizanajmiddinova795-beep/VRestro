@@ -160,17 +160,16 @@
                 <span class="block text-xs font-black leading-tight">Windows .exe</span>
               </div>
             </a>
-            <a
-              href="https://apps.apple.com"
-              target="_blank"
+            <button
+              @click.prevent="showIosInstruction = true"
               class="flex items-center space-x-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-900 transition hover:scale-105 shadow-sm group"
             >
               <Apple class="w-5 h-5 text-slate-900 group-hover:text-indigo-600 transition" />
               <div class="text-left">
-                <span class="block text-[9px] uppercase tracking-wider text-slate-500 font-bold leading-tight">Yuklab olish</span>
-                <span class="block text-xs font-black leading-tight">App Store</span>
+                <span class="block text-[9px] uppercase tracking-wider text-slate-500 font-bold leading-tight">O'rnatish</span>
+                <span class="block text-xs font-black leading-tight">iOS (iPhone)</span>
               </div>
-            </a>
+            </button>
           </div>
         </div>
 
@@ -260,6 +259,30 @@
           <p class="text-xs text-slate-400 animate-pulse">Siz avtomatik tarzda boshqaruv paneliga yo'naltirilmoqdasiz...</p>
         </div>
 
+        </div>
+
+        <!-- iOS PWA Instruction Modal -->
+        <div v-if="showIosInstruction" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+          <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4">
+            <div class="flex items-center space-x-3 text-slate-900">
+              <Apple class="w-6 h-6 text-slate-800" />
+              <h3 class="text-lg font-bold">iOS'ga o'rnatish</h3>
+            </div>
+            <div class="text-sm text-slate-600 space-y-3">
+              <p>Ilovani <b>iPhone</b> yoki <b>iPad</b> ekraniga qo'shish (PWA) uchun:</p>
+              <ol class="list-decimal pl-5 space-y-1.5 font-medium">
+                <li>Ushbu sahifani Safari brauzerida oching.</li>
+                <li>Pastroqdagi o'rtada joylashgan <b class="text-indigo-600">Ulashish (Share 📤)</b> tugmasini bosing.</li>
+                <li>Ro'yxatdan <b class="text-indigo-600">Asosiy ekranga qo'shish (Add to Home Screen ➕)</b> bandini tanlang.</li>
+                <li>O'ng yuqoridagi <b>Qo'shish (Add)</b> tugmasini bosing.</li>
+              </ol>
+            </div>
+            <div class="pt-2">
+              <button @click="showIosInstruction = false" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">Tushunarli</button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -287,6 +310,7 @@ const submittingOtp = ref(false);
 const success = ref(false);
 const otpCode = ref('');
 const resendingOtp = ref(false);
+const showIosInstruction = ref(false);
 
 const addPin = (num) => {
   if (pinCode.value.length < 5) {
