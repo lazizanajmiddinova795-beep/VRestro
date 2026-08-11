@@ -259,8 +259,6 @@
           <p class="text-xs text-slate-400 animate-pulse">Siz avtomatik tarzda boshqaruv paneliga yo'naltirilmoqdasiz...</p>
         </div>
 
-        </div>
-
         <!-- iOS PWA Instruction Modal -->
         <div v-if="showIosInstruction" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
           <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4">
