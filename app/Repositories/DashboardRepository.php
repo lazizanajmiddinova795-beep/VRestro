@@ -78,7 +78,7 @@ class DashboardRepository implements DashboardRepositoryInterface
      */
     public function getTopSellingFoods(int $limit = 5): Collection
     {
-        return OrderItem::join('foods', 'order_items.food_id', '=', 'foods.id')
+        $query = OrderItem::join('foods', 'order_items.food_id', '=', 'foods.id')
             ->select(
                 'foods.id as food_id',
                 'foods.name as food_name',
@@ -86,8 +86,22 @@ class DashboardRepository implements DashboardRepositoryInterface
                 DB::raw('SUM(order_items.quantity * order_items.price) as revenue')
             )
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
-            ->where('orders.status', 'delivered') // only count delivered orders
-            ->groupBy('foods.id', 'foods.name')
+            ->where('orders.status', 'delivered');
+
+        // Apply branch isolation
+        $user = auth()->user();
+        if ($user) {
+            if ($user->is_superadmin) {
+                $headerBranchId = request()->header('X-Branch-Id');
+                if ($headerBranchId) {
+                    $query->where('orders.branch_id', $headerBranchId);
+                }
+            } elseif ($user->branch_id) {
+                $query->where('orders.branch_id', $user->branch_id);
+            }
+        }
+
+        return $query->groupBy('foods.id', 'foods.name')
             ->orderByDesc('quantity_sold')
             ->limit($limit)
             ->get();
