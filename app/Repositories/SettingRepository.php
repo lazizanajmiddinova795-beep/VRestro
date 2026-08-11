@@ -16,8 +16,13 @@ class SettingRepository implements SettingRepositoryInterface
      */
     public function getAllKeyValue(): array
     {
-        return Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
-            $settings = Setting::all();
+        $branchId = request()->header('X-Branch-Id') ?? auth()->user()?->branch_id ?? 'global';
+        $cacheKey = self::CACHE_KEY . '_' . $branchId;
+
+        return Cache::remember($cacheKey, self::CACHE_TTL, function () {
+            // Fetch global settings first (branch_id is null), then branch settings (overrides)
+            // By ordering by branch_id NULLs first, branch_id overrides global values in the flat array
+            $settings = Setting::orderByRaw('branch_id IS NOT NULL, branch_id')->get();
             $flat = [];
             foreach ($settings as $setting) {
                 $flat[$setting->key] = $setting->cast_value;
@@ -40,10 +45,14 @@ class SettingRepository implements SettingRepositoryInterface
      */
     public function setKeyValue(string $key, ?string $value, string $type): void
     {
+        $branchId = request()->header('X-Branch-Id') ?? auth()->user()?->branch_id;
+        
         Setting::updateOrCreate(
-            ['key' => $key],
+            ['key' => $key, 'branch_id' => $branchId],
             ['value' => $value, 'type' => $type]
         );
-        Cache::forget(self::CACHE_KEY);
+        
+        $cacheKey = self::CACHE_KEY . '_' . ($branchId ?? 'global');
+        Cache::forget($cacheKey);
     }
 }

@@ -21,8 +21,11 @@ class DashboardService
      */
     public function getAnalyticsData(): array
     {
+        $branchId = request()->header('X-Branch-Id') ?? auth()->user()?->branch_id ?? 'global';
+        $cacheKey = "admin_dashboard_analytics_{$branchId}";
+
         // Cache aggregate stats for 30 seconds to speed up loads, while keeping data fresh
-        return Cache::remember('admin_dashboard_analytics', 30, function () {
+        return Cache::remember($cacheKey, 30, function () {
             $today = now()->toDateString();
             $yesterday = now()->subDay()->toDateString();
 
@@ -103,6 +106,7 @@ class DashboardService
      */
     public function clearCache(): void
     {
-        Cache::forget('admin_dashboard_analytics');
+        $branchId = request()->header('X-Branch-Id') ?? auth()->user()?->branch_id ?? 'global';
+        Cache::forget("admin_dashboard_analytics_{$branchId}");
     }
 }
