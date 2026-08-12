@@ -331,7 +331,17 @@ class WarehouseBotController extends Controller
 
             foreach ($successItems as $s) {
                 $priceText = $s['price'] ? number_format($s['price'], 0, '', ' ') . " so'm" : 'eski narx';
-                $report .= "  ✅ <b>{$s['name']}</b>: {$s['quantity']} {$s['unit']} ({$priceText})\n";
+                $newTag = !empty($s['is_new']) ? ' 🆕' : '';
+                $report .= "  ✅ <b>{$s['name']}</b>: {$s['quantity']} {$s['unit']} ({$priceText}){$newTag}\n";
+            }
+
+            // Show list of newly created ingredients
+            $newItems = array_filter($successItems, fn($s) => !empty($s['is_new']));
+            if (!empty($newItems)) {
+                $report .= "\n🆕 <b>Yangi yaratilgan mahsulotlar:</b>\n";
+                foreach ($newItems as $n) {
+                    $report .= "  • <b>{$n['name']}</b> ({$n['unit']}) — Masalliqlar bo'limiga qo'shildi\n";
+                }
             }
 
             if (!empty($failedItems)) {
@@ -352,8 +362,8 @@ class WarehouseBotController extends Controller
     }
 
     /**
-     * Parse a single ingredient line.
-     * Formats:  "Kartoshka 50"  or  "Kartoshka 50 8000"  or  "Go'sht mol 20 85000"
+     * Parse a single ingredient line and auto-create if not found.
+     * Formats:  "Kartoshka 50"  or  "Kartoshka 50 8000"  or  "Go'sht 20 kg 85000"
      */
     protected function parseIngredientLine(string $line, int $branchId): array
     {
@@ -363,14 +373,21 @@ class WarehouseBotController extends Controller
             return ['success' => false, 'raw' => $line, 'error' => 'Miqdor kiritilmagan'];
         }
 
-        // Scan from the end for numbers
+        $knownUnits = ['kg', 'g', 'l', 'ml', 'dona', 'pachka', 'litr'];
+
+        // Scan from the end for numbers and optional unit
         $numbers = [];
+        $detectedUnit = null;
         $namePartEnd = count($parts);
 
         for ($i = count($parts) - 1; $i >= 1; $i--) {
             $val = str_replace(',', '.', $parts[$i]);
             if (is_numeric($val)) {
                 $numbers[] = (float) $val;
+                $namePartEnd = $i;
+            } elseif (in_array(mb_strtolower($parts[$i]), $knownUnits) && empty($detectedUnit)) {
+                $detectedUnit = mb_strtolower($parts[$i]);
+                if ($detectedUnit === 'litr') $detectedUnit = 'l';
                 $namePartEnd = $i;
             } else {
                 break;
@@ -404,8 +421,25 @@ class WarehouseBotController extends Controller
                 ->first();
         }
 
+        $isNew = false;
+
+        // Auto-create if not found
         if (!$ingredient) {
-            return ['success' => false, 'raw' => $line, 'error' => "'{$ingredientName}' omborda topilmadi"];
+            $unit = $detectedUnit ?: 'kg';
+            $sku = 'ING-' . strtoupper(\Illuminate\Support\Str::random(5));
+
+            $ingredient = new Ingredient();
+            $ingredient->branch_id = $branchId;
+            $ingredient->name = mb_convert_case($ingredientName, MB_CASE_TITLE, 'UTF-8');
+            $ingredient->sku = $sku;
+            $ingredient->quantity = 0;
+            $ingredient->unit = $unit;
+            $ingredient->cost_price = $unitPrice ?? 0;
+            $ingredient->sell_price = null;
+            $ingredient->low_stock_threshold = 5;
+            $ingredient->save();
+
+            $isNew = true;
         }
 
         $finalPrice = $unitPrice ?? (float) $ingredient->cost_price;
@@ -417,6 +451,7 @@ class WarehouseBotController extends Controller
             'quantity' => $quantity,
             'unit' => $ingredient->unit,
             'price' => $unitPrice,
+            'is_new' => $isNew,
             'item' => [
                 'ingredient_id' => $ingredient->id,
                 'quantity' => $quantity,
