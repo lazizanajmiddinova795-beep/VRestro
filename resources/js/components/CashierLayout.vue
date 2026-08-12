@@ -401,7 +401,15 @@ const handleCloseShift = async () => {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        opened_at: cashierStore.shiftOpenTime,
+        cash: shiftStats.value.cash,
+        card: shiftStats.value.card,
+        qr: shiftStats.value.qr,
+        count: shiftStats.value.count,
+        total: shiftStats.value.total
+      })
     });
     const result = await response.json();
     if (!response.ok) {

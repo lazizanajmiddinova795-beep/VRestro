@@ -20,8 +20,19 @@ export const useCashierStore = defineStore('cashier', () => {
     const shiftOpenIso = ref(isoShiftTime);
     const isShiftActive = ref(true);
 
-    if (!localStorage.getItem('vrestro_shift_open_time')) {
+    const isNewShift = !localStorage.getItem('vrestro_shift_open_time');
+    if (isNewShift) {
         localStorage.setItem('vrestro_shift_open_time', isoShiftTime);
+        const token = localStorage.getItem('vrestro_token');
+        if (token) {
+            fetch('/api/shift/open', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            }).catch(e => console.error(e));
+        }
     }
 
     // 2. POS Cart State
