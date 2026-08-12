@@ -10,16 +10,7 @@ class ShiftController extends Controller
 {
     public function closeShift(Request $request): JsonResponse
     {
-        $openOrdersExist = Order::where('status', '!=', 'delivered')
-                                ->where('status', '!=', 'cancelled')
-                                ->exists();
-
-        if ($openOrdersExist) {
-            return response()->json([
-                'success' => false,
-                'message' => "Smenani yopib bo'lmaydi! Tizimda hali to'lovi qilinmagan faol stollar mavjud."
-            ], 400);
-        }
+        // Removed open orders check so cashiers can change shifts while customers are dining
 
         return response()->json([
             'success' => true,

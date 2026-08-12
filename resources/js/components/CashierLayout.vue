@@ -376,8 +376,8 @@ const handleCloseShift = async () => {
   const activeTablesCount = list.filter(t => t.status !== 'empty').length;
 
   if (activeTablesCount > 0) {
-    alert("❌ DIQQAT! XATOLIK!\n\nSmenani yopib bo'lmaydi! Tizimda hali to'lovi qilinmagan faol stollar mavjud. Iltimos, barcha faol va band stollarni yopib, keyin smenani yakunlang.");
-    return;
+    const confirmClose = confirm("⚠️ DIQQAT!\n\nTizimda hali to'lovi qilinmagan faol stollar mavjud. Ularni keyingi smena kassiriga topshirishga rozimisiz?");
+    if (!confirmClose) return;
   }
 
   try {
