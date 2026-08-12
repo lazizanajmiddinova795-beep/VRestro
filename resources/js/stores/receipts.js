@@ -26,7 +26,11 @@ export const useReceiptsStore = defineStore('receipts', () => {
         loading.value = true;
         error.value = '';
         try {
-            const response = await fetch('/api/payments', {
+            const cashierStore = (await import('@/stores/cashier')).useCashierStore();
+            const dateFrom = cashierStore.shiftOpenIso ? encodeURIComponent(cashierStore.shiftOpenIso) : '';
+            const url = dateFrom ? `/api/payments?date_from=${dateFrom}` : '/api/payments';
+
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: getHeaders()
             });

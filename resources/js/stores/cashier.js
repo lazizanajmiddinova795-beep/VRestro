@@ -3,11 +3,25 @@ import { ref, watch } from 'vue';
 
 export const useCashierStore = defineStore('cashier', () => {
     // 1. Shift Management Session State
-    const shiftOpenTime = ref(localStorage.getItem('vrestro_shift_open_time') || new Date().toLocaleString('uz-UZ'));
+    let storedShiftTime = localStorage.getItem('vrestro_shift_open_time');
+    let parsedDate = new Date(storedShiftTime);
+    
+    // If the stored string was in a weird format (like localized uz-UZ), it might be Invalid Date
+    if (isNaN(parsedDate.getTime())) {
+        parsedDate = new Date(); // Reset to now if invalid
+        storedShiftTime = parsedDate.toISOString();
+        localStorage.setItem('vrestro_shift_open_time', storedShiftTime);
+    }
+    
+    const isoShiftTime = storedShiftTime ? parsedDate.toISOString() : new Date().toISOString();
+    
+    // For display
+    const shiftOpenTime = ref(new Date(isoShiftTime).toLocaleString('uz-UZ'));
+    const shiftOpenIso = ref(isoShiftTime);
     const isShiftActive = ref(true);
 
     if (!localStorage.getItem('vrestro_shift_open_time')) {
-        localStorage.setItem('vrestro_shift_open_time', shiftOpenTime.value);
+        localStorage.setItem('vrestro_shift_open_time', isoShiftTime);
     }
 
     // 2. POS Cart State
