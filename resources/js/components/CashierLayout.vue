@@ -307,12 +307,22 @@ const route = useRoute();
 const currentTime = ref('');
 const currentDate = ref('');
 let clockInterval = null;
+let serverTimeOffset = 0;
 
-const showShiftModal = ref(false);
-const showNotifDropdown = ref(false);
+const syncServerTime = async () => {
+  try {
+    const res = await fetch('/api/time');
+    if (res.ok) {
+      const data = await res.json();
+      serverTimeOffset = data.timestamp - Date.now();
+    }
+  } catch (e) {
+    console.error('Failed to sync time');
+  }
+};
 
 const updateClock = () => {
-  const now = new Date();
+  const now = new Date(Date.now() + serverTimeOffset);
   
   // Format Time: HH:MM:SS
   currentTime.value = now.toLocaleTimeString('uz-UZ', { 
@@ -333,6 +343,9 @@ const updateClock = () => {
 const isActiveRoute = (path) => {
   return route.path === path;
 };
+
+const showShiftModal = ref(false);
+const showNotifDropdown = ref(false);
 
 // Computed Stats from Pinia tables
 const totalStats = computed(() => {
@@ -405,6 +418,7 @@ const handleCloseShift = async () => {
 };
 
 onMounted(() => {
+  syncServerTime();
   updateClock();
   clockInterval = setInterval(updateClock, 1000);
   

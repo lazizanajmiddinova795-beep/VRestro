@@ -27,6 +27,10 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChefController;
 use App\Http\Controllers\ShiftController;
 
+Route::get('/time', function () {
+    return response()->json(['timestamp' => now()->timestamp * 1000]);
+});
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
