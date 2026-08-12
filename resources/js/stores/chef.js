@@ -131,7 +131,6 @@ export const useChefStore = defineStore('chef', () => {
                 throw new Error(data.message || 'Statusni yangilashda xatolik yuz berdi.');
             }
 
-            // Instantly update the item locally to feel snappy
             const itemIndex = activeItems.value.findIndex(item => item.id === itemId);
             if (itemIndex !== -1) {
                 if (newStatus === 'ready') {
@@ -141,9 +140,6 @@ export const useChefStore = defineStore('chef', () => {
                     activeItems.value[itemIndex].status = newStatus;
                 }
             }
-
-            // Trigger silent background refresh
-            fetchActiveItems();
 
             return data.item;
         } catch (err) {
