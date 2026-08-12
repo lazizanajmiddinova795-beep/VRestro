@@ -324,9 +324,10 @@
         <div>{{ cashierStore.t('chek_no') }}: #{{ String(selectedPayment.id).padStart(6, '0') }}</div>
         <div>{{ cashierStore.t('buyurtma_no') }}: {{ selectedPayment.order?.order_number }}</div>
         <div>{{ cashierStore.t('sana') }}: {{ formatDateTime(selectedPayment.created_at) }}</div>
-        <div>{{ cashierStore.t('stol') }}: {{ selectedPayment.order?.table?.table_number }}</div>
+        <div v-if="selectedPayment.order?.table?.table_number">{{ cashierStore.t('stol') }}: {{ selectedPayment.order?.table?.table_number }}</div>
         <div>{{ cashierStore.t('kassir') }}: {{ authStore.user?.name }}</div>
         <div v-if="selectedPayment.order?.waiter?.name">{{ cashierStore.t('ofitsiant') }}: {{ selectedPayment.order.waiter.name }}</div>
+        <div v-if="selectedPayment.order?.customer_phone">{{ cashierStore.t('mijoz_teli') }}: {{ selectedPayment.order.customer_phone }}</div>
 
         <div class="ticket-divider"></div>
 

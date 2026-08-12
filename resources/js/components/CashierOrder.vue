@@ -519,6 +519,7 @@
         <div>{{ cashierStore.t('sana') }}: {{ printFormatDateTime(lastCompletedPayment.created_at) }}</div>
         <div v-if="lastCompletedPayment.order?.table?.table_number">{{ cashierStore.t('stol') }}: {{ lastCompletedPayment.order.table.table_number }}</div>
         <div>{{ cashierStore.t('kassir') }}: {{ authStore.user?.name }}</div>
+        <div v-if="lastCompletedPayment.order?.customer_phone">{{ cashierStore.t('mijoz_teli') }}: {{ lastCompletedPayment.order.customer_phone }}</div>
 
         <div class="ticket-divider"></div>
 
