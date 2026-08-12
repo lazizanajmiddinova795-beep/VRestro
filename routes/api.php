@@ -26,6 +26,10 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChefController;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\WarehouseBotController;
+
+// Telegram Warehouse Bot webhook (no auth required — Telegram sends updates here)
+Route::post('/telegram/warehouse-bot/wh_vrestro2026', [WarehouseBotController::class, 'webhook']);
 
 Route::get('/time', function () {
     return response()->json(['timestamp' => now()->timestamp * 1000]);
