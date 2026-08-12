@@ -154,15 +154,19 @@
             <span class="w-6 h-6 rounded-full bg-white border border-slate-200 text-slate-400 text-3xs font-black flex items-center justify-center shrink-0">
               {{ idx + 1 }}
             </span>
-            <select
-              v-model.number="row.ingredient_id"
-              class="flex-grow px-3 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-xs font-semibold text-slate-900 focus:outline-none transition"
-            >
-              <option value="" disabled>Masalliqni tanlang...</option>
-              <option v-for="ing in ingredientsStore.ingredients" :key="ing.id" :value="ing.id">
-                {{ ing.name }}
-              </option>
-            </select>
+            <div class="relative flex-grow">
+              <input
+                v-model="row.search_name"
+                @change="updateIngredientId(row)"
+                @input="updateIngredientId(row)"
+                list="ingredients-list"
+                placeholder="Masalliqni yozib qidiring..."
+                class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-indigo-500 text-xs font-semibold text-slate-900 focus:outline-none transition"
+              />
+              <div v-if="row.ingredient_id" class="absolute right-2 top-2.5 text-3xs text-emerald-500 font-bold flex items-center gap-1">
+                <CheckCircle class="w-3 h-3" />
+              </div>
+            </div>
             <div class="w-32 relative shrink-0">
               <input
                 v-model.number="row.quantity_required"
@@ -201,12 +205,16 @@
 
           <button
             type="button"
-            @click="editRows.push({ ingredient_id: '', quantity_required: '' })"
+            @click="editRows.push({ ingredient_id: '', search_name: '', quantity_required: '' })"
             class="w-full px-3 py-3 rounded-xl bg-indigo-50 border border-dashed border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white hover:border-solid text-xs font-bold transition flex items-center justify-center space-x-1.5"
           >
             <Plus class="w-4 h-4" />
             <span>Masalliq qo'shish</span>
           </button>
+          
+          <datalist id="ingredients-list">
+            <option v-for="ing in ingredientsStore.ingredients" :key="ing.id" :value="ing.name">{{ ing.unit }}</option>
+          </datalist>
         </div>
 
         <!-- Footer -->
@@ -306,11 +314,29 @@ const flashFoodId = ref(null);
 
 const openEditModal = (food) => {
   editingFood.value = food;
-  editRows.value = (food.recipes || []).map(r => ({
-    ingredient_id: r.ingredient_id,
-    quantity_required: parseFloat(r.quantity_required)
-  }));
+  editRows.value = (food.recipes || []).map(r => {
+    const ing = ingredientsStore.ingredients.find(i => i.id === r.ingredient_id);
+    return {
+      ingredient_id: r.ingredient_id,
+      search_name: ing ? ing.name : '',
+      quantity_required: parseFloat(r.quantity_required)
+    };
+  });
   showEditModal.value = true;
+};
+
+const updateIngredientId = (row) => {
+  if (!row.search_name) {
+    row.ingredient_id = '';
+    return;
+  }
+  const ing = ingredientsStore.ingredients.find(i => i.name.toLowerCase() === row.search_name.toLowerCase());
+  if (ing) {
+    row.ingredient_id = ing.id;
+    row.search_name = ing.name;
+  } else {
+    row.ingredient_id = '';
+  }
 };
 
 // Ingredient unit shown next to the quantity field, e.g. "kg" / "l" / "dona"

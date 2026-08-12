@@ -380,15 +380,19 @@
                 :key="idx"
                 class="flex gap-2 items-center bg-slate-50 border border-slate-200 rounded-xl p-2.5"
               >
-                <select
-                  v-model.number="row.ingredient_id"
-                  class="flex-grow px-2 py-1.5 rounded-lg bg-white border border-slate-200 focus:border-indigo-500 text-xs text-slate-900 focus:outline-none transition"
-                >
-                  <option value="" disabled>Masalliqni tanlang...</option>
-                  <option v-for="ing in ingredientsStore.ingredients" :key="ing.id" :value="ing.id">
-                    {{ ing.name }} ({{ ing.unit }})
-                  </option>
-                </select>
+                <div class="relative flex-grow">
+                  <input
+                    v-model="row.search_name"
+                    @change="updateIngredientId(row)"
+                    @input="updateIngredientId(row)"
+                    list="ingredients-list"
+                    placeholder="Masalliqni yozib qidiring..."
+                    class="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-200 focus:border-indigo-500 text-xs text-slate-900 focus:outline-none transition"
+                  />
+                  <div v-if="row.ingredient_id" class="absolute right-2 top-1.5 text-3xs text-emerald-500 font-bold flex items-center gap-1">
+                    <CheckCircle class="w-3 h-3" /> Topildi
+                  </div>
+                </div>
                 <input
                   v-model.number="row.quantity_required"
                   type="number"
@@ -407,6 +411,10 @@
               </div>
             </div>
             <p v-else class="text-xxs text-slate-400 italic">Masalliq qo'shilmagan. Taom saqlanganda retsept ham birga yoziladi.</p>
+            
+            <datalist id="ingredients-list">
+              <option v-for="ing in ingredientsStore.ingredients" :key="ing.id" :value="ing.name">{{ ing.unit }}</option>
+            </datalist>
           </div>
 
           <!-- Sizes configuration -->
@@ -629,14 +637,28 @@ const handleDeleteCategory = async (cat) => {
   }
 };
 
-// Recipe row actions
-const addRecipeRow = () => {
-  recipeRows.value.push({ ingredient_id: '', quantity_required: '' });
-};
-
-const removeRecipeRow = (idx) => {
-  recipeRows.value.splice(idx, 1);
-};
+  // Recipe row actions
+  const addRecipeRow = () => {
+    recipeRows.value.push({ ingredient_id: '', search_name: '', quantity_required: '' });
+  };
+  
+  const removeRecipeRow = (idx) => {
+    recipeRows.value.splice(idx, 1);
+  };
+  
+  const updateIngredientId = (row) => {
+    if (!row.search_name) {
+      row.ingredient_id = '';
+      return;
+    }
+    const ing = ingredientsStore.ingredients.find(i => i.name.toLowerCase() === row.search_name.toLowerCase());
+    if (ing) {
+      row.ingredient_id = ing.id;
+      row.search_name = ing.name; // match exact case
+    } else {
+      row.ingredient_id = '';
+    }
+  };
 
 // Size row actions
 const addSizeRow = () => {
@@ -698,10 +720,14 @@ const openFoodModal = async (food = null) => {
   // Load the existing recipe so ingredient quantities can be edited alongside the dish
   if (food) {
     await recipesStore.fetchRecipeForFood(food.id);
-    recipeRows.value = (recipesStore.recipe || []).map(r => ({
-      ingredient_id: r.ingredient_id,
-      quantity_required: parseFloat(r.quantity_required)
-    }));
+    recipeRows.value = (recipesStore.recipe || []).map(r => {
+      const ing = ingredientsStore.ingredients.find(i => i.id === r.ingredient_id);
+      return {
+        ingredient_id: r.ingredient_id,
+        search_name: ing ? ing.name : '',
+        quantity_required: parseFloat(r.quantity_required)
+      };
+    });
   }
 };
 
