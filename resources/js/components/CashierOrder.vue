@@ -1,6 +1,17 @@
 <template>
-  <div class="h-full">
-    <div class="h-full flex flex-col lg:flex-row gap-6 overflow-hidden bg-[#F1F5F9] p-1 no-print">
+  <div class="h-full flex flex-col">
+    <!-- Back Button Row -->
+    <div class="bg-[#F1F5F9] px-4 pt-4 pb-2 no-print shrink-0">
+      <button 
+        @click="router.push('/cashier/tables')" 
+        class="flex items-center space-x-2 text-slate-600 hover:text-indigo-600 bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition duration-200"
+      >
+        <ArrowLeft class="w-4 h-4" />
+        <span>Stollarga qaytish</span>
+      </button>
+    </div>
+
+    <div class="flex-grow flex flex-col lg:flex-row gap-6 overflow-hidden bg-[#F1F5F9] p-1 no-print">
     
     <!-- LEFT COLUMN: Categories and Foods Grid (60% width) -->
     <div class="w-full lg:w-3/5 flex flex-col h-full overflow-hidden bg-white border border-slate-200 rounded-3xl p-6 shadow-md">
@@ -605,7 +616,7 @@
 import { useSettingsStore } from '@/stores/settings';
 const settingsStore = useSettingsStore();
 import { ref, onMounted, onUnmounted, computed, watch, markRaw } from 'vue';
-import { Plus, Trash2, Receipt, X, CheckCircle, Send, CreditCard, Loader2 } from 'lucide-vue-next';
+import { Plus, Trash2, Receipt, X, CheckCircle, Send, CreditCard, Loader2, ArrowLeft } from 'lucide-vue-next';
 import { useCashierStore } from '@/stores/cashier';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingStore } from '@/stores/settings';

@@ -227,6 +227,96 @@
             </div>
 
           </div>
+
+          <!-- Daily Sales Breakdown & Cashier Activity Row -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Daily Sales Breakdown Card -->
+            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)]">
+              <div class="flex items-center justify-between mb-5">
+                <div>
+                  <h2 class="text-slate-900 font-black text-lg tracking-tight">💰 Kunlik savdo hisoboti</h2>
+                  <p class="text-slate-500 font-extrabold text-xs mt-0.5">Bugungi to'lovlar taqsimoti</p>
+                </div>
+                <span class="text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl">
+                  {{ dashboardStore.metrics?.daily_sales?.count || 0 }} ta chek
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4 mb-4">
+                <!-- Cash -->
+                <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
+                  <span class="text-xs font-black text-emerald-700 uppercase tracking-wider block mb-1">💵 Naqd pul</span>
+                  <span class="text-xl font-black text-emerald-800">{{ formatCurrency(dashboardStore.metrics?.daily_sales?.cash || 0) }}</span>
+                </div>
+                <!-- Card -->
+                <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-center">
+                  <span class="text-xs font-black text-blue-700 uppercase tracking-wider block mb-1">💳 Plastik</span>
+                  <span class="text-xl font-black text-blue-800">{{ formatCurrency(dashboardStore.metrics?.daily_sales?.card || 0) }}</span>
+                </div>
+                <!-- QR -->
+                <div class="bg-violet-50 border border-violet-200 rounded-2xl p-4 text-center">
+                  <span class="text-xs font-black text-violet-700 uppercase tracking-wider block mb-1">📱 QR to'lov</span>
+                  <span class="text-xl font-black text-violet-800">{{ formatCurrency(dashboardStore.metrics?.daily_sales?.qr || 0) }}</span>
+                </div>
+                <!-- Total -->
+                <div class="bg-indigo-50 border-2 border-indigo-300 rounded-2xl p-4 text-center">
+                  <span class="text-xs font-black text-indigo-700 uppercase tracking-wider block mb-1">📊 JAMI</span>
+                  <span class="text-2xl font-black text-indigo-800">{{ formatCurrency(dashboardStore.metrics?.daily_sales?.total || 0) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cashier Activity Card -->
+            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.04)]">
+              <div class="flex items-center justify-between mb-5">
+                <div>
+                  <h2 class="text-slate-900 font-black text-lg tracking-tight">👤 Kassirlar hisoboti</h2>
+                  <p class="text-slate-500 font-extrabold text-xs mt-0.5">Bugungi kassirlar faoliyati va ish vaqti</p>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200">
+                      <th class="text-left px-4 py-3 text-xs font-black text-slate-600 uppercase tracking-wider">Kassir</th>
+                      <th class="text-center px-4 py-3 text-xs font-black text-slate-600 uppercase tracking-wider">Cheklar</th>
+                      <th class="text-right px-4 py-3 text-xs font-black text-slate-600 uppercase tracking-wider">Tushum</th>
+                      <th class="text-center px-4 py-3 text-xs font-black text-slate-600 uppercase tracking-wider">Ish vaqti</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100">
+                    <tr v-for="cashier in (dashboardStore.metrics?.cashier_activity || [])" :key="cashier.cashier_id" class="hover:bg-slate-50 transition-colors">
+                      <td class="px-4 py-3">
+                        <div class="flex items-center space-x-2">
+                          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-black">
+                            {{ cashier.cashier_name?.charAt(0) || '?' }}
+                          </div>
+                          <span class="font-bold text-slate-900 text-sm">{{ cashier.cashier_name }}</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-center">
+                        <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-1 rounded-lg text-xs font-black">{{ cashier.receipts_count }} ta</span>
+                      </td>
+                      <td class="px-4 py-3 text-right font-black text-sm text-slate-900">
+                        {{ formatCurrency(cashier.total_amount) }}
+                      </td>
+                      <td class="px-4 py-3 text-center">
+                        <span class="text-xs font-bold text-slate-600">
+                          {{ cashier.first_payment }} — {{ cashier.last_payment }}
+                        </span>
+                      </td>
+                    </tr>
+                    <tr v-if="!dashboardStore.metrics?.cashier_activity?.length">
+                      <td colspan="4" class="py-8 text-center text-xs text-slate-500 font-bold">Bugun hali kassir faoliyati yo'q</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
         </div>
 
         <!-- Fallback: metrics are null (API failed silently or returned unexpected response) -->

@@ -413,11 +413,11 @@ const handleCloseShift = async () => {
     });
     const result = await response.json();
     if (!response.ok) {
-      alert("❌ " + (result.message || "Smenani yopishda xatolik yuz berdi. Hali yopilmagan stollar bor."));
-      return;
+      alert("⚠️ " + (result.message || "Smenani yopishda xatolik yuz berdi. Telegram xabarnoma yuborilmagan bo'lishi mumkin. Smena baribir yopiladi."));
     }
   } catch (e) {
     console.error(e);
+    alert("⚠️ Smenani yopishda tarmoq xatosi yuz berdi. Smena baribir yopiladi.");
   }
 
   cashierStore.closeShift();

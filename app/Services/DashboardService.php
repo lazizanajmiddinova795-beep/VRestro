@@ -73,6 +73,47 @@ class DashboardService
                 ];
             });
 
+            // 8. Daily Sales Breakdown by Payment Method
+            $dailySales = \App\Models\Payment::withoutGlobalScopes()
+                ->whereDate('created_at', $today)
+                ->where('status', 'completed')
+                ->selectRaw("
+                    COALESCE(SUM(cash_amount), 0) as cash_total,
+                    COALESCE(SUM(card_amount), 0) as card_total,
+                    COALESCE(SUM(qr_amount), 0) as qr_total,
+                    COALESCE(SUM(total_amount), 0) as total,
+                    COUNT(*) as count
+                ")
+                ->first();
+
+            // 9. Cashier Activity Today — get from orders' waiter (who handled the order)
+            $cashierActivity = \App\Models\Payment::withoutGlobalScopes()
+                ->whereDate('payments.created_at', $today)
+                ->where('payments.status', 'completed')
+                ->join('orders', 'payments.order_id', '=', 'orders.id')
+                ->join('users', 'orders.waiter_id', '=', 'users.id')
+                ->selectRaw("
+                    users.id as cashier_id,
+                    users.name as cashier_name,
+                    COUNT(*) as receipts_count,
+                    COALESCE(SUM(payments.total_amount), 0) as total_amount,
+                    MIN(payments.created_at) as first_payment,
+                    MAX(payments.created_at) as last_payment
+                ")
+                ->groupBy('users.id', 'users.name')
+                ->orderByDesc('total_amount')
+                ->get()
+                ->map(function ($c) {
+                    return [
+                        'cashier_id' => $c->cashier_id,
+                        'cashier_name' => $c->cashier_name,
+                        'receipts_count' => (int) $c->receipts_count,
+                        'total_amount' => (float) $c->total_amount,
+                        'first_payment' => $c->first_payment ? \Carbon\Carbon::parse($c->first_payment)->format('H:i') : null,
+                        'last_payment' => $c->last_payment ? \Carbon\Carbon::parse($c->last_payment)->format('H:i') : null,
+                    ];
+                });
+
             return [
                 'widgets' => [
                     'revenue' => [
@@ -88,6 +129,14 @@ class DashboardService
                     'kitchen_load' => $kitchenLoad,
                     'expenses' => $expensesToday,
                 ],
+                'daily_sales' => [
+                    'cash' => (float) $dailySales->cash_total,
+                    'card' => (float) $dailySales->card_total,
+                    'qr' => (float) $dailySales->qr_total,
+                    'total' => (float) $dailySales->total,
+                    'count' => (int) $dailySales->count,
+                ],
+                'cashier_activity' => $cashierActivity,
                 'charts' => [
                     'weekly' => $weeklyStats,
                 ],
