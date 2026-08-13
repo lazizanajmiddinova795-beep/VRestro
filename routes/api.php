@@ -45,7 +45,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/verify-face', [AuthController::class, 'verifyFace']);
 });
 
-Route::middleware(['auth:sanctum', 'role:Manager'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'role:Manager|Admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
 });
 
@@ -175,7 +175,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Settings
     Route::get('/settings', [SettingController::class, 'index']);
-    Route::middleware('role:Manager')->post('/settings/password', [SettingController::class, 'changePassword']);
+    Route::middleware('role:Manager|Admin')->post('/settings/password', [SettingController::class, 'changePassword']);
     Route::post('/user/profile', [SettingController::class, 'updateProfile']);
     Route::post('/shift/close', [ShiftController::class, 'closeShift']);
     Route::post('/shift/open', [ShiftController::class, 'openShift']);
@@ -186,7 +186,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Activity Logs (Admin only)
-    Route::middleware('role:Manager')->group(function () {
+    Route::middleware('role:Manager|Admin')->group(function () {
         Route::get('/activity-logs', [ActivityLogController::class, 'index']);
         Route::delete('/activity-logs/clear', [ActivityLogController::class, 'clear']);
     });
